@@ -1,0 +1,57 @@
+body {
+    margin: 0;
+    height: 100vh;
+    background-image: url('city-hall-background.png'); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center; 
+    justify-content: flex-end; 
+    position: relative; 
+}
+
+.splash-screen {
+    position: absolute; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10; 
+    transition: opacity 1s ease; 
+    transform: scale(1.2); 
+}
+
+.box {
+    background-color: rgba(50, 185, 50, 0.8);
+    width: 620px;
+    height: 450px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin-bottom: 0px;
+    opacity: 0; 
+    transition: opacity 1s ease; 
+	position: relative;
+}
+
+h1 {
+    font-size: 6em;
+    margin: 50 0 10px 0;
+}
+
+h2 {
+	font-size: 6em;
+	margin: 50 0 10px 0;
+	color: white;
+}
+p {
+    font-size: 30px;
+    margin: 100px 0 0;
+	color: white;
+}

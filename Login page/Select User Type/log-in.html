@@ -17,15 +17,16 @@
 
     <form action="your-login-endpoint" method="POST" class="log-in-page"> 
       <label for="user-email">Email:</label>
-      <input type="email" name="user-email" id="user-email" placeholder="Enter your Email" required>
+      <input type="email" name="user-email" id="user-email" placeholder="Enter your Email" > --required--
 
       <label for="user-password">Password:</label>
-      <input type="password" name="user-password" id="user-password" placeholder="Enter your Password" required>
+      <input type="password" name="user-password" id="user-password" placeholder="Enter your Password" > --required--
 
-      <button type="submit">Log In</button>
+      <button type="submit" id="loginButton">Log In</button>
     </form>
+	<button type="byPassToNextPage" id="nextPageButton">Next Page</button>
 
-    <p class="redirect-to-signup">Don't have an account? <a class="signup-desc" href="create-account.html">Sign Up</a></p> 
+    <p class="redirect-to-signup">Don't have an account? <a class="signup-desc" href="create-account.html">Sign Up</a></p>
   </div>
 
   <script src="log-in.js"></script>
