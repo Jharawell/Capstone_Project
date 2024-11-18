@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
   <link rel="icon" href="logo.png" type="image/x-icon" />
-  <link rel="stylesheet" href="log-in.css">
+  <link rel="stylesheet" href="log-in_admin.css">
   <title>Log In Page</title>
 </head>
 <body>
@@ -15,7 +15,7 @@
     <h1 class="title-heading">WELCOME TO CENTRALCOMM</h1>
     <p class="title-desc">Please enter your details to log in.</p>
 
-    <form action="your-login-endpoint" method="POST" class="log-in-page"> 
+    <form action="your-login-endpoint" id="CentralComm" class="log-in-page"> 
       <label for="user-email">Email:</label>
       <input type="email" name="user-email" id="user-email" placeholder="Enter your Email" > --required--
 
@@ -28,7 +28,7 @@
 
     <p class="redirect-to-signup">Don't have an account? <a class="signup-desc" href="create-account.html">Sign Up</a></p>
   </div>
-
-  <script src="log-in.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script> -->
+  <script src="log-in_admin.js"></script>
 </body>
 </html>

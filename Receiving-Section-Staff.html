@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CentralComm</title>
+  <link rel="stylesheet" href="Receiving-Section-Staff.css">
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <ul>
+        <li class="centralcomm">
+          <div class="centralcomm-box"><a href="#">CentralComm</a></div>
+        </li>
+      </ul>
+      <div class="menu-divider"></div>
+      <ul class="top-menu">
+        <li><a href="Receiving-Section-Staff.html"><i class="home-icon"></i> Home</a></li>
+        <li><a href="Archived.html"><i class="archive-icon"></i> Archived</a></li>
+        <li><a href="Notifications.html"><i class="notification-icon"></i> Notifications</a></li>
+      </ul>
+      <ul class="bottom-menu">
+        <li><a href="Contact-Us.html"><i class="contact-icon"></i> Contact Us</a></li>
+        <li><a href="#"><i class="logout-icon"></i> Log Out</a></li>
+      </ul>
+    </nav>
+
+    <main>
+      <div class="main-content">
+        <div class="home-section">
+          <header>
+            <div class="greeting">Let's get things done, <strong>Erin!</strong></div>
+          </header>
+
+          <div class="menu-divider2"></div>
+
+          <div class="top-bar">
+            <button class="new-item-button" onclick="addNewItemTable()">New Item</button>
+            <input class="search-bar" type="text" placeholder="Search">
+          </div>
+          <div id="floatingActionBar" class="floating-action-bar">
+            <button onclick="deleteSelected()">Delete</button>
+            <button onclick="archiveSelected()">Archive</button>
+          </div>
+
+          <div class="new-item-table-container" id="new-item-table-container"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+	<div id="floatingActionBar" class="floating-action-bar">
+	  <button onclick="deleteSelectedRows()">Delete</button>
+	  <button onclick="markAsCompleted()">Mark as Completed</button>
+	</div>
+
+  <script src="Receiving-Section-Staff.js"></script>
+</body>
+</html>

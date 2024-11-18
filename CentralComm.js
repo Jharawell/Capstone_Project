@@ -16,6 +16,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }, 2000); 
 	
 	mainContent.addEventListener('click', () => {
-		window.location.href = 'log-in.html';
+		window.location.href = 'select-user-type.html';
 	});
 });
