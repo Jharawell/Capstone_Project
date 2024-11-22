@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
 	const nextPageButton = document.getElementById("nextPageButton");
 	
 	nextPageButton.addEventListener("click", function() {
-		window.location.href = "select-user-type.html";
+		window.location.href = "Admin-Section-Staff.html";
 	});
 	//delete until this part
 	
