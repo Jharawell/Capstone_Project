@@ -90,11 +90,16 @@ nav {
 	font-size: 24px;
 }
 
+.bottom-menu {
+  margin-top: 250px;
+}
+
   .top-bar {
     display: flex;
     justify-content: flex-start;
     padding: 10px;
   }
+  
 
   .new-item-button {
     background-color: #4CAF50;
@@ -124,6 +129,7 @@ nav {
 
   .search-bar {
     width: 300px;
+    height: 30px;
     margin-left: 50px;
   }
 
