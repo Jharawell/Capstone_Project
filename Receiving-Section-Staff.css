@@ -1,4 +1,4 @@
-body {
+  body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -50,15 +50,26 @@ nav {
     text-decoration: none;
     color: #333;
     display: flex;
-    align-items: center;
+
     padding: 10px 15px;
     transition: color 0.3s ease, background-color 0.3s ease;
     border-radius: 5px;
   }
 
+  nav ul li a img.icon {
+    width: 15px;
+    height: 15px;
+    margin-right: 10px;
+    transition: filter 0.3s ease;
+  }
+
   nav ul li a:hover {
     color: #fff;
     background-color: #4CAF50;
+  }
+
+  nav ul li a:hover img.icon {
+    filter: brightness(0) invert(1); /* Change icon color to white on hover */
   }
 
   .menu-divider, .menu-divider2 {
@@ -72,6 +83,7 @@ nav {
     padding: 17.5px;
     font-size: 1.5em;
   }
+
 .centralcomm-box {
 	text-align: center;
 	margin: 10px 0 0 0;
@@ -88,11 +100,26 @@ nav {
     background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 10px 40px;
+    padding: 10px 10px;
     text-align: center;
     font-size: 12px;
     cursor: pointer;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+  }
+
+  .new-item-button:hover {
+    background-color: #388E3C;
+  }
+
+  .new-item-button img.icon {
+    width: 15px;
+    height: 15px;
+    margin-left: 3px;
+    transition: filter 0.3s ease;
+    filter: brightness(0) invert(1);
   }
 
   .search-bar {
@@ -100,12 +127,26 @@ nav {
     margin-left: 50px;
   }
 
+  .profile-button { 
+    background-color: transparent;
+    border: none; 
+    cursor: pointer;
+    display: flex; 
+    align-items: center; 
+    margin-left: 45%;
+  } 
+  
+  .profile-icon { 
+    width: 45px;
+    height: 45px;
+  }
+
   .new-item-table-container {
     margin-top: 10px;
     padding: 10px;
     border: 1px solid #ddd;
     background-color: #fff;
-	border-radius: 13px;
+	  border-radius: 13px;
   }
 
   .item-row {
