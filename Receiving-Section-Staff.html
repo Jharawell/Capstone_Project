@@ -17,12 +17,12 @@
       <div class="menu-divider"></div>
       <ul class="top-menu">
         <li><a href="Receiving-Section-Staff.html"><i class="home-icon"></i> Home</a></li>
-        <li><a href="Archived.html"><i class="archive-icon"></i> Archived</a></li>
-        <li><a href="Notifications.html"><i class="notification-icon"></i> Notifications</a></li>
+        <li><a href="Receiving-Archived.html"><i class="archive-icon"></i> Archived</a></li>
+        <li><a href="Receiving-Notifications.html"><i class="notification-icon"></i> Notifications</a></li>
       </ul>
       <ul class="bottom-menu">
-        <li><a href="Contact-Us.html"><i class="contact-icon"></i> Contact Us</a></li>
-        <li><a href="#"><i class="logout-icon"></i> Log Out</a></li>
+        <li><a href="Receiving-Contact-Us.html"><i class="contact-icon"></i> Contact Us</a></li>
+        <li><a href="select-user-type.html"><i class="logout-icon"></i> Log Out</a></li>
       </ul>
     </nav>
 
@@ -36,25 +36,51 @@
           <div class="menu-divider2"></div>
 
           <div class="top-bar">
-            <button class="new-item-button" onclick="addNewItemTable()">New Item<img src="icons&images/down-arrow.svg" alt="Down-arrow Icon" class="icon"></button>
+            <button class="new-item-button" onclick="addNewItemTable()">New Item</button>
             <input class="search-bar" type="text" placeholder="Search">
-            <button class="profile-button"> <img src="icons&images/user-circle.svg" alt="User Icon" class="profile-icon"> </button>
           </div>
-          <div id="floatingActionBar" class="floating-action-bar">
-            <button onclick="deleteSelected()">Delete</button>
-            <button onclick="archiveSelected()">Archive</button>
+          <div id="drawer-template" style="display: none;">
+            <div class="drawer">
+              <h4>Receiving</h4>
+              <div class="receiving-list-container">
+                <table class="receiving-list" border="1" style="margin: 20px auto; border-collapse: collapse; width: 10%;">
+                  <thead>
+                    <tr>
+                      <th> </th>
+                      <th>Time Received</th>
+                      <th>Date Received</th>
+                      <th>Ctrl No.</th>
+                      <th>From</th>
+                      <th>Office</th>
+                      <th>Subject</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="checkbox" onclick="highlightRow(this)"> </td>
+                      <td><input type="text" class="task-input" placeholder="Enter Time" oninput="updateStatusBar(this)"></td>
+                      <td><input type="text" class="task-input" placeholder="Enter Date" oninput="updateStatusBar(this)"></td>
+                      <td><input type="text" class="task-input" placeholder="Enter Ctrl No." oninput="updateStatusBar(this)"></td>
+                      <td><input type="text" class="task-input" placeholder="Enter From" oninput="updateStatusBar(this)"></td>
+                      <td><input type="text" class="task-input" placeholder="Enter Office" oninput="updateStatusBar(this)"></td>
+                      <td><input type="text" class="task-input" placeholder="Enter Subject" oninput="updateStatusBar(this)"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <button class="drawer_New-button" onclick="addNewRow(this)"><strong>New</strong></button>
+              <button class="drawer_Undo-button" onclick="removeRow(this)"><strong>Undo</strong></button>
+              <button class="drawer_Remove-button" onclick="removeRowFromDrawer(this)"><strong>Remove</strong></button>
+              <button class="drawer_Save-button" onclick="removeRow(this)"><strong>Save</strong></button>
+            </div>
           </div>
+          
 
           <div class="new-item-table-container" id="new-item-table-container"></div>
         </div>
       </div>
     </main>
   </div>
-	<div id="floatingActionBar" class="floating-action-bar">
-	  <button onclick="deleteSelectedRows()">Delete</button>
-	  <button onclick="markAsCompleted()">Mark as Completed</button>
-	</div>
-
   <script src="Dashboard-Function.js"></script>
 </body>
 </html>

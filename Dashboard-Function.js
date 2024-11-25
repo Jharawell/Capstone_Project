@@ -1,71 +1,67 @@
-let itemCounter = 1;
-
-document.getElementById('homeButton').addEventListener('click', function(event) {
-  event.preventDefault(); 
-  const homeSection = document.querySelector('.home-section');
-  homeSection.style.display = 'block';
-});
-
-
+let itemCounter = 1; 
+let rowCounter = 1; 
 
 function addNewItemTable() {
-  const container = document.getElementById('new-item-table-container');
-
+  const container = document.getElementById ('new-item-table-container');
+  const newItemContainer = document.createElement('div');
+  newItemContainer.classList.add('item-row');
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleDateString();
   const newItem = document.createElement('div');
   newItem.classList.add('item-row');
   newItem.innerHTML = `
     <div class="item">
-      <input type="checkbox" class="checkbox" onclick="highlightRow(this)">
-      <span class="date">11/11/2024</span>
+      <input type="checkbox" id="itemCheckbox${itemCounter}" onchange="updateStatusBar(this)">
+      <span class="date">${formattedDate}</span>
       <button class="Open-button" onclick="toggleDrawer(this)">Open</button>
-      <div class="status">
-        <span class="status-text">Not Started</span>
-        <button class="status-button" onclick="toggleStatusColor(this)">Pick Color</button>
+      <div class="status-bar-container">
+        <div class="status-bar" style="width: 0%;"></div>
+        <p class="status-text">0% done, 100% undone</p>
       </div>
     </div>
   `;
 
-  const drawer = document.createElement('div');
-  drawer.classList.add('drawer');
-  drawer.style.display = 'none';
-  drawer.innerHTML = `
-    <h4>Receiving</h4>
-    <div class="receiving-list-container">
-      <table class="receiving-list">
-        <thead>
-          <tr>
-            <th> </th>
-            <th>Time Received</th>
-            <th>Date Received</th>
-            <th>Ctrl No.</th>
-            <th>From</th>
-            <th>Office</th>
-            <th>Subject</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><input type="checkbox" onclick="highlightRow(this)"> </td>
-            <td><input type="text" placeholder="Enter Time"></td>
-            <td><input type="text" placeholder="Enter Date"></td>
-            <td><input type="text" placeholder="Enter Ctrl No."></td>
-            <td><input type="text" placeholder="Enter From"></td>
-            <td><input type="text" placeholder="Enter Office"></td>
-            <td><input type="text" placeholder="Enter Subject"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <button class="drawer_New-button" onclick="addNewRow(this)"><strong>New</strong></button>
-    <button class="drawer_Undo-button" onclick="removeRow(this)"><strong>Undo</strong></button>
-    <button class="drawer_Remove-button" onclick="removeRowFromDrawer(this)"><strong>Remove</strong></button>
-    <button class="drawer_Save-button" onclick="removeRow(this)"><strong>Save</strong></button>
-  `;
+  const drawerTemplate = document.getElementById('drawer-template').firstElementChild.cloneNode(true);
+  const inputs = drawerTemplate.querySelectorAll('.task-input');
+  inputs.forEach((input, index) => {
+    input.id = `row${itemCounter}.${index + 1}`; 
+  });
 
-  newItem.appendChild(drawer);
+  newItem.appendChild(drawerTemplate);
   container.appendChild(newItem);
+  
+  itemCounter++; 
 }
 
+function addNewRow(buttonElement) {
+  const drawer = buttonElement.closest('.drawer');
+  const table = drawer.querySelector('.receiving-list');
+  const tbody = table.querySelector('tbody');
+  const newRow = document.createElement('tr'); 
+
+  newRow.innerHTML = `
+    <td><input type="checkbox" onclick="highlightRow(this)"> </td>
+    <td><input type="text" class="task-input" id="row${itemCounter}.1" placeholder="Enter Time"></td>
+    <td><input type="text" class="task-input" id="row${itemCounter}.2" placeholder="Enter Date"></td>
+    <td><input type="text" class="task-input" id="row${itemCounter}.3" placeholder="Enter Ctrl No."></td>
+    <td><input type="text" class="task-input" id="row${itemCounter}.4" placeholder="Enter From"></td>
+    <td><input type="text" class="task-input" id="row${itemCounter}.5" placeholder="Enter Office"></td>
+    <td><input type="text" class="task-input" id="row${itemCounter}.6" placeholder="Enter Subject"></td>
+  `;
+
+  tbody.appendChild(newRow);
+  rowCounter++; 
+}
+
+function highlightRow(checkbox) {
+  const row = checkbox.closest('tr');
+  
+  if (checkbox.checked) {
+    row.classList.add('selected');
+  } else {
+    row.classList.remove('selected');
+  }
+}
 
 function highlightRow(checkbox) {
   const row = checkbox.closest('tr');
@@ -76,11 +72,9 @@ function highlightRow(checkbox) {
     row.classList.remove('selected');
   }
 
-  // Check if there are any selected rows
   const anyChecked = document.querySelectorAll('.item-row input[type="checkbox"]:checked').length > 0;
   const actionBar = document.getElementById('floatingActionBar');
   
-  // Show or hide the floating action bar based on checkbox selection
   if (anyChecked) {
     actionBar.style.display = 'flex';
   } else {
@@ -97,90 +91,10 @@ function deleteSelectedRows() {
 
 function toggleDrawer(buttonElement) {
   const itemRow = buttonElement.closest('.item-row');
-  let drawer = itemRow.querySelector('.drawer');
+  const drawer = itemRow.querySelector('.drawer');
 
-  if (!drawer) {
-    drawer = document.createElement('div');
-    drawer.classList.add('drawer');
-    drawer.innerHTML = `
-      <h3>Receiving</h3>
-      <div class="receiving-list-container">
-        <table class="receiving-list">
-          <thead>
-            <tr>
-			  <th> </th>
-              <th>#</th>
-              <th>Time Received</th>
-              <th>Date Received</th>
-              <th>Ctrl No.</th>
-              <th>From</th>
-              <th>Office</th>
-              <th>Subject</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-			  <td><input type="checkbox" onclick="highlightRow(this)"> </td>
-              <td>1</td>
-              <td><input type="text" placeholder="Enter Time"></td>
-              <td><input type="text" placeholder="Enter Date"></td>
-              <td><input type="text" placeholder="Enter Ctrl No."></td>
-              <td><input type="text" placeholder="Enter From"></td>
-              <td><input type="text" placeholder="Enter Office"></td>
-              <td><input type="text" placeholder="Enter Subject"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <button class="drawer_New-button" onclick="addNewRow(this)"><strong>New</strong></button>
-	  <button class="drawer_Undo-button" onclick="removeRow(this)"><strong>Undo</strong></button>
-	  <button class="drawer_Remove-button" onclick="deleteSelectedRows()"><strong>Remove</strong></button>
-	  <button class="drawer_Save-button" onclick="removeRow(this)"><strong>Save</strong></button>
-    `;
-    itemRow.appendChild(drawer);
-  } else {
-    drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
-  }
-
-  if (drawer.style.display === 'block') {
-    drawer.classList.add('open');
-    buttonElement.textContent = 'Close';
-    buttonElement.style.backgroundColor = 'red';
-  } else {
-    drawer.classList.remove('open');
-    buttonElement.textContent = 'Open';
-    buttonElement.style.backgroundColor = '#4CAF50'; 
-  }
-}
-
-function addNewRow(buttonElement) {
-  const drawer = buttonElement.closest('.drawer');
-  const table = drawer.querySelector('.receiving-list');
-  const tbody = table.querySelector('tbody');
-
-  const newRow = document.createElement('tr'); 
-
-  newRow.innerHTML = `
-	<td><input type="checkbox" onclick="highlightRow(this)"> </td>
-    <td><input type="text" placeholder="Enter Time"></td>
-    <td><input type="text" placeholder="Enter Date"></td>
-    <td><input type="text" placeholder="Enter Ctrl No."></td>
-    <td><input type="text" placeholder="Enter From"></td>
-    <td><input type="text" placeholder="Enter Office"></td>
-    <td><input type="text" placeholder="Enter Subject"></td>
-  `;
-  
-  tbody.appendChild(newRow);
-}
-
-function highlightRow(checkbox) {
-  const row = checkbox.closest('tr');
-  
-  if (checkbox.checked) {
-    row.classList.add('selected');
-  } else {
-    row.classList.remove('selected');
-  }
+  drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
+    
 }
 
 function removeRowFromDrawer(button) {
@@ -194,89 +108,41 @@ function removeRowFromDrawer(button) {
   });
 }
 
-function toggleStatusColor(buttonElement) {
-  const statusElement = buttonElement.closest('.status');
-  const statusText = statusElement.querySelector('.status-text');
-
-  const existingColorPicker = statusElement.querySelector('.color-picker');
-  if (existingColorPicker) {
-    existingColorPicker.remove();
-    buttonElement.style.display = 'inline-block';
-    return;
-  }
-
-  const colorOptions = ['red', 'yellow', 'green'];
-  const colorPicker = document.createElement('div');
-  colorPicker.classList.add('color-picker');
-
-  colorOptions.forEach(color => {
-    const colorOption = document.createElement('div');
-    colorOption.classList.add('color-option');
-    colorOption.style.backgroundColor = color;
-
-    colorOption.onclick = function() {
-      statusText.textContent = color.charAt(0).toUpperCase() + color.slice(1);
-      statusElement.style.backgroundColor = color;
-      buttonElement.style.display = 'inline-block';
-      colorPicker.remove();
-    };
-    colorPicker.appendChild(colorOption);
-  });
-
-  statusElement.appendChild(colorPicker);
-
-  const buttonRect = buttonElement.getBoundingClientRect();
-  colorPicker.style.position = 'absolute';
-  colorPicker.style.top = `${buttonElement.offsetHeight + 10}px`;
-  colorPicker.style.left = `0px`;
-
-  buttonElement.style.display = 'none';
-}
 function markAsCompleted() {
   const selectedRows = document.querySelectorAll('.item-row input[type="checkbox"]:checked');
   selectedRows.forEach(checkbox => {
     const row = checkbox.closest('.item-row');
-    row.classList.add('completed'); // You can style .completed in CSS if needed
-    checkbox.checked = false; // Uncheck the checkbox
+    row.classList.add('completed'); 
+    checkbox.checked = false;
   });
-
-  // Hide the action bar after marking as completed
-  document.getElementById('floatingActionBar').style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const floatingActionBar = document.getElementById('floatingActionBar');
+function updateStatusBar(inputElement) {
+  
+  const itemRow = inputElement.closest('.item-row');
+  const drawer = itemRow.querySelector('.drawer');
+  const taskInputs = drawer.querySelectorAll('.task-input');
+  const totalInputs = taskInputs.length;
+  let filledInputs = 0;
 
-  // Monitor checkbox changes in the container
-  document.getElementById('new-item-table-container').addEventListener('change', function (event) {
-    if (event.target.classList.contains('checkbox')) {
-      toggleFloatingActionBar();
-    }
+  taskInputs.forEach(input => {
+      if (input.value.trim() !== "") {
+          filledInputs++;
+      }
   });
 
-  function toggleFloatingActionBar() {
-    const anyChecked = document.querySelectorAll('#new-item-table-container .checkbox:checked').length > 0;
-    floatingActionBar.style.display = anyChecked ? 'flex' : 'none';
+  const donePercentage = totalInputs > 0 ? (filledInputs / totalInputs) * 100 : 0;
+  const undonePercentage = 100 - donePercentage;
+  const statusBar = itemRow.querySelector('.status-bar');
+  const statusText = itemRow.querySelector('.status-text');
+  statusBar.style.width = `${donePercentage}%`;
+  statusText.textContent = `${Math.round(donePercentage)}% done, ${Math.round(undonePercentage)}% undone`;
+
+  if (filledInputs === totalInputs) {
+      statusBar.style.width = '100%';
+      statusText.textContent = '100% done, 0% undone';
   }
+}
 
-  window.deleteSelected = function () {
-    const selected = document.querySelectorAll('#new-item-table-container .checkbox:checked');
-    selected.forEach(checkbox => {
-      const itemRow = checkbox.closest('.item-row');
-      itemRow.remove();
-    });
-    toggleFloatingActionBar(); // Update visibility after deletion
-  };
-
-  window.archiveSelected = function () {
-    const selected = document.querySelectorAll('#new-item-table-container .checkbox:checked');
-    selected.forEach(checkbox => {
-      const itemRow = checkbox.closest('.item-row');
-      itemRow.style.opacity = 0.5; // Example action for archiving
-      checkbox.checked = false; // Uncheck the box
-    });
-    toggleFloatingActionBar(); // Update visibility after archiving
-  };
-});
 
 

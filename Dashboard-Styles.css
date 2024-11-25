@@ -1,436 +1,360 @@
-  body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f0f0f0;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+body {
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 0;
+background-color: #f0f0f0;
+overflow-x: hidden; 
 }
 
 .container {
-  display: flex;
-  min-height: 100vh;
-  width: 100%;
+display: flex;
+min-height: 100vh;
+width: 100%;
 }
 
-  main {
-  width: 100%;
-  overflow-x: hidden; /* Ensure the main content doesn't overflow horizontally */
+main {
+width: 100%;
+overflow-x: hidden; 
 }
 
 nav {
-  background-color: #fff;
-  width: 200px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  position: fixed;
-  overflow-y: auto; /* Allow vertical scrolling in the sidebar if needed */
+background-color: #fff;
+width: 170px;
+padding: 0;
+display: flex;
+flex-direction: column;
+height: 100vh;
+position: fixed;
+overflow-y: auto; 
 }
 
 .main-content {
-  position: relative;
-  margin-left: 200px;
-  padding: 5px;
-  width: calc(100% - 200px);
-  overflow-x: hidden; /* Prevent horizontal overflow in the content */
+position: relative;
+margin-left: 200px;
+padding: 5px;
+width: calc(100% - 200px);
+overflow-x: hidden; 
 }
 
-  nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
 
-  nav li {
-    margin-bottom: 10px;
-  }
+nav li {
+  margin-bottom: 10px;
+}
 
-  nav ul li a {
-    text-decoration: none;
-    color: #333;
-    display: flex;
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+  border-radius: 5px;
+}
 
-    padding: 10px 15px;
-    transition: color 0.3s ease, background-color 0.3s ease;
-    border-radius: 5px;
-  }
+nav ul li a:hover {
+  color: #fff;
+  background-color: #4CAF50;
+}
 
-  nav ul li a img.icon {
-    width: 15px;
-    height: 15px;
-    margin-right: 10px;
-    transition: filter 0.3s ease;
-  }
+.menu-divider, .menu-divider2 {
+  height: 1px;
+  background-color: #ddd;
+  margin: 0 0 10px;
+  width: 100%;
+}
 
-  nav ul li a:hover {
-    color: #fff;
-    background-color: #4CAF50;
-  }
-
-  nav ul li a:hover img.icon {
-    filter: brightness(0) invert(1); /* Change icon color to white on hover */
-  }
-
-  .menu-divider, .menu-divider2 {
-    height: 1px;
-    background-color: #ddd;
-    margin: 0 0 10px;
-    width: 100%;
-  }
-
-  .greeting {
-    padding: 17.5px;
-    font-size: 1.5em;
-  }
-
+.greeting {
+  padding: 17.5px;
+  font-size: 1.5em;
+}
 .centralcomm-box {
-	text-align: center;
-	margin: 10px 0 0 0;
-	font-size: 24px;
+text-align: center;
+margin: 10px 0 0 0;
+font-size: 24px;
 }
 
 .bottom-menu {
-  margin-top: 250px;
+margin-top: 250px;
 }
 
-  .top-bar {
-    display: flex;
-    justify-content: flex-start;
-    padding: 10px;
-  }
-  
+.top-bar {
+  display: flex;
+  justify-content: flex-start;
+  padding: 10px;
+}
 
-  .new-item-button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 10px 10px;
-    text-align: center;
-    font-size: 12px;
-    cursor: pointer;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.3s ease;
-  }
 
-  .new-item-button:hover {
-    background-color: #388E3C;
-  }
+.new-item-button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 10px 40px;
+  text-align: center;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 5px;
+}
 
-  .new-item-button img.icon {
-    width: 15px;
-    height: 15px;
-    margin-left: 3px;
-    transition: filter 0.3s ease;
-    filter: brightness(0) invert(1);
-  }
+.search-bar {
+  width: 300px;
+  height: 30px;
+  margin-left: 50px;
+}
 
-  .search-bar {
-    width: 300px;
-    height: 30px;
-    margin-left: 50px;
-  }
-
-  .profile-button { 
-    background-color: transparent;
-    border: none; 
-    cursor: pointer;
-    display: flex; 
-    align-items: center; 
-    margin-left: 45%;
-  } 
-  
-  .profile-icon { 
-    width: 45px;
-    height: 45px;
-  }
-
-  .new-item-table-container {
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-	  border-radius: 13px;
-  }
-
-  .item-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    flex-direction: column;
-  }
-
-  .item {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-
-  .checkbox {
-    margin-right: 15px;
-  }
-
-  .date {
-    margin-right: 20px;
-    padding: 5px;
-    font-size: 14px;
-  }
-
-  /* Status box styles */
-  .status {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 8px 15px;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    position: relative;
-  }
-
-  /* Dropdown arrow in status button */
-  .status-button::after {
-    content: "▼";
-    font-size: 0.6em;
-    margin-left: 5px;
-  }
-
-  /* Updated Color picker style */
-  .color-picker {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    transform: translateY(px);
-    display: flex;
-    flex-direction: row;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 10;
-  }
-
-  .color-option {
-    width: 30px;
-    height: 30px;
-    margin-right: 5px;
-    cursor: pointer;
-    border-radius: 50%;
-  }
-
-  .color-option:hover {
-    opacity: 0.7;
-  }
-
-  .status {
-    height: 20px;
-    width: 75px;
-    right: 75px;
-  }
-  .status-text {
-    color: #333;
-    font-weight: bold;
-  }
-
-  .status-button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 12px;
-    display: inline-block;
-  }
-
-  .status-button:hover {
-    background-color: #45a049;
-  }
-
-  .Open-button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    margin-right: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 12px;
-  }
-
-  .Open-button:hover {
-    background-color: #45a049;
-  }
-
-  .item-row:hover {
-    background-color: #f9f9f9;
-  }
-
-  .content {
-    flex: 1;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 5px;
-  }
-
-  /* Style for the scrollable table container */
-  .drawer {
+.new-item-table-container {
   margin-top: 10px;
   padding: 10px;
   border: 1px solid #ddd;
   background-color: #fff;
-  width: 100%;
+border-radius: 13px;
+}
+
+.item-row {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
   flex-direction: column;
-  height: 300px; /* Fixed height for the drawer */
-  position: relative; /* Set relative positioning for containing the button */
-  overflow: hidden;
 }
 
-  /* Make the table cells scrollable */
-  .receiving-list-container {
-    max-height: 200px; /* Set the maximum height for the table's body */
-    overflow-y: auto; /* This enables scrolling */
-    margin-bottom: 10px;
-  }
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
 
-  .receiving-list {
-    width: 100%;
-    border-collapse: collapse;
-  }
+.checkbox {
+  margin-right: 15px;
+}
 
-  .receiving-list th, .receiving-list td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-  }
-
-  .receiving-list th {
-    background-color: #f4f4f4;
-  }
-
-  .drawer_New-button {
-  background-color: white;
-  color: black;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
+.date {
+  margin-right: 20px;
+  padding: 5px;
   font-size: 14px;
+}
+
+
+.status-bar-container {
+  width: 10%;
+  height: 30px;
+  background-color: #e0e0e0;
   border-radius: 5px;
-  position: absolute; 
-  bottom: 10px; 
-  left: 10px; 
+  position: relative;
 }
 
-.drawer_Undo-button {
-  background-color: white;
-  color: black;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  border-radius: 5px;
-  position: absolute; 
-  bottom: 10px; 
-  left: 155px; 
+.status-bar-container:hover .status-text {
+  display: block; 
 }
 
-.drawer_Remove-button {
-  background-color: white;
-  color: black;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  border-radius: 5px;
-  position: absolute; 
-  bottom: 10px; 
-  left: 70px; 
-}
-
-.drawer_Save-button {
-  background-color: white;
-  color: black;
-  padding: 10px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  border-radius: 5px;
-  position: absolute; 
-  bottom: 10px; 
-  right: 10px;
-}
-
-.drawer_New-button:hover {
-    background-color: #45a049;
-  }
-
-.drawer_Undo-button:hover {
-    background-color: yellow;
-  }
-
-.drawer_Remove-button:hover {
-    background-color: red;
-  }
-.drawer_Save-button:hover {
-    background-color: #618EDD;
-  }
-  
-.selected {
-  background-color: #c8e6c9; /* Light green background for selected rows */
-  transition: background-color 0.3s ease;
-}
-
-  .drawer.open {
-  background-color: #B8B8B8;/* Dark grey background */
-  color: black;
-  padding: 10px;
-  border-radius: 13px;
-}
-.drawer.open .receiving-list-container {
-	background-color: transparent;
-}
-
-.drawer.open .receiving-list th {
-	background-color: yellow;
-}
-.drawer.open .receiving-list td {
-  background-color: white; /* Ensure table header and cells retain their original background */
-  color: black; /* Inherit the default text color for the table content */
-}
-
-.floating-action-bar {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: none;
-  background-color: #333;
+.status-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #4caf50;
+  text-align: center;
+  line-height: 30px;
   color: white;
-  padding: 10px 20px;
+  border-radius: 5px 0 0 5px;
+  transition: width 0.5s ease-in-out;
+}
+.status-text {
+  margin-top: 20px;
+  font-size: 1em;
+  display: none; 
+  position: absolute; 
+  left: -180px;
+  top: -18px;
+  background-color: rgba(255, 255, 255, 0.8); 
+  padding: 5px;
   border-radius: 5px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 100;
+  z-index: 1; 
 }
 
-.floating-action-bar button {
+.Open-button {
   background-color: #4CAF50;
   border: none;
   color: white;
-  padding: 10px;
-  margin: 0 5px;
+  padding: 5px 10px;
+  margin-right: 10px;
   cursor: pointer;
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+.Open-button:hover {
+  background-color: #45a049;
+}
+
+.item-row:hover {
+  background-color: #f9f9f9;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
   border-radius: 5px;
 }
 
-.floating-action-bar button:hover {
+
+.drawer {
+margin-top: 10px;
+padding: 10px;
+border: 1px solid #ddd;
+background-color: gray;
+width: 100%;
+display: flex;
+flex-direction: column;
+height: 500px; 
+position: relative; 
+overflow: hidden;
+}
+
+
+.receiving-list-container {
+  max-height: 390px; 
+  overflow-y: auto; 
+  margin-bottom: 10px;
+}
+
+.receiving-list {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.receiving-list th, .receiving-list td{
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.receiving-list th {
+  background-color: #f4f4f4;
+}
+
+.drawer_New-button {
+background-color: white;
+color: black;
+padding: 10px;
+border: none;
+cursor: pointer;
+font-size: 14px;
+border-radius: 5px;
+position: absolute; 
+bottom: 10px; 
+left: 10px; 
+}
+
+.drawer_Undo-button {
+background-color: white;
+color: black;
+padding: 10px;
+border: none;
+cursor: pointer;
+font-size: 14px;
+border-radius: 5px;
+position: absolute; 
+bottom: 10px; 
+left: 155px; 
+}
+
+.drawer_Remove-button {
+background-color: white;
+color: black;
+padding: 10px;
+border: none;
+cursor: pointer;
+font-size: 14px;
+border-radius: 5px;
+position: absolute; 
+bottom: 10px; 
+left: 70px; 
+}
+
+.drawer_Save-button {
+background-color: white;
+color: black;
+padding: 10px;
+border: none;
+cursor: pointer;
+font-size: 14px;
+border-radius: 5px;
+position: absolute; 
+bottom: 10px; 
+right: 10px;
+}
+
+.drawer_New-button:hover {
   background-color: #45a049;
+}
+
+.drawer_Undo-button:hover {
+  background-color: yellow;
+}
+
+.drawer_Remove-button:hover {
+  background-color: red;
+}
+.drawer_Save-button:hover {
+  background-color: #618EDD;
+}
+
+.selected {
+background-color: #c8e6c9;
+transition: background-color 0.3s ease;
+}
+
+.drawer.open {
+background-color: #B8B8B8;
+color: black;
+padding: 10px;
+border-radius: 13px;
+}
+.drawer.open .receiving-list-container {
+background-color: transparent;
+}
+
+.drawer.open .receiving-list th {
+background-color: yellow;
+}
+.drawer.open .receiving-list td {
+background-color: white; 
+color: black; 
+}
+
+#popupContainer {
+position: fixed;
+bottom: 10px;
+left: 50%;
+transform: translateX(-50%);
+background-color: #f1f1f1;
+border: 1px solid #ccc;
+border-radius: 8px;
+padding: 10px 20px;
+display: none;
+box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+#popupContainer button {
+margin: 5px;
+padding: 8px 15px;
+font-size: 14px;
+cursor: pointer;
+border: none;
+border-radius: 4px;
+background-color: #007bff;
+color: #fff;
+transition: background-color 0.3s ease;
+}
+
+#popupContainer button:hover {
+background-color: #0056b3;
 }
