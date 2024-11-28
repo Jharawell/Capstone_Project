@@ -1,15 +1,27 @@
-body{
+body {
   font-family: "Poppins";
 }
 
-html{
-  background-image: url(city-hall-background.png);
-  background-repeat: no-repeat;
-  background-size: cover;
+html {
+  position: relative;
   height: 100%;
 }
 
-.container{
+html::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url(city-hall-background.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.8;
+  z-index: -1;
+}
+
+.container {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -17,8 +29,9 @@ html{
   background-color: white;
   padding: 30px;
   border-radius: 20px;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   width: 600px;
+  z-index: 1;
 }
 
 input[type=text], input[type=password], input[type=email] {
@@ -42,32 +55,34 @@ button {
   width: 100%;
   border-radius: 5px;
 }
+
 button:hover {
   opacity: 0.9;
 }
 
-.title-heading{
+.title-heading {
   text-align: center;
   margin: 0;
 }
 
-.title-desc{
+.title-desc {
   display: block;
   text-align: center;
   color: rgb(127, 123, 123);
   margin-top: 9px;
 }
 
-.signup-desc{
+.signup-desc {
   text-decoration: none;
 }
-.alert{
-	width: 100%;
-	background-color: green;
-	padding: 10px 20px;
-	border-radius: 5px;
-	text-align: center;
-	font-size: 18px;
-	font-weight: 900;
-	display: none;
+
+.alert {
+  width: 100%;
+  background-color: green;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 900;
+  display: none;
 }
