@@ -41,8 +41,8 @@ function addNewRow(buttonElement) {
 
   newRow.innerHTML = `
     <td><input type="checkbox" onclick="highlightRow(this)"> </td>
-    <td><input type="text" class="task-input" id="row${itemCounter}.1" placeholder="Enter Time"></td>
-    <td><input type="text" class="task-input" id="row${itemCounter}.2" placeholder="Enter Date"></td>
+    <td><input type="time" class="task-input" name="appt" oninput="updateStatusBar(this)"></td>
+    <td> <input type="date" class="task-input" name="birthday" oninput="updateStatusBar(this)"></td>
     <td><input type="text" class="task-input" id="row${itemCounter}.3" placeholder="Enter Ctrl No."></td>
     <td><input type="text" class="task-input" id="row${itemCounter}.4" placeholder="Enter From"></td>
     <td><input type="text" class="task-input" id="row${itemCounter}.5" placeholder="Enter Office"></td>
