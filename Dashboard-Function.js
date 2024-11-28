@@ -41,11 +41,56 @@ function addNewRow(buttonElement) {
 
   newRow.innerHTML = `
     <td><input type="checkbox" onclick="highlightRow(this)"> </td>
-    <td><input type="time" class="task-input" name="appt" oninput="updateStatusBar(this)"></td>
-    <td> <input type="date" class="task-input" name="birthday" oninput="updateStatusBar(this)"></td>
+    <td><input type="time" class="task-input" id="row${itemCounter}.1"name="time" oninput="updateStatusBar(this)"></td>
+    <td> <input type="date" class="task-input"id="row${itemCounter}.2"name="date" oninput="updateStatusBar(this)"></td>
     <td><input type="text" class="task-input" id="row${itemCounter}.3" placeholder="Enter Ctrl No."></td>
     <td><input type="text" class="task-input" id="row${itemCounter}.4" placeholder="Enter From"></td>
-    <td><input type="text" class="task-input" id="row${itemCounter}.5" placeholder="Enter Office"></td>
+    <td><form>
+        <input type="text" class="task-input" id="row${itemCounter}.5" list="suggestions" placeholder="Enter Office">
+        <datalist id="suggestions">
+          <option value="Vice Mayor's Office">
+          <option value="Sangguniang Panlungsod">
+          <option value="CAO">
+          <option value="CASSO">
+          <option value="CADMO">
+          <option value="CBO">
+          <option value="CEPMO">
+          <option value="CHRMO">
+          <option value="CLO">
+          <option value="CPDSO">
+          <option value="CTO">
+          <option value="GSO">
+          <option value="CBAO">
+          <option value="CEO">
+          <option value="CSWDO">
+          <option value="HSO">
+          <option value="LCR">
+          <option value="CVAO">
+          <option value="DEPED">
+          <option value="COA">
+          <option value="MTCC">
+          <option value="RTCC">
+          <option value="Prosecutor's Office">
+          <option value="DILG-City">
+          <option value="BCPO">
+          <option value="BFP">
+          <option value="BJMP">
+          <option value="PESO">
+          <option value="PIO">
+          <option value="PLD">
+          <option value="PLEB">
+          <option value="POSD">
+          <option value="SSD">
+          <option value="PDAO">
+          <option value="MITD">
+          <option value="CCTV">
+          <option value="CDRRMO">
+          <option value="LIBRARY">
+          <option value="PERSONAL STAFF">
+
+        </datalist>
+      </form>
+      </td>
     <td><input type="text" class="task-input" id="row${itemCounter}.6" placeholder="Enter Subject"></td>
   `;
 

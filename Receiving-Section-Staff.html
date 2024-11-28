@@ -58,11 +58,57 @@
                   <tbody>
                     <tr>
                       <td><input type="checkbox" onclick="highlightRow(this)"> </td>
-                      <td><input type="time" class="task-input" name="appt" oninput="updateStatusBar(this)"></td>
-                      <td> <input type="date" class="task-input" name="birthday" oninput="updateStatusBar(this)"></td>
+                      <td><input type="time" class="task-input" name="time" oninput="updateStatusBar(this)"></td>
+                      <td> <input type="date" class="task-input" name="date" oninput="updateStatusBar(this)"></td>
                       <td><input type="text" class="task-input" placeholder="Enter Ctrl No." oninput="updateStatusBar(this)"></td>
                       <td><input type="text" class="task-input" placeholder="Enter From" oninput="updateStatusBar(this)"></td>
-                      <td><input type="text" class="task-input" placeholder="Enter Office" oninput="updateStatusBar(this)"></td>
+                      <!-- DROPDOWN LIST OPTIONS OF OFFICE/DEPARTMENTS -->
+                      <td><form>
+                        <input type="text" class="task-input" id="searchInput" list="suggestions" placeholder="Enter Office">
+                        
+                        <datalist id="suggestions">
+                          <option value="Vice Mayor's Office">
+                            <option value="Sangguniang Panlungsod">
+                            <option value="CAO">
+                            <option value="CASSO">
+                            <option value="CADMO">
+                            <option value="CBO">
+                            <option value="CEPMO">
+                            <option value="CHRMO">
+                            <option value="CLO">
+                            <option value="CPDSO">
+                            <option value="CTO">
+                            <option value="GSO">
+                            <option value="CBAO">
+                            <option value="CEO">
+                            <option value="CSWDO">
+                            <option value="HSO">
+                            <option value="LCR">
+                            <option value="CVAO">
+                            <option value="DEPED">
+                            <option value="COA">
+                            <option value="MTCC">
+                            <option value="RTCC">
+                            <option value="Prosecutor's Office">
+                            <option value="DILG-City">
+                            <option value="BCPO">
+                            <option value="BFP">
+                            <option value="BJMP">
+                            <option value="PESO">
+                            <option value="PIO">
+                            <option value="PLD">
+                            <option value="PLEB">
+                            <option value="POSD">
+                            <option value="SSD">
+                            <option value="PDAO">
+                            <option value="MITD">
+                            <option value="CCTV">
+                            <option value="CDRRMO">
+                            <option value="LIBRARY">
+                            <option value="PERSONAL STAFF">
+                        </datalist>
+                      </form>
+                      </td>
                       <td><input type="text" class="task-input" placeholder="Enter Subject" oninput="updateStatusBar(this)"></td>
                     </tr>
                   </tbody>
