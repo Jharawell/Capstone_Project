@@ -219,9 +219,9 @@ overflow: hidden;
 
 
 .receiving-list-container {
-  max-height: 100px; 
+   
   overflow-y: auto; 
-  margin: 25x;
+  margin-bottom: 50px ;
 }
 
 .receiving-list {
@@ -233,11 +233,18 @@ overflow: hidden;
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
+  
 }
 
 .receiving-list th {
-  background-color: #f4f4f4;
+  background-color: yellow;
 }
+.receiving-list tr {
+  background-color: #f4f4f4;
+  
+}
+
+
 
 .drawer_New-button {
 background-color: white;
