@@ -1,5 +1,5 @@
-let itemCounter = 1; 
-let rowCounter = 1; 
+let itemCounter = 1.2; 
+let rowCounter = 1.1; 
 
 function addNewItemTable() {
   const container = document.getElementById ('new-item-table-container');
@@ -41,12 +41,12 @@ function addNewRow(buttonElement) {
 
   newRow.innerHTML = `
     <td><input type="checkbox" onclick="highlightRow(this)"> </td>
-    <td><input type="time" class="task-input" id="row${itemCounter}.1"name="time" oninput="updateStatusBar(this)"></td>
-    <td> <input type="date" class="task-input"id="row${itemCounter}.2"name="date" oninput="updateStatusBar(this)"></td>
-    <td><input type="text" class="task-input" id="row${itemCounter}.3" placeholder="Enter Ctrl No."></td>
-    <td><input type="text" class="task-input" id="row${itemCounter}.4" placeholder="Enter From"></td>
+    <td><input type="time" class="task-input" id="row${rowCounter}.1"name="time" oninput="updateStatusBar(this)"></td>
+    <td> <input type="date" class="task-input"id="row${rowCounter}.2"name="date" oninput="updateStatusBar(this)"></td>
+    <td><input type="text" class="task-input" id="row${rowCounter}.3" placeholder="Enter Ctrl No."></td>
+    <td><input type="text" class="task-input" id="row${rowCounter}.4" placeholder="Enter From"></td>
     <td><form>
-        <input type="text" class="task-input" id="row${itemCounter}.5" list="suggestions" placeholder="Enter Office">
+        <input type="text" class="task-input" id="row${rowCounter}.5" list="suggestions" placeholder="Enter Office">
         <datalist id="suggestions">
           <option value="Vice Mayor's Office">
           <option value="Sangguniang Panlungsod">
@@ -91,7 +91,7 @@ function addNewRow(buttonElement) {
         </datalist>
       </form>
       </td>
-    <td><input type="text" class="task-input" id="row${itemCounter}.6" placeholder="Enter Subject"></td>
+    <td><input type="text" class="task-input" id="row${rowCounter}.6" placeholder="Enter Subject"></td>
   `;
 
   tbody.appendChild(newRow);
