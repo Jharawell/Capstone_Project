@@ -1,8 +1,74 @@
 let itemCounter = 1.2; 
 let rowCounter = 1.1; 
 
+const firebaseConfig = {
+  apiKey: "AIzaSyCaSHRLbIRWW8COl5iwHb19dMDYYLJ2DIk",
+  authDomain: "centralcomm-248a9.firebaseapp.com",
+  databaseURL: "https://centralcomm-248a9-default-rtdb.firebaseio.com",
+  projectId: "centralcomm-248a9",
+  storageBucket: "centralcomm-248a9.firebasestorage.app",
+  messagingSenderId: "796912003621",
+  appId: "1:796912003621:web:0d6fd82e43399871a9edcc",
+  measurementId: "G-CN0S9L5YV4"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+
+  const database = firebase.database();
+  
+  const db = firebase.database().ref('recSecItem');
+
+  document.getElementById('rec_sec_item').addEventListener('submit', save);
+
+  function save(e) {
+    e.preventDefault(); 
+
+    // Get the values from the latest row
+    var time = document.getElementById(`row${rowCounter - 1}.2`).value; // Get the last added row's time
+    var date = document.getElementById(`row${rowCounter - 1}.3`).value; // Get the last added row's date
+    var ctrlnum = document.getElementById(`row${rowCounter - 1}.4`).value; // Get the last added row's control number
+    var from = document.getElementById(`row${rowCounter - 1}.5`).value; // Get the last added row's from field
+    var office = document.getElementById(`row${rowCounter - 1}.6`).value; // Get the last added row's office
+    var sub = document.getElementById(`row${rowCounter - 1}.7`).value; // Get the last added row's subject
+
+    // Debugging logs
+    console.log("Time:", time);
+    console.log("Date:", date);
+    console.log("Ctrl No:", ctrlnum);
+    console.log("From:", from);
+    console.log("Office:", office);
+    console.log("Subject:", sub);
+
+    saveNew(time, date, ctrlnum, from, office, sub);
+}
+
+  const saveNew = (time, date, ctrlnum, from, office, sub) => {
+      var newItemRec = db.push(); 
+  
+      newItemRec.set({
+          timeReceived: time,
+          dateReceived: date,
+          controlNumber: ctrlnum,
+          from: from,
+          office: office,
+          subject: sub
+      })
+      .then(() => {
+          console.log("Data saved successfully!");
+      })
+      .catch((error) => {
+          console.error("Error saving data:", error);
+      });
+  };
+  
+
+
+const getElementVal = (id) => {
+  return document.getElementById(id).value;
+}
+
 function addNewItemTable() {
-  const container = document.getElementById ('new-item-table-container');
+  const container = document.getElementById('new-item-table-container');
   const newItemContainer = document.createElement('div');
   newItemContainer.classList.add('item-row');
   const currentDate = new Date();
@@ -29,8 +95,8 @@ function addNewItemTable() {
 
   newItem.appendChild(drawerTemplate);
   container.appendChild(newItem);
-  
-  itemCounter++; 
+
+  itemCounter++;
 }
 
 function addNewRow(buttonElement) {
@@ -40,13 +106,13 @@ function addNewRow(buttonElement) {
   const newRow = document.createElement('tr'); 
 
   newRow.innerHTML = `
-    <td><input type="checkbox" onclick="highlightRow(this)"> </td>
-    <td><input type="time" class="task-input" id="row${rowCounter}.1"name="time" oninput="updateStatusBar(this)"></td>
-    <td> <input type="date" class="task-input"id="row${rowCounter}.2"name="date" oninput="updateStatusBar(this)"></td>
-    <td><input type="text" class="task-input" id="row${rowCounter}.3" placeholder="Enter Ctrl No."></td>
-    <td><input type="text" class="task-input" id="row${rowCounter}.4" placeholder="Enter From"></td>
+    <td><input type="checkbox" name="checkbox" id="row${rowCounter}.1" onclick="highlightRow(this)"> </td>
+    <td><input type="time" class="task-input" id="row${rowCounter}.2" name="time" oninput="updateStatusBar(this)"></td>
+    <td><input type="date" class="task-input" id="row${rowCounter}.3" name="date" oninput="updateStatusBar(this)"></td>
+    <td><input type="text" class="task-input" id="row${rowCounter}.4" placeholder="Enter Ctrl No."></td>
+    <td><input type="text" class="task-input" id="row${rowCounter}.5" placeholder="Enter From"></td>
     <td><form>
-        <input type="text" class="task-input" id="row${rowCounter}.5" list="suggestions" placeholder="Enter Office">
+        <input type="text" class="task-input" id="row${rowCounter}.6" list="suggestions" placeholder="Enter Office">
         <datalist id="suggestions">
           <option value="Vice Mayor's Office">
           <option value="Sangguniang Panlungsod">
@@ -91,22 +157,13 @@ function addNewRow(buttonElement) {
         </datalist>
       </form>
       </td>
-    <td><input type="text" class="task-input" id="row${rowCounter}.6" placeholder="Enter Subject"></td>
+    <td><input type="text" class="task-input" id="row${rowCounter}.7" placeholder="Enter Subject"></td>
   `;
 
   tbody.appendChild(newRow);
   rowCounter++; 
 }
 
-function highlightRow(checkbox) {
-  const row = checkbox.closest('tr');
-  
-  if (checkbox.checked) {
-    row.classList.add('selected');
-  } else {
-    row.classList.remove('selected');
-  }
-}
 
 function highlightRow(checkbox) {
   const row = checkbox.closest('tr');
@@ -188,6 +245,7 @@ function updateStatusBar(inputElement) {
       statusText.textContent = '100% done, 0% undone';
   }
 }
+
 
 
 

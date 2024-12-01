@@ -37,7 +37,7 @@
 
           <div class="top-bar">
             <button class="new-item-button" onclick="addNewItemTable()">New Item</button>
-            <input class="search-bar" type="text" placeholder="Search">
+            <input class="search-bar" id="search-bar" type="text" placeholder="Search">
           </div>
           <div id="drawer-template" style="display: none;">
             <div class="drawer">
@@ -55,15 +55,16 @@
                       <th>Subject</th>
                     </tr>
                   </thead>
+                  <form action="" id="rec_sec_item">
                   <tbody>
                     <tr>
                       <td><input type="checkbox" onclick="highlightRow(this)"> </td>
-                      <td><input type="time" class="task-input" name="time" oninput="updateStatusBar(this)"></td>
-                      <td> <input type="date" class="task-input" name="date" oninput="updateStatusBar(this)"></td>
-                      <td><input type="text" class="task-input" placeholder="Enter Ctrl No." oninput="updateStatusBar(this)"></td>
-                      <td><input type="text" class="task-input" placeholder="Enter From" oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_time" type="time" class="task-input" name="time" oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_date" type="date" class="task-input" name="date" oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_ctrlnum" type="text" class="task-input" placeholder="Enter Ctrl No." oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_from" type="text" class="task-input" placeholder="Enter From" oninput="updateStatusBar(this)"></td>
                       <td><form>
-                        <input type="text" class="task-input" id="searchInput" list="suggestions" placeholder="Enter Office">
+                        <input type="text" class="task-input" id="enter_office" list="suggestions" placeholder="Enter Office">
                         <datalist id="suggestions">
                           <option value="Vice Mayor's Office">
                             <option value="Sangguniang Panlungsod">
@@ -107,15 +108,16 @@
                         </datalist>
                       </form>
                       </td>
-                      <td><input type="text" class="task-input" placeholder="Enter Subject" oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_sub" type="text" class="task-input" placeholder="Enter Subject" oninput="updateStatusBar(this)"></td>
                     </tr>
                   </tbody>
+                  </form>
                 </table>
               </div>
               <button class="drawer_New-button" onclick="addNewRow(this)"><strong>New</strong></button>
               <button class="drawer_Undo-button" onclick="removeRow(this)"><strong>Undo</strong></button>
               <button class="drawer_Remove-button" onclick="removeRowFromDrawer(this)"><strong>Remove</strong></button>
-              <button class="drawer_Save-button" onclick="removeRow(this)"><strong>Save</strong></button>
+              <button type="submit" form="rec_sec_item" id="save" class="submit"><strong>Save</strong></button>
             </div>
           </div>
           <div class="new-item-table-container" id="new-item-table-container"></div>
@@ -123,6 +125,8 @@
       </div>
     </main>
   </div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
   <script src="Dashboard-Function.js"></script>
 </body>
 </html>
