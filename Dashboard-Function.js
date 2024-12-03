@@ -20,46 +20,47 @@ const firebaseConfig = {
 
   document.getElementById('rec_sec_item').addEventListener('submit', save);
 
-  function save(e) {
-    e.preventDefault(); 
+function save(e) {
+    e.preventDefault();
 
-    // Get the values from the latest row
-    var time = document.getElementById(`row${rowCounter - 1}.2`).value; // Get the last added row's time
-    var date = document.getElementById(`row${rowCounter - 1}.3`).value; // Get the last added row's date
-    var ctrlnum = document.getElementById(`row${rowCounter - 1}.4`).value; // Get the last added row's control number
-    var from = document.getElementById(`row${rowCounter - 1}.5`).value; // Get the last added row's from field
-    var office = document.getElementById(`row${rowCounter - 1}.6`).value; // Get the last added row's office
-    var sub = document.getElementById(`row${rowCounter - 1}.7`).value; // Get the last added row's subject
+    const table = document.querySelector('.receiving-list tbody');
+    const rows = table.querySelectorAll('tr');
 
-    // Debugging logs
-    console.log("Time:", time);
-    console.log("Date:", date);
-    console.log("Ctrl No:", ctrlnum);
-    console.log("From:", from);
-    console.log("Office:", office);
-    console.log("Subject:", sub);
+    rows.forEach((row) => {
+        const time = row.querySelector('input[type="time"]').value;
+        const date = row.querySelector('input[type="date"]').value;
+        const ctrlnum = row.querySelector('input[placeholder="Enter Ctrl No."]').value;
+        const from = row.querySelector('input[placeholder="Enter From"]').value;
+        const office = row.querySelector('input[list="suggestions"]').value;
+        const sub = row.querySelector('input[placeholder="Enter Subject"]').value;
 
-    saveNew(time, date, ctrlnum, from, office, sub);
+        // Debugging logs
+        console.log("Row Data:", { time, date, ctrlnum, from, office, sub });
+
+        // Push the data to Firebase
+        saveNew(time, date, ctrlnum, from, office, sub);
+    });
 }
 
-  const saveNew = (time, date, ctrlnum, from, office, sub) => {
-      var newItemRec = db.push(); 
-  
-      newItemRec.set({
-          timeReceived: time,
-          dateReceived: date,
-          controlNumber: ctrlnum,
-          from: from,
-          office: office,
-          subject: sub
-      })
-      .then(() => {
-          console.log("Data saved successfully!");
-      })
-      .catch((error) => {
-          console.error("Error saving data:", error);
-      });
-  };
+const saveNew = (time, date, ctrlnum, from, office, sub) => {
+    const newItemRec = db.push();
+
+    newItemRec
+        .set({
+            timeReceived: time,
+            dateReceived: date,
+            controlNumber: ctrlnum,
+            from: from,
+            office: office,
+            subject: sub,
+        })
+        .then(() => {
+            console.log("Row data saved successfully!");
+        })
+        .catch((error) => {
+            console.error("Error saving data:", error);
+        });
+};
   
 
 
