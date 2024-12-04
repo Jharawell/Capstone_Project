@@ -7,9 +7,9 @@ function showCheckmark() {
     checkmark.style.display = 'none';
   });
 
-  if (selectedUserType === 'Receiving Section Staff') {
+  if (selectedUserType === 'Receiving Section') {
     document.getElementById('check-receiving').style.display = 'inline';
-  } else if (selectedUserType === 'Admin Staff') {
+  } else if (selectedUserType === 'Admin') {
     document.getElementById('check-admin').style.display = 'inline';
   }
 }
