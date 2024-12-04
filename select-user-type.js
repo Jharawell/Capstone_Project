@@ -1,19 +1,43 @@
 const userTypes = document.querySelectorAll('.user-type');
+const continueButton = document.getElementById('continue-btn');
+let selectedUserType = '';
+
+function showCheckmark() {
+  document.querySelectorAll('.checkmark').forEach(function(checkmark) {
+    checkmark.style.display = 'none';
+  });
+
+  if (selectedUserType === 'Receiving Section Staff') {
+    document.getElementById('check-receiving').style.display = 'inline';
+  } else if (selectedUserType === 'Admin Staff') {
+    document.getElementById('check-admin').style.display = 'inline';
+  }
+}
 
 userTypes.forEach((container) => {
   container.addEventListener('click', () => {
-    const selectedUserType = container.querySelector('.staff-desc').textContent;
+    userTypes.forEach((type) => {
+      type.classList.remove('selected');
+      type.querySelector('.staff-desc').style.color = ''; // Reset text color
+    });
 
-    // Save the selected user type to local storage
-    localStorage.setItem('userType', selectedUserType);
+    container.classList.add('selected');
+    container.querySelector('.staff-desc').style.color = 'white';
 
-    // Redirect to specific page based on user type
-    if (selectedUserType === 'Receiving Section Staff') {
-      window.location.href = 'log-in_receiving.html';
-    } else if (selectedUserType === 'Admin Staff') {
-      window.location.href = 'log-in_admin.html';
-    } else if (selectedUserType === 'Endorsed Office Staff') {
-      window.location.href = 'log-in_endorsed.html';
-    }
+    selectedUserType = container.querySelector('.staff-desc').textContent;
+
+    continueButton.disabled = false;
+
+    showCheckmark();
   });
+});
+
+continueButton.addEventListener('click', () => {
+  localStorage.setItem('userType', selectedUserType);
+
+  if (selectedUserType === 'Receiving Section Staff') {
+    window.location.href = 'log-in_receiving.html';
+  } else if (selectedUserType === 'Admin Staff') {
+    window.location.href = 'log-in_admin.html';
+  }
 });
