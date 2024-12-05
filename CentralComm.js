@@ -1,5 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     const splashScreen = document.getElementById('splashScreen');
+    const getStarted = document.getElementById('get-started-btn');
+
 
     const startSplashAnimation = () => {
         splashScreen.style.transform = 'scale(1)'; 
@@ -12,6 +14,11 @@ document.addEventListener("DOMContentLoaded", function() {
             splashScreen.style.display = 'none'; 
         }, 1000); 
     }, 3000); 
+
+    getStarted.addEventListener("click", function() {
+		window.location.href = "select-user-type.html";
+
+    });
 	
 });
 
