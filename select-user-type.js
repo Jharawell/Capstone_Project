@@ -35,9 +35,9 @@ userTypes.forEach((container) => {
 continueButton.addEventListener('click', () => {
   localStorage.setItem('userType', selectedUserType);
 
-  if (selectedUserType === 'Receiving Section Staff') {
+  if (selectedUserType === 'Receiving Section') {
     window.location.href = 'log-in_receiving.html';
-  } else if (selectedUserType === 'Admin Staff') {
+  } else if (selectedUserType === 'Admin') {
     window.location.href = 'log-in_admin.html';
   }
 });
