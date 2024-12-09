@@ -55,7 +55,7 @@ body {
   text-align: center;
   justify-content: center;
   border-radius: 15px;
-  height: 180px;
+  height: 200px;
   cursor: pointer;
   background: white;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.5);
@@ -125,7 +125,6 @@ body {
   transform: translate(-50%, -50%);
 }
 
-
 .user-button {
   text-align: center;
   margin-top: 3%;
@@ -134,11 +133,12 @@ body {
 .select-btn {
   background-color: #049948;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 30px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: opacity 0.15s;
+  font-size: 15px;
 }
 
 .select-btn:hover {
