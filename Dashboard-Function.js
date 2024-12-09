@@ -120,7 +120,8 @@ const saveNew = (time, date, ctrlnum, from, office, sub, time1, date1, ctrlnum1,
   .catch((error) => {
     console.error("Error saving data:", error);
   });
-  newItemRec.on('value', (snapshot) => {
+  const retrieveData = () => {
+    db.on('value', (snapshot) => {
       const data = snapshot.val();
 
       // Populate the input fields with retrieved data
@@ -159,9 +160,22 @@ const saveNew = (time, date, ctrlnum, from, office, sub, time1, date1, ctrlnum1,
         document.getElementById('row1.2.28').value = data.from4;
         document.getElementById('row1.2.29').value = data.office4;
         document.getElementById('row1.2.30').value = data.subject4;
+        Object.keys(data).forEach(key => {
+          const item = data[key];
+              document.getElementById('row1.2.1').value = item.timeReceived || '';
+              document.getElementById('row1.2.2').value = item.dateReceived || '';
+              document.getElementById('row1.2.3').value = item.controlNumber || '';
+              document.getElementById('row1.2.4').value = item.from || '';
+              document.getElementById('row1.2.5').value = item.office || '';
+              document.getElementById('row1.2.6').value = item.subject || '';
+        });
       }
     });
-  };
+    window.onload = () => {
+      retrieveData();
+    };
+  }};
+  
   
   const getElementVal = (id) => {
     return document.getElementById(id).value;
