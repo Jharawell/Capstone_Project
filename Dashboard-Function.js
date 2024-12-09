@@ -1,5 +1,5 @@
-let itemCounter = 1.2; 
-let rowCounter = 1.1; 
+let itemCounter = 1;
+let adminCounter = 1;
 
 const firebaseConfig = {
   apiKey: "AIzaSyCaSHRLbIRWW8COl5iwHb19dMDYYLJ2DIk",
@@ -15,58 +15,158 @@ const firebaseConfig = {
   firebase.initializeApp(firebaseConfig);
 
   const database = firebase.database();
+  database.goOffline();
+  database.goOnline();
   
   const db = firebase.database().ref('recSecItem');
 
   document.getElementById('rec_sec_item').addEventListener('submit', save);
+  document.getElementById('rec_sec_item1').addEventListener('submit', save);
+  document.getElementById('rec_sec_item2').addEventListener('submit', save);
+  document.getElementById('rec_sec_item3').addEventListener('submit', save);
+  document.getElementById('rec_sec_item4').addEventListener('submit', save);
 
-function save(e) {
-    e.preventDefault();
-
-    const table = document.querySelector('.receiving-list tbody');
-    const rows = table.querySelectorAll('tr');
-
-    rows.forEach((row) => {
-        const time = row.querySelector('input[type="time"]').value;
-        const date = row.querySelector('input[type="date"]').value;
-        const ctrlnum = row.querySelector('input[placeholder="Enter Ctrl No."]').value;
-        const from = row.querySelector('input[placeholder="Enter From"]').value;
-        const office = row.querySelector('input[list="suggestions"]').value;
-        const sub = row.querySelector('input[placeholder="Enter Subject"]').value;
-
-        // Debugging logs
-        console.log("Row Data:", { time, date, ctrlnum, from, office, sub });
-
-        // Push the data to Firebase
-        saveNew(time, date, ctrlnum, from, office, sub);
-    });
-}
-
-const saveNew = (time, date, ctrlnum, from, office, sub) => {
-    const newItemRec = db.push();
-
-    newItemRec
-        .set({
-            timeReceived: time,
-            dateReceived: date,
-            controlNumber: ctrlnum,
-            from: from,
-            office: office,
-            subject: sub,
-        })
-        .then(() => {
-            console.log("Row data saved successfully!");
-        })
-        .catch((error) => {
-            console.error("Error saving data:", error);
-        });
-};
+  function save(e) {
+    e.preventDefault(); 
   
+    var time = document.getElementById(`row1.2.1`).value; 
+    var date = document.getElementById(`row1.2.2`).value; 
+    var ctrlnum = document.getElementById(`row1.2.3`).value; 
+    var from = document.getElementById(`row1.2.4`).value; 
+    var office = document.getElementById(`row1.2.5`).value; 
+    var sub = document.getElementById(`row1.2.6`).value; 
+  
+    var time1 = document.getElementById(`row1.2.7`).value; 
+    var date1 = document.getElementById(`row1.2.8`).value; // Get the last added row's date
+    var ctrlnum1 = document.getElementById(`row1.2.9`).value; // Get the last added row's control number
+    var from1 = document.getElementById(`row1.2.10`).value; // Get the last added row's from field
+    var office1 = document.getElementById(`row1.2.11`).value; // Get the last added row's office
+    var sub1 = document.getElementById(`row1.2.12`).value; // Get the last added row's subject
+  
+    var time2 = document.getElementById(`row1.2.13`).value; // Get the last added row's time
+    var date2 = document.getElementById(`row1.2.14`).value; // Get the last added row's date
+    var ctrlnum2 = document.getElementById(`row1.2.15`).value; // Get the last added row's control number
+    var from2 = document.getElementById(`row1.2.16`).value; // Get the last added row's from field
+    var office2 = document.getElementById(`row1.2.17`).value; // Get the last added row's office
+    var sub2 = document.getElementById(`row1.2.18`).value; // Get the last added row's subject
+  
+    var time3 = document.getElementById(`row1.2.19`).value; // Get the last added row's time
+    var date3 = document.getElementById(`row1.2.20`).value; // Get the last added row's date
+    var ctrlnum3 = document.getElementById(`row1.2.21`).value; // Get the last added row's control number
+    var from3 = document.getElementById(`row1.2.22`).value; // Get the last added row's from field
+    var office3 = document.getElementById(`row1.2.23`).value; // Get the last added row's office
+    var sub3 = document.getElementById(`row1.2.24`).value; // Get the last added row's subject
+  
+    var time4 = document.getElementById(`row1.2.25`).value; // Get the last added row's time
+    var date4 = document.getElementById(`row1.2.26`).value; // Get the last added row's date
+    var ctrlnum4 = document.getElementById(`row1.2.27`).value; // Get the last added row's control number
+    var from4 = document.getElementById(`row1.2.28`).value; // Get the last added row's from field
+    var office4 = document.getElementById(`row1.2.29`).value; // Get the last added row's office
+    var sub4 = document.getElementById(`row1.2.30`).value; // Get the last added row's subject
+  
+    // Debugging logs
+    console.log("Time:", time);
+    console.log("Date:", date);
+    console.log("Ctrl No:", ctrlnum);
+    console.log("From:", from);
+    console.log("Office:", office);
+    console.log("Subject:", sub);
+  
+    saveNew(time, date, ctrlnum, from, office, sub, time1, date1, ctrlnum1, from1, office1, sub1, time2, date2, ctrlnum2, from2, office2, sub2, time3, date3, ctrlnum3, from3, office3, sub3, time4, date4, ctrlnum4, from4, office4, sub4);
+  }
+  
+const saveNew = (time, date, ctrlnum, from, office, sub, time1, date1, ctrlnum1, from1, office1, sub1, time2, date2, ctrlnum2, from2, office2, sub2, time3, date3, ctrlnum3, from3, office3, sub3, time4, date4, ctrlnum4, from4, office4, sub4) => {
+  var newItemRec = db.push(); 
 
+  newItemRec.set({
+    timeReceived: time,
+    dateReceived: date,
+    controlNumber: ctrlnum,
+    from: from,
+    office: office,
+    subject: sub,
 
-const getElementVal = (id) => {
-  return document.getElementById(id).value;
-}
+    timeReceived1: time1,
+    dateReceived1: date1,
+    controlNumber1: ctrlnum1,
+    from1: from1,
+    office1: office1,
+    subject1: sub1,
+
+    timeReceived2: time2,
+    dateReceived2: date2,
+    controlNumber2: ctrlnum2,
+    from2: from2,
+    office2: office2,
+    subject2: sub2,
+
+    timeReceived3: time3,
+    dateReceived3: date3,
+    controlNumber3: ctrlnum3,
+    from3: from3,
+    office3: office3,
+    subject3: sub3,
+
+    timeReceived4: time4,
+    dateReceived4: date4,
+    controlNumber4: ctrlnum4,
+    from4: from4,
+    office4: office4,
+    subject4: sub4,
+  })
+  .then(() => {
+    console.log("Data saved successfully!");
+  })
+  .catch((error) => {
+    console.error("Error saving data:", error);
+  });
+  newItemRec.on('value', (snapshot) => {
+      const data = snapshot.val();
+
+      // Populate the input fields with retrieved data
+      if (data) {
+        document.getElementById('row1.2.1').value = data.timeReceived;
+        document.getElementById('row1.2.2').value = data.dateReceived;
+        document.getElementById('row1.2.3').value = data.controlNumber;
+        document.getElementById('row1.2.4').value = data.from;
+        document.getElementById('row1.2.5').value = data.office;
+        document.getElementById('row1.2.6').value = data.subject;
+
+        document.getElementById('row1.2.7').value = data.timeReceived1;
+        document.getElementById('row1.2.8').value = data.dateReceived1;
+        document.getElementById('row1.2.9').value = data.controlNumber1;
+        document.getElementById('row1.2.10').value = data.from1;
+        document.getElementById('row1.2.11').value = data.office1;
+        document.getElementById('row1.2.12').value = data.subject1;
+
+        document.getElementById('row1.2.13').value = data.timeReceived2;
+        document.getElementById('row1.2.14').value = data.dateReceived2;
+        document.getElementById('row1.2.15').value = data.controlNumber2;
+        document.getElementById('row1.2.16').value = data.from2;
+        document.getElementById('row1.2.17').value = data.office2;
+        document.getElementById('row1.2.18').value = data.subject2;
+
+        document.getElementById('row1.2.19').value = data.timeReceived3;
+        document.getElementById('row1.2.20').value = data.dateReceived3;
+        document.getElementById('row1.2.21').value = data.controlNumber3;
+        document.getElementById('row1.2.22').value = data.from3;
+        document.getElementById('row1.2.23').value = data.office3;
+        document.getElementById('row1.2.24').value = data.subject3;
+
+        document.getElementById('row1.2.25').value = data.timeReceived4;
+        document.getElementById('row1.2.26').value = data.dateReceived4;
+        document.getElementById('row1.2.27').value = data.controlNumber4;
+        document.getElementById('row1.2.28').value = data.from4;
+        document.getElementById('row1.2.29').value = data.office4;
+        document.getElementById('row1.2.30').value = data.subject4;
+      }
+    });
+  };
+  
+  const getElementVal = (id) => {
+    return document.getElementById(id).value;
+  };
+
 
 function addNewItemTable() {
   const container = document.getElementById('new-item-table-container');
@@ -74,11 +174,12 @@ function addNewItemTable() {
   newItemContainer.classList.add('item-row');
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleDateString();
+  
   const newItem = document.createElement('div');
   newItem.classList.add('item-row');
   newItem.innerHTML = `
     <div class="item">
-      <input type="checkbox" id="itemCheckbox${itemCounter}" onchange="updateStatusBar(this)">
+      <input type="checkbox" id="itemCheckbox${itemCounter}" class="checkbox" onchange="updateStatusBar(this)">
       <span class="date">${formattedDate}</span>
       <button class="Open-button" onclick="toggleDrawer(this)">Open</button>
       <div class="status-bar-container">
@@ -90,8 +191,12 @@ function addNewItemTable() {
 
   const drawerTemplate = document.getElementById('drawer-template').firstElementChild.cloneNode(true);
   const inputs = drawerTemplate.querySelectorAll('.task-input');
+  const checkbox = drawerTemplate.querySelectorAll('.checkbox');
   inputs.forEach((input, index) => {
     input.id = `row${itemCounter}.${index + 1}`; 
+  });
+  checkbox.forEach((checkbox, index) =>{
+    checkbox.id = `checkbox${itemCounter}.${index + 1}`;
   });
 
   newItem.appendChild(drawerTemplate);
@@ -99,72 +204,6 @@ function addNewItemTable() {
 
   itemCounter++;
 }
-
-function addNewRow(buttonElement) {
-  const drawer = buttonElement.closest('.drawer');
-  const table = drawer.querySelector('.receiving-list');
-  const tbody = table.querySelector('tbody');
-  const newRow = document.createElement('tr'); 
-
-  newRow.innerHTML = `
-    <td><input type="checkbox" name="checkbox" id="row${rowCounter}.1" onclick="highlightRow(this)"> </td>
-    <td><input type="time" class="task-input" id="row${rowCounter}.2" name="time" oninput="updateStatusBar(this)"></td>
-    <td><input type="date" class="task-input" id="row${rowCounter}.3" name="date" oninput="updateStatusBar(this)"></td>
-    <td><input type="text" class="task-input" id="row${rowCounter}.4" placeholder="Enter Ctrl No."></td>
-    <td><input type="text" class="task-input" id="row${rowCounter}.5" placeholder="Enter From"></td>
-    <td><form>
-        <input type="text" class="task-input" id="row${rowCounter}.6" list="suggestions" placeholder="Enter Office">
-        <datalist id="suggestions">
-          <option value="Vice Mayor's Office">
-          <option value="Sangguniang Panlungsod">
-          <option value="CAO">
-          <option value="CASSO">
-          <option value="CADMO">
-          <option value="CBO">
-          <option value="CEPMO">
-          <option value="CHRMO">
-          <option value="CLO">
-          <option value="CPDSO">
-          <option value="CTO">
-          <option value="GSO">
-          <option value="CBAO">
-          <option value="CEO">
-          <option value="CSWDO">
-          <option value="HSO">
-          <option value="LCR">
-          <option value="CVAO">
-          <option value="DEPED">
-          <option value="COA">
-          <option value="MTCC">
-          <option value="RTCC">
-          <option value="Prosecutor's Office">
-          <option value="DILG-City">
-          <option value="BCPO">
-          <option value="BFP">
-          <option value="BJMP">
-          <option value="PESO">
-          <option value="PIO">
-          <option value="PLD">
-          <option value="PLEB">
-          <option value="POSD">
-          <option value="SSD">
-          <option value="PDAO">
-          <option value="MITD">
-          <option value="CCTV">
-          <option value="CDRRMO">
-          <option value="LIBRARY">
-          <option value="PERSONAL STAFF">
-
-        </datalist>
-      </form>
-      </td>
-    <td><input type="text" class="task-input" id="row${rowCounter}.7" placeholder="Enter Subject"></td>
-  `;
-
-  tbody.appendChild(newRow);
-  rowCounter++; 
-}
-
 
 function highlightRow(checkbox) {
   const row = checkbox.closest('tr');
