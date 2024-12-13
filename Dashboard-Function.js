@@ -1,5 +1,4 @@
 let itemCounter = 1;
-let adminCounter = 1;
 
 const firebaseConfig = {
   apiKey: "AIzaSyCaSHRLbIRWW8COl5iwHb19dMDYYLJ2DIk",
@@ -14,173 +13,75 @@ const firebaseConfig = {
 
   firebase.initializeApp(firebaseConfig);
 
-  const database = firebase.database();
-  database.goOffline();
-  database.goOnline();
-  
-  const db = firebase.database().ref('recSecItem');
+  var db = firebase.database();
+  var reviews = document.getElementById("reviews");
+  var reviewsRef = db.ref("/reviews");
 
-  document.getElementById('rec_sec_item').addEventListener('submit', save);
-  document.getElementById('rec_sec_item1').addEventListener('submit', save);
-  document.getElementById('rec_sec_item2').addEventListener('submit', save);
-  document.getElementById('rec_sec_item3').addEventListener('submit', save);
-  document.getElementById('rec_sec_item4').addEventListener('submit', save);
+  rec_sec_item.addEventListener("submit", e =>{
 
-  function save(e) {
-    e.preventDefault(); 
+    var time = document.getElementById("row1.1");
+    var date = document.getElementById("row1.2");
+    var ctrlnum = document.getElementById("row1.3");
+    var from = document.getElementById("row1.4");
+    var office = document.getElementById("row1.5");
+    var subject = document.getElementById("row1.6");
+
+    var id = enter_time.value || Date.now();
+
+    db.ref("reviews/" + id).set({
+      time: time.value,
+      date: date.value,
+      ctrlnum: ctrlnum.value,
+      from: from.value,
+      office: office.value,
+      subject: subject.value,
+      createdAt: firebase.database.ServerValue.TIMESTAMP
+    });
+  });
   
-    var time = document.getElementById(`row1.2.1`).value; 
-    var date = document.getElementById(`row1.2.2`).value; 
-    var ctrlnum = document.getElementById(`row1.2.3`).value; 
-    var from = document.getElementById(`row1.2.4`).value; 
-    var office = document.getElementById(`row1.2.5`).value; 
-    var sub = document.getElementById(`row1.2.6`).value; 
-  
-    var time1 = document.getElementById(`row1.2.7`).value; 
-    var date1 = document.getElementById(`row1.2.8`).value; // Get the last added row's date
-    var ctrlnum1 = document.getElementById(`row1.2.9`).value; // Get the last added row's control number
-    var from1 = document.getElementById(`row1.2.10`).value; // Get the last added row's from field
-    var office1 = document.getElementById(`row1.2.11`).value; // Get the last added row's office
-    var sub1 = document.getElementById(`row1.2.12`).value; // Get the last added row's subject
-  
-    var time2 = document.getElementById(`row1.2.13`).value; // Get the last added row's time
-    var date2 = document.getElementById(`row1.2.14`).value; // Get the last added row's date
-    var ctrlnum2 = document.getElementById(`row1.2.15`).value; // Get the last added row's control number
-    var from2 = document.getElementById(`row1.2.16`).value; // Get the last added row's from field
-    var office2 = document.getElementById(`row1.2.17`).value; // Get the last added row's office
-    var sub2 = document.getElementById(`row1.2.18`).value; // Get the last added row's subject
-  
-    var time3 = document.getElementById(`row1.2.19`).value; // Get the last added row's time
-    var date3 = document.getElementById(`row1.2.20`).value; // Get the last added row's date
-    var ctrlnum3 = document.getElementById(`row1.2.21`).value; // Get the last added row's control number
-    var from3 = document.getElementById(`row1.2.22`).value; // Get the last added row's from field
-    var office3 = document.getElementById(`row1.2.23`).value; // Get the last added row's office
-    var sub3 = document.getElementById(`row1.2.24`).value; // Get the last added row's subject
-  
-    var time4 = document.getElementById(`row1.2.25`).value; // Get the last added row's time
-    var date4 = document.getElementById(`row1.2.26`).value; // Get the last added row's date
-    var ctrlnum4 = document.getElementById(`row1.2.27`).value; // Get the last added row's control number
-    var from4 = document.getElementById(`row1.2.28`).value; // Get the last added row's from field
-    var office4 = document.getElementById(`row1.2.29`).value; // Get the last added row's office
-    var sub4 = document.getElementById(`row1.2.30`).value; // Get the last added row's subject
-  
-    // Debugging logs
-    console.log("Time:", time);
-    console.log("Date:", date);
-    console.log("Ctrl No:", ctrlnum);
-    console.log("From:", from);
-    console.log("Office:", office);
-    console.log("Subject:", sub);
-  
-    saveNew(time, date, ctrlnum, from, office, sub, time1, date1, ctrlnum1, from1, office1, sub1, time2, date2, ctrlnum2, from2, office2, sub2, time3, date3, ctrlnum3, from3, office3, sub3, time4, date4, ctrlnum4, from4, office4, sub4);
+  reviewsRef.on("child_added", data => {
+    var li = document.createElement("li");
+    li.id = data.key;
+    li.innerHTML = reviewTemplate(data.val());
+    reviews.appendChild(li);
+  })
+
+  reviews.addEventListener("click", e => {
+    updateData(e);
+  });
+
+  function updateData(e) {
+    var reviewNode = e.target.parentNode;
+
+    if (e.target.classList.contains("edit")) {
+      time.value = reviewNode.querySelector(".time").innerText;
+      date.value = reviewNode.querySelector(".date").innerText;
+      ctrlnum.value = reviewNode.querySelector(".ctrlnum").innerText;
+      from.value = reviewNode.querySelector(".from").innerText;
+      office.value = reviewNode.querySelector(".office").innerText;
+      subject.value = reviewNode.querySelector(".subject").innerText;
+
+      enter_time.value = reviewNode.id;
+
+    }
+
+  }
+
+  function reviewTemplate({time, date, ctrlnum, from, office, subject, createdAt}) {
+    var createdAtFormatted = new Date(createdAt);
+
+    return `
+      <td><input id="chikiboxi1" type="checkbox" class="checkbox" onclick="highlightRow(this)"> </td>
+      <td><input id="enter_time" type="text" class="task-input" placeholder="${time}" name="time" oninput="updateStatusBar(this)"></td>
+      <td><input id="enter_date" type="text" class="task-input" placeholder="${date}" name="date" oninput="updateStatusBar(this)"></td>
+      <td><input id="enter_ctrlnum" type="text" class="task-input" placeholder="${ctrlnum}" oninput="updateStatusBar(this)"></td>
+      <td><input id="enter_from" type="text" class="task-input" placeholder="${from}" oninput="updateStatusBar(this)"></td>
+      <td><input id="enter_Office" type="text" class="task-input" placeholder="${office}" oninput="updateStatusBar(this)"></td>
+      <td><input id="enter_sub" type="text" class="task-input" placeholder="${subject}" oninput="updateStatusBar(this)"></td>
+    `;
   }
   
-const saveNew = (time, date, ctrlnum, from, office, sub, time1, date1, ctrlnum1, from1, office1, sub1, time2, date2, ctrlnum2, from2, office2, sub2, time3, date3, ctrlnum3, from3, office3, sub3, time4, date4, ctrlnum4, from4, office4, sub4) => {
-  var newItemRec = db.push(); 
-
-  newItemRec.set({
-    timeReceived: time,
-    dateReceived: date,
-    controlNumber: ctrlnum,
-    from: from,
-    office: office,
-    subject: sub,
-
-    timeReceived1: time1,
-    dateReceived1: date1,
-    controlNumber1: ctrlnum1,
-    from1: from1,
-    office1: office1,
-    subject1: sub1,
-
-    timeReceived2: time2,
-    dateReceived2: date2,
-    controlNumber2: ctrlnum2,
-    from2: from2,
-    office2: office2,
-    subject2: sub2,
-
-    timeReceived3: time3,
-    dateReceived3: date3,
-    controlNumber3: ctrlnum3,
-    from3: from3,
-    office3: office3,
-    subject3: sub3,
-
-    timeReceived4: time4,
-    dateReceived4: date4,
-    controlNumber4: ctrlnum4,
-    from4: from4,
-    office4: office4,
-    subject4: sub4,
-  })
-  .then(() => {
-    console.log("Data saved successfully!");
-  })
-  .catch((error) => {
-    console.error("Error saving data:", error);
-  });
-  const retrieveData = () => {
-    db.on('value', (snapshot) => {
-      const data = snapshot.val();
-
-      // Populate the input fields with retrieved data
-      if (data) {
-        document.getElementById('row1.2.1').value = data.timeReceived;
-        document.getElementById('row1.2.2').value = data.dateReceived;
-        document.getElementById('row1.2.3').value = data.controlNumber;
-        document.getElementById('row1.2.4').value = data.from;
-        document.getElementById('row1.2.5').value = data.office;
-        document.getElementById('row1.2.6').value = data.subject;
-
-        document.getElementById('row1.2.7').value = data.timeReceived1;
-        document.getElementById('row1.2.8').value = data.dateReceived1;
-        document.getElementById('row1.2.9').value = data.controlNumber1;
-        document.getElementById('row1.2.10').value = data.from1;
-        document.getElementById('row1.2.11').value = data.office1;
-        document.getElementById('row1.2.12').value = data.subject1;
-
-        document.getElementById('row1.2.13').value = data.timeReceived2;
-        document.getElementById('row1.2.14').value = data.dateReceived2;
-        document.getElementById('row1.2.15').value = data.controlNumber2;
-        document.getElementById('row1.2.16').value = data.from2;
-        document.getElementById('row1.2.17').value = data.office2;
-        document.getElementById('row1.2.18').value = data.subject2;
-
-        document.getElementById('row1.2.19').value = data.timeReceived3;
-        document.getElementById('row1.2.20').value = data.dateReceived3;
-        document.getElementById('row1.2.21').value = data.controlNumber3;
-        document.getElementById('row1.2.22').value = data.from3;
-        document.getElementById('row1.2.23').value = data.office3;
-        document.getElementById('row1.2.24').value = data.subject3;
-
-        document.getElementById('row1.2.25').value = data.timeReceived4;
-        document.getElementById('row1.2.26').value = data.dateReceived4;
-        document.getElementById('row1.2.27').value = data.controlNumber4;
-        document.getElementById('row1.2.28').value = data.from4;
-        document.getElementById('row1.2.29').value = data.office4;
-        document.getElementById('row1.2.30').value = data.subject4;
-        Object.keys(data).forEach(key => {
-          const item = data[key];
-              document.getElementById('row1.2.1').value = item.timeReceived || '';
-              document.getElementById('row1.2.2').value = item.dateReceived || '';
-              document.getElementById('row1.2.3').value = item.controlNumber || '';
-              document.getElementById('row1.2.4').value = item.from || '';
-              document.getElementById('row1.2.5').value = item.office || '';
-              document.getElementById('row1.2.6').value = item.subject || '';
-        });
-      }
-    });
-    window.onload = () => {
-      retrieveData();
-    };
-  }};
   
-  
-  const getElementVal = (id) => {
-    return document.getElementById(id).value;
-  };
-
 
 function addNewItemTable() {
   const container = document.getElementById('new-item-table-container');

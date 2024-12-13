@@ -65,13 +65,14 @@
                   <form action="" id="rec_sec_item">
                   <tbody id="form">
                     <tr>
+                      <div id="reviews"></div>
                       <td><input id="chikiboxi" type="checkbox" class="checkbox" onclick="highlightRow(this)"> </td>
-                      <td><input id="enter_time" type="time" class="task-input" name="time" oninput="updateStatusBar(this)"></td>
-                      <td><input id="enter_date" type="date" class="task-input" name="date" oninput="updateStatusBar(this)"></td>
-                      <td><input id="enter_ctrlnum" type="text" class="task-input" placeholder="Enter Ctrl No." oninput="updateStatusBar(this)"></td>
-                      <td><input id="enter_from" type="text" class="task-input" placeholder="Enter From" oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_time" type="text" class="task-input" placeholder="${time}" name="time" oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_date" type="text" class="task-input" placeholder="${date}" name="date" oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_ctrlnum" type="text" class="task-input" placeholder="${ctrlnum}" oninput="updateStatusBar(this)"></td>
+                      <td><input id="enter_from" type="text" class="task-input" placeholder="${from}" oninput="updateStatusBar(this)"></td>
                       <td><form>
-                        <input type="text" class="task-input" id="enter_office" list="suggestions" placeholder="Enter Office">
+                        <input type="text" class="task-input" id="enter_office" list="suggestions" placeholder="${office}">
                         <datalist id="suggestions">
                           <option value="Vice Mayor's Office">
                             <option value="Sangguniang Panlungsod">
@@ -115,7 +116,7 @@
                         </datalist>
                       </form>
                       </td>
-                          <td><input id="enter_sub" type="text" class="task-input" placeholder="Enter Subject" oninput="updateStatusBar(this)"></td>
+                          <td><input id="enter_sub" type="text" class="task-input" placeholder="${subject}" oninput="updateStatusBar(this)"></td>
                           <td><input id="enter_endorsed" type="text" class="task-input" placeholder="Endorsed To" name="endorsed" oninput="updateStatusBar(this)"></td>
                           <td><input id="enter_remarks" type="text" class="task-input" placeholder="Remarks" name="remarks" oninput="updateStatusBar(this)"></td>
                           <td><input id="enter_DLR" type="text" class="task-input" placeholder="Deliver To" name="DLR" oninput="updateStatusBar(this)"></td>
@@ -125,7 +126,8 @@
                     </tr>
                   </tbody>
                   </form>
-                  <form action="" id="rec_sec_item1">
+                  
+                  <!-- <form action="" id="rec_sec_item1">
                     <tbody>
                       <tr>
                         <td><input id="chikiboxi1" type="checkbox" class="checkbox" onclick="highlightRow(this)"> </td>
@@ -372,7 +374,7 @@
                                 <td><input id="FC1" type="text" class="task-input" placeholder="File Code" name="FC" oninput="updateStatusBar(this)"></td>
                             </tr>
                           </tbody>
-                          </form>
+                          </form> -->
                 </table>
               </div>
               <button class="drawer_Undo-button" onclick="removeRow(this)"><strong>Undo</strong></button>
