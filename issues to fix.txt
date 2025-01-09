@@ -1,0 +1,38 @@
+	(desktop - admin and staff)
+
+<div class="greeting"><strong>Receiving Section/Administrative office</strong></div>
+
+	(required sign-in)
+
+admin and staff
+
+	(edit and drag)
+
+Office:
+
+
+	(automatic system time and date)
+(admin) 
+	Time Received:
+	Date Received: 
+
+
+	(remove)
+Delivered Letter Response: 
+no response yet
+
+Time Delivered: 
+not too early, not too late
+
+Date Delivered:
+
+Messenger:
+
+
+ 	(drag down option)
+Status:
+
+CRUD:	(control no./ bug )
+		
+delete: 
+retrieve:
