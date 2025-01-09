@@ -7,9 +7,12 @@ overflow-x: hidden;
 }
 
 .container {
-display: flex;
-min-height: 100vh;
-width: 100%;
+  display: flex;
+  flex-direction: column; /* Align vertically */
+  justify-content: flex-start;
+  align-items: flex-start; /* Align elements to the left */
+  padding: 20px;
+  position: relative;
 }
 
 main {
@@ -177,21 +180,6 @@ border-radius: 13px;
   z-index: 1; 
 }
 
-.Open-button {
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  margin-right: 10px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 12px;
-}
-
-.Open-button:hover {
-  background-color: #45a049;
-}
-
 .item-row:hover {
   background-color: #f9f9f9;
 }
@@ -203,20 +191,16 @@ border-radius: 13px;
   border-radius: 5px;
 }
 
-
 .drawer {
-margin-top: 10px;
-padding: 10px;
-border: 1px solid #ddd;
-background-color: white;
-width: 100%;
-display: flex;
-flex-direction: column;
-height: 100%; 
-position: relative; 
-overflow: hidden;
+  margin-top: 70px;
+  width: 100%; 
+  background-color: rgb(219, 218, 218); 
+  padding-bottom: 50px; 
+  box-sizing: border-box;
+  border-radius: 8px; 
+  position: relative;
+  display: none;
 }
-
 
 .receiving-list-container {
   max-height: 100%; 
@@ -239,125 +223,47 @@ overflow: hidden;
 .receiving-list th {
   background-color: yellow;
 }
-
-
-
-.drawer_New-button {
-background-color: white;
-color: black;
-padding: 10px;
-border: none;
-cursor: pointer;
-font-size: 14px;
-border-radius: 5px;
-position: absolute; 
-bottom: 10px; 
-left: 10px; 
+.drawer-container {
+  position: relative;
+  width: 95%;
+  margin-top: 10px;
+  background-color: rgb(255, 255, 255);
+  padding: 40px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 12px;
+}
+#bottom-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  transform: translateX(-50%);
+  background-color: blue;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
 }
 
-.drawer_Undo-button {
-background-color: white;
-color: black;
-padding: 10px;
-border: none;
-cursor: pointer;
-font-size: 14px;
-border-radius: 5px;
-position: absolute; 
-bottom: 10px; 
-left: 155px; 
+.toggle-drawer-button {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  border-radius: 5px;
 }
 
-.drawer_Remove-button {
-background-color: white;
-color: black;
-padding: 10px;
-border: none;
-cursor: pointer;
-font-size: 14px;
-border-radius: 5px;
-position: absolute; 
-bottom: 10px; 
-left: 70px; 
-}
-
-.submit {
-background-color: white;
-color: black;
-padding: 10px;
-border: none;
-cursor: pointer;
-font-size: 14px;
-border-radius: 5px;
-position: absolute; 
-bottom: 10px; 
-right: 10px;
-}
-
-.drawer_New-button:hover {
+.toggle-drawer-button:hover {
   background-color: #45a049;
-}
-
-.drawer_Undo-button:hover {
-  background-color: yellow;
-}
-
-.drawer_Remove-button:hover {
-  background-color: red;
-}
-.submit:hover {
-  background-color: #618EDD;
-}
-
-.selected {
-background-color: #c8e6c9;
-transition: background-color 0.3s ease;
-}
-
-.drawer.open {
-background-color: #B8B8B8;
-color: black;
-padding: 10px;
-border-radius: 13px;
-}
-.drawer.open .receiving-list-container {
-background-color: transparent;
-}
-
-.drawer.open .receiving-list th {
-background-color: yellow;
-}
-.drawer.open .receiving-list td {
-background-color: white; 
-color: black; 
-}
-
-#popupContainer {
-position: fixed;
-bottom: 10px;
-left: 50%;
-transform: translateX(-50%);
-background-color: #f1f1f1;
-border: 1px solid #ccc;
-border-radius: 8px;
-padding: 10px 20px;
-display: none;
-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-
-#popupContainer button {
-margin: 5px;
-padding: 8px 15px;
-font-size: 14px;
-cursor: pointer;
-border: none;
-border-radius: 4px;
-background-color: #007bff;
-color: #fff;
-transition: background-color 0.3s ease;
-}
-
-#popupContainer button:hover {
-background-color: #0056b3;
 }
