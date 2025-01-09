@@ -32,8 +32,8 @@
 
 /* Main Content */
 :root {
-    --green: #049948;
-    --oliveGreen: #6B8E23;
+    --green: #246441;
+    --oliveGreen: #049948;
     --lightGray: #F5F5F5;
 }
 
@@ -74,12 +74,12 @@ header {
     justify-content: space-between;
     padding: 1rem 2rem;
     z-index: 1000;
-    transition: .2s;
+    transition: 0.2s;
 }
 
+/* Navbar container */
 .navbar {
     display: flex;
-    justify-content: space-between;
     flex-grow: 1;
 }
 
@@ -90,13 +90,31 @@ header {
     flex-grow: 1;
 }
 
+/* Remove underline from the links */
+.navbar .center-nav li a {
+    color: var(--green);
+    text-decoration: none;
+    font-size: 2rem;
+    padding: 0.5rem 1.5rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 5rem;
+}
+
+/* Hover effect on link */
+.navbar .center-nav li:hover a {
+    color: white;
+}
+
+/* Right nav styling */
 .navbar .right-nav {
     display: flex;
     justify-content: flex-end;
     list-style: none;
     margin-left: auto;
+    align-items: center;
 }
 
+/* Login button style */
 header .navbar .right-nav .login-btn {
     background-color: var(--green);
     color: #fff;
@@ -106,39 +124,42 @@ header .navbar .right-nav .login-btn {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Hover effect for login button */
 header .navbar .right-nav .login-btn:hover {
     background-color: var(--oliveGreen);
     color: #f5f5f5;
 }
 
-.header-active{
+/* Active state for the header */
+.header-active {
     top: 0;
     width: 100%;
     border-radius: 0;
     box-shadow: 0 .1rem .3rem rgba(0, 0, 0, .3);
-
 }
 
-header .navbar ul {
-    display: flex;
-    align-items: center;
-    list-style: none;
-}
-
+/* Spacing between navbar items */
 header .navbar ul li {
-    margin: 0 1rem;
+    margin: 0 4rem;
 }
 
-header .navbar ul li a {
+/* Styling for active or hovered navbar links */
+header .navbar ul li a.active {
+    background-color: var(--green);
+    color: white;
+    padding: 0.5rem 1.5rem;
     font-size: 2rem;
-    color: var(--green);
-    transition: color 0.2s;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 5rem;
 }
 
-header .navbar ul li a.active,
 header .navbar ul li a:hover {
-    color: var(--oliveGreen);
-    cursor: pointer;
+    background-color: var(--oliveGreen);
+    color: white;
+    padding: 0.5rem 1.5rem;
+    font-size: 2rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 5rem;
 }
 
 header .logo-header {
@@ -150,6 +171,8 @@ header .logo-header {
 .logo-hd {
     height: 30px;
 }
+
+
 
 /* Home Section */
 .home{
@@ -338,9 +361,10 @@ header .logo-header {
 
 .about .developer .card-container {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: row; /* Align items in a row */
+    justify-content: center; /* Center the cards horizontally */
+    gap: 2rem; /* Add space between the cards */
+    flex-wrap: wrap; /* Allow cards to wrap to the next line on smaller screens */
     padding: 0;
 }
 
@@ -357,7 +381,7 @@ header .logo-header {
     width: 100%;
     object-fit: cover;
     filter: grayscale();
-    transform: .2s;
+    transition: filter 0.3s;
 }
 
 .about .developer .card-container .card img:hover {
@@ -384,6 +408,7 @@ header .logo-header {
 .about .developer .card-container .card .icons a:hover {
     color: var(--green);
 }
+
 
 /* Contact Section */
 .contact {

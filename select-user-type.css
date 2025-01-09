@@ -1,17 +1,36 @@
 body {
   font-family: "Poppins", sans-serif;
   color: black;
-  background-image: url('icons&images/bg_user_type.png');
+  background: linear-gradient(rgba(4, 153, 72, 0.8), rgba(4, 153, 72, 0.8)), url(icons&images/home-bg.jpg)
+  no-repeat;
   background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  margin: 0;
+  background-position: center;
+  background-attachment: fixed;
+  z-index:0;
+  overflow:hidden;
+  position:relative;
 }
 
+.main-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content-container {
+  background-color: #f9f9f9;
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  padding-top: 60px;
+  padding-bottom: 50px;
+  border-radius: 30px;
+}
 
 .title {
-  font-size: 3rem;
+  font-size: 4rem;
   margin: 0;
 }
 
@@ -26,7 +45,6 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   z-index: 2;
   position: relative;
 }
@@ -48,16 +66,16 @@ body {
   display: flex;
   position: relative;
   border: none;
-  flex-direction: column; 
+  flex-direction: column;
   padding: 20px;
   margin: 25px;
-  width: 200px;
+  width: 220px;
   text-align: center;
   justify-content: center;
   border-radius: 15px;
   height: 200px;
   cursor: pointer;
-  background: white;
+  background: #f9f9f9;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.5);
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
@@ -70,8 +88,8 @@ body {
 }
 
 .select-btn {
-  background-color: #4CAF50;
-  color: white;
+  background-color: #049948;
+  color: #f9f9f9;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
@@ -90,14 +108,15 @@ body {
 .staff-desc {
   font-family: "Poppins", sans-serif;
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: #333;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
   letter-spacing: 0.5px;
 }
 
 .user-type:hover .staff-desc {
-  color: white;
+  color: #f9f9f9;
+;
 }
 
 .user-img {
@@ -112,7 +131,7 @@ body {
 }
 
 .user-type.selected .staff-desc {
-  color: white !important;
+  color: #f9f9f9 !important;
 }
 
 .checkmark {
@@ -132,13 +151,13 @@ body {
 
 .select-btn {
   background-color: #049948;
-  color: white;
+  color: #f9f9f9;
   padding: 10px 30px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   transition: opacity 0.15s;
-  font-size: 15px;
+  font-size: 1.2rem;
 }
 
 .select-btn:hover {
@@ -146,6 +165,6 @@ body {
 }
 
 .select-btn:disabled {
-  background-color: #ddd;
+  background-color:#c0c0c0;
   cursor: not-allowed;
 }

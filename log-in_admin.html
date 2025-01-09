@@ -12,22 +12,28 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="title-heading">WELCOME TO CENTRALCOMM</h1>
-    <p class="title-desc">Please enter your details to log in.</p>
+    <!-- Left Column for Image or Content -->
+    <div class="left-column">
+    </div>
 
-    <form action="your-login-endpoint" id="CentralComm" class="log-in-page"> 
-      <label for="user-email">Email:</label>
-      <input type="email" name="user-email" id="user-email" placeholder="Enter your Email" > 
+    <div class="right-column">
+      <img src="icons&images/logo.png" alt="Logo" class="logo-form">
 
-      <label for="user-password">Password:</label>
-      <input type="password" name="user-password" id="user-password" placeholder="Enter your Password" > 
-      <!-- <button type="submit" id="loginButton">Log In</button> -->
-    </form>
-	<button type="byPassToNextPage" id="nextPageButton">Login</button>
+      <h1 class="title-heading">LOGIN</h1>
 
-    <p class="redirect-to-signup">Don't have an account? <a class="signup-desc" href="create-account.html">Sign Up</a></p>
+      <form action="your-login-endpoint" id="CentralComm" class="log-in-page"> 
+        <label for="user-email">Email:</label>
+        <input type="email" name="user-email" id="user-email" placeholder="Enter your Email" > 
+
+        <label for="user-password">Password:</label>
+        <input type="password" name="user-password" id="user-password" placeholder="Enter your Password" > 
+        <!-- <button type="submit" id="loginButton">Log In</button> -->
+      </form>
+	    <button type="byPassToNextPage" id="nextPageButton">Login</button>
+      <p class="redirect-to-signup">Don't have an account? <a class="signup-desc" href="create-account.html">Sign Up</a></p>
+    </div>
   </div>
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script> -->
-  <script src="log-in_admin.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/7.14.1-0/firebase.js"></script> -->
+    <script src="log-in_admin.js"></script>
 </body>
 </html>
