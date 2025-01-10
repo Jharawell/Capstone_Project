@@ -30,7 +30,7 @@
       <div class="main-content">
         <div class="home-section">
           <header>
-            <div class="greeting"><strong>Administrative Office</strong></div>
+            <div class="greeting"><strong>Administrative Division</strong></div>
           </header>
 
           <div class="menu-divider2"></div>
@@ -43,19 +43,22 @@
             <div class="drawer-container">
               <button class="toggle-drawer-button" onclick="toggleDrawerState()">Open</button>
               <div class="drawer" style="display: none;">
-                <h4 id="month-header">
-                  <span id="header-text">January</span>
-                  <button id="edit-button" onclick="toggleEdit()"><i class="edit-icon"></i><span id="button-text">Edit</span></button>
-                </h4>
+                
+                <!-- heading for year and month -->
+                <div class="editable-box">
+                  <span id="editable-text" class="editable-text" onclick="enableEditing()">New Task</span>
+                  <input id="edit-input" type="text" style="display:none;" onblur="saveText()" onkeypress="saveOnEnter(event)">
+                </div>
+
                 <input id="edit-input" type="text" style="display: none;" onblur="saveHeader()" />
                 <div class="receiving-list-container">
                   <table class="receiving-list" style="margin: 20px auto; border-collapse: collapse; width: 10%;">
                     <thead>
                       <tr>
                         <th> </th>
+                        <th>Ctrl No.</th>
                         <th>Time Received</th>
                         <th>Date Received</th>
-                        <th>Ctrl No.</th>
                         <th>From</th>
                         <th>Office</th>
                         <th>Subject</th>
