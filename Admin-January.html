@@ -8,18 +8,70 @@
 </head>
 
     <style>
+
+       
+        .modal-body label.cont,
+        .modal-body input[type="text"] {
+            display: inline-block;
+            vertical-align: middle;
+            margin-bottom: 10px;
+        }
+
+        .modal-body label.cont {
+            width: 150px; 
+            text-align: left;
+            margin-right: 10px;
+        }
+
+        .modal-body input[type="text"] {
+            width: calc(100% - 170px); 
+        }
+
+       
+        .modal-footer button {
+            white-space: nowrap; 
+        }
+
+        body{
+            margin-left: 0%;
+            
+        }
         .cont{
             display:inline-block;
-            width: 200px;
+
         }
+
+        th{
+            white-space: nowrap;
+            color: black;
+            background-color: yellow;
+    
+        }
+
+        .table-custom {
+        font-size: 20px;
+        }
+
+
+        .add-new-item{
+            background-color: white;
+        }
+
+        td,tr{
+            background-color: white;
+            color: black;
+        }
+    
+
+       
 
     </style>
 
 <body>
-    <div class = "container mt-3">
-        <table class = "table table-dark">
+    <div class = "container mt-3 d-flex justify-content-center">
+        <table class = "table table-dark table-custom" >
             <thead>
-                <th>No.</th>
+                <th >No.</th>
                 <th>Ctrl No.</th>
                 <th>Time Received</th>
                 <th>Date Received</th>
@@ -30,7 +82,7 @@
                 <th>Date Received</th>
                 <th>Endorsed To</th>
                 <th>Remarks</th>
-                <th>File Code (For record keeping)</th>
+                <th>File Code</th>
                 <th>Status</th>
                 <!-- <th><button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModalCenter" onclick="FillTboxes(null)">Add New Record</button></th> -->
             </thead>
@@ -163,7 +215,7 @@
           <label class="cont">Remarks: </label>
           <input type="text" id="RMod"> <br>
 
-          <label class="cont">File Code(For Record Keeping): </label>
+          <label class="cont">File Code: </label>
           <input type="text" id="fCMod"> <br>
 
           <label class="cont">Status: </label>
@@ -264,7 +316,6 @@
             }
         })
         .catch(error => {
-            alert("successful");
             console.log(error);
         })
     }
@@ -385,9 +436,10 @@
             trow.appendChild(td12);
             trow.appendChild(td13);
 
-            var controlDiv = document.createElement("div")
-            controlDiv.innerHTML = '<button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#exampleModalCenter" style="display: none;" onclick="FillTboxes(null)">Add New Record</button>'
-            controlDiv.innerHTML += '<button type="button" class="btn btn-primary my-2 ml-2" data-toggle="modal" data-target="#exampleModalCenter" onclick="FillTboxes('+No+')">Edit Record</button>'
+            var controlDiv = document.createElement("div");
+            controlDiv.innerHTML = '<button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#exampleModalCenter" style="display: none;" onclick="FillTboxes(null)">Add New Record</button>';
+            controlDiv.innerHTML += '<button type="button" class="btn btn-primary my-2 ml-4" data-toggle="modal" data-target="#exampleModalCenter" style="white-space: nowrap;" onclick="FillTboxes(' + No + ')">Edit Record</button>';
+
 
             trow.appendChild(controlDiv);
             tbody.appendChild(trow);
@@ -452,19 +504,20 @@
                 RMod.value = "";
                 fCMod.value = "";
                 SMod.value = ""; 
+                
 //----------Enable Specifics (uncomment to enable)----------//
-                timeMod.disabled=true;
-                dateMod.disabled=true;
-                // ctrlMod.disabled=true;
-                fromMod.disabled=true;
-                officeMod.disabled=true;
-                subjectMod.disabled=true;
-                // TMod.disabled = true;
-                // DMod.disabled = true;
-                // EMod.disabled = true;
-                // RMod.disabled = true;
-                // fCMod.disabled = true;
-                // SMod.disabled = true; 
+                ctrlMod.disabled=true;
+                // timeMod.disabled=true;
+                // dateMod.disabled=true;
+                // fromMod.disabled=true;
+                // officeMod.disabled=true;
+                // subjectMod.disabled=true;
+                TMod.disabled = true;
+                DMod.disabled = true;
+                EMod.disabled = true;
+                RMod.disabled = true;
+                fCMod.disabled = true;
+                SMod.disabled = true; 
 
                 BTNmodAdd.style.display='inline-block';
                 BTNmodRet.style.display='none';
@@ -485,10 +538,11 @@
                 RMod.value = ltList[index][9];
                 fCMod.value = ltList[index][10];
                 SMod.value = ltList[index][11]; 
+
 //----------Disable Specifics (uncomment to disable)----------//
+                // ctrlMod.disabled = true;
                 timeMod.disabled = true;
                 dateMod.disabled = true;
-                // ctrlMod.disabled = true;
                 fromMod.disabled = true;
                 officeMod.disabled = true;
                 subjectMod.disabled = true;

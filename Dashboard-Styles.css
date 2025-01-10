@@ -80,7 +80,7 @@ nav ul li a img.icon {
   }
 
 nav ul li a:hover img.icon {
-  filter: brightness(0) invert(1); /* Change icon color to white on hover */
+  filter: brightness(0) invert(1); 
   }
 
 .menu-divider, .menu-divider2 {
@@ -92,14 +92,12 @@ nav ul li a:hover img.icon {
 
 .greeting {
   padding: 17.5px;
-<<<<<<< HEAD
+  font-weight: 500;
   font-size: 1.5em;
   margin-left: 50px;
   display: flex;
   justify-content: flex-start;
-=======
   font-size: 1.5rem;
->>>>>>> 19c59567843a7287a4a651cb05ff249349eed3de
 }
 
 .centralcomm-box {
@@ -129,6 +127,7 @@ margin-top: 300px;
   width: 98.7%;
   height: auto;
   border-radius: 15px;
+  margin-bottom: 20px;
 }
 
 
@@ -144,6 +143,7 @@ margin-top: 300px;
   display: flex;
   align-items: center;
   transition: background-color 0.3s ease;
+ 
 }
 
 .new-item-button:hover {
@@ -337,58 +337,7 @@ td{
 }
 
 .toggle-drawer-button:hover {
-<<<<<<< HEAD
-  background-color: #45a049;
-}
-
-.drawer_Undo-button:hover {
-  background-color: yellow;
-}
-
-.drawer_Remove-button:hover {
-  background-color: red;
-}
-.submit:hover {
-  background-color: #618EDD;
-}
-
-.selected {
-background-color: #c8e6c9;
-transition: background-color 0.3s ease;
-}
-
-.drawer.open {
-background-color: #B8B8B8;
-color: black;
-padding: 10px;
-border-radius: 13px;
-}
-.drawer.open .receiving-list-container {
-background-color: transparent;
-}
-
-.drawer.open .receiving-list th {
-background-color: yellow;
-}
-.drawer.open .receiving-list td {
-background-color: white; 
-color: black; 
-}
-
-#popupContainer {
-position: fixed;
-bottom: 10px;
-left: 50%;
-transform: translateX(-50%);
-background-color: #f1f1f1;
-border: 1px solid #ccc;
-border-radius: 8px;
-padding: 10px 20px;
-display: none;
-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-=======
   background-color:#4CAF50;
->>>>>>> 19c59567843a7287a4a651cb05ff249349eed3de
 }
 
 
@@ -407,8 +356,6 @@ button {
   border-radius: 5px;
   display: none;
 }
-<<<<<<< HEAD
-=======
 
 .receiving-list {
   width: 100%;
@@ -448,4 +395,3 @@ th{
   
 }
 
->>>>>>> 19c59567843a7287a4a651cb05ff249349eed3de

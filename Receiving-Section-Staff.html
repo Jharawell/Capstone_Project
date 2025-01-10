@@ -30,37 +30,37 @@
       <div class="main-content">
         <div class="home-section">
           <header>
-            <div class="greeting">Let's get things done, <strong>Erin!</strong>
+            <div class="greeting">Receiving Section
             <input class="search-bar" id="search-bar" type="text" placeholder="Search">
             </div>
-            <div class="greeting">Receiving Section</strong></div>
-            <div class="greeting"><strong>Receiving Section</strong></div>
-          </header>
-
+           
           <div class="menu-divider2"></div>
 
           <div class="top-bar">
             <img src="icons&images/bn-projects.png" alt="Home banner" class="banner">
+            <button class="new-item-button" onclick="addNewItemTable()">New Item</button>
           </div>
-          
-          <button class="new-item-button" onclick="addNewItemTable()">New Item</button>
           <div class="drawer-template" id="drawer-template">
             <div class="drawer-container">
-              <button class="toggle-drawer-button" onclick="toggleDrawerState()">Open</button>
+              <button class="toggle-drawer-button button-open" onclick="toggleDrawerState()">Open</button>
               <div class="drawer" style="display: none;">
-                <h4 id="month-header">
-                  <span id="header-text">January</span>
-                  <button id="edit-button" onclick="toggleEdit()"><i class="edit-icon"></i><span id="button-text">Edit</span></button>
-                </h4>
+                
+                <!-- editable header -->
+                <div class="editable-box">
+                  <span id="editable-text" class="editable-text" onclick="enableEditing()">New Task</span>
+                  <input id="edit-input" type="text" style="display:none;" onblur="saveText()" onkeypress="saveOnEnter(event)">
+                </div>
+
+
                 <input id="edit-input" type="text" style="display: none;" onblur="saveHeader()" />
                 <div class="receiving-list-container">
                   <table class="receiving-list" style="margin: 20px auto; border-collapse: collapse; width: 10%;">
                     <thead>
                       <tr>
                         <th> </th>
+                        <th>Ctrl No.</th>
                         <th>Time Received</th>
                         <th>Date Received</th>
-                        <th>Ctrl No.</th>
                         <th>From</th>
                         <th>Office</th>
                         <th>Subject</th>
@@ -68,7 +68,7 @@
                         <th>Date Received</th>
                         <th>Endorsed To</th>
                         <th>Remarks</th>
-                        <th>File Code (For record keeping)</th>
+                        <th>File Code</th>
                         <th>Status</th>
                       </tr>
                     </thead>
@@ -293,13 +293,12 @@
               let td5 = document.createElement('td'); //From
               let td6 = document.createElement('td'); //Office
               let td7 = document.createElement('td'); //Subject
-              let td8 = document.createElement('td'); //Subject
-              let td9 = document.createElement('td'); //Subject
-              let td10 = document.createElement('td'); //Subject
-              let td11 = document.createElement('td'); //Subject
-              let td12 = document.createElement('td'); //Subject
-              let td13 = document.createElement('td'); //Subject
-              
+              let td8 = document.createElement('td'); //timeR
+              let td9 = document.createElement('td'); //dateR
+              let td10 = document.createElement('td'); //endorsed
+              let td11 = document.createElement('td'); //remarks
+              let td12 = document.createElement('td'); //file code
+              let td13 = document.createElement('td'); //status
 
               td1.innerHTML = ++No;
               td2.innerHTML = ctrl_No;
@@ -392,6 +391,7 @@
  <script src="Dashboard-Function.js"></script>
 </body>
 </html>
+
 
 
 
