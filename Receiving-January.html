@@ -13,6 +13,29 @@
             width: 200px;
         }
 
+        th{
+            white-space: nowrap;
+            color: black;
+            background-color: yellow;
+        }
+
+        td,tr{
+            background-color: white;
+            color: black;
+        }
+
+         /* Add columnar lines */
+    table.column-lines td, 
+    table.column-lines th {
+      border-right: 1px solid #ddd; /* Vertical line color */
+    }
+
+    /* Remove the last column's border */
+    table.column-lines td:last-child, 
+    table.column-lines th:last-child {
+      border-right: none;
+    }
+
     </style>
 
 <body>

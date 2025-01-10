@@ -11,7 +11,6 @@ overflow-x: hidden;
   flex-direction: column; /* Align vertically */
   justify-content: flex-start;
   align-items: flex-start; /* Align elements to the left */
-  padding: 20px;
   position: relative;
 }
 
@@ -73,7 +72,7 @@ nav ul li a:hover {
 
 .greeting {
   padding: 17.5px;
-  font-size: 1.5em;
+  font-size: 1.5rem;
 }
 .centralcomm-box {
 text-align: center;
@@ -92,13 +91,14 @@ margin-top: 250px;
 }
 
 
+
 .new-item-button {
   background-color: #4CAF50;
   border: none;
   color: white;
   padding: 10px 40px;
   text-align: center;
-  font-size: 12px;
+  font-size: 15px;
   cursor: pointer;
   border-radius: 5px;
 }
@@ -192,7 +192,6 @@ border-radius: 13px;
 }
 
 .drawer {
-<<<<<<< HEAD
 margin-top: 10px;
 padding: 10px;
 border: 1px solid #ddd;
@@ -204,16 +203,6 @@ height: 100%;
 position: relative; 
 overflow: hidden;
 align-items: center;
-=======
-  margin-top: 70px;
-  width: 100%; 
-  background-color: rgb(219, 218, 218); 
-  padding-bottom: 50px; 
-  box-sizing: border-box;
-  border-radius: 8px; 
-  position: relative;
-  display: none;
->>>>>>> a6b57a79dfdd67b4f6de51628b3bd76945406681
 }
 
 .receiving-list-container {
@@ -230,7 +219,7 @@ align-items: center;
 
 .receiving-list th, .receiving-list td{
   border: 1px solid black;
-  padding: 8px;
+  padding: 15px 40px 15px;
   text-align: left;
 }
 
@@ -278,74 +267,73 @@ align-items: center;
   border-radius: 5px;
 }
 
+
+
+td{
+  text-align: center;
+  font-size: 15px;
+}
+
 .toggle-drawer-button:hover {
-  background-color: #45a049;
-<<<<<<< HEAD
-}
-
-.drawer_Undo-button:hover {
-  background-color: yellow;
-}
-
-.drawer_Remove-button:hover {
-  background-color: red;
-}
-.submit:hover {
-  background-color: #618EDD;
-}
-
-.selected {
-background-color: #c8e6c9;
-transition: background-color 0.3s ease;
-}
-
-.drawer.open {
-background-color: #B8B8B8;
-color: black;
-padding: 10px;
-border-radius: 13px;
-}
-.drawer.open .receiving-list-container {
-background-color: transparent;
-}
-
-.drawer.open .receiving-list th {
-background-color: yellow;
-}
-.drawer.open .receiving-list td {
-background-color: white; 
-color: black; 
-}
-
-#popupContainer {
-position: fixed;
-bottom: 10px;
-left: 50%;
-transform: translateX(-50%);
-background-color: #f1f1f1;
-border: 1px solid #ccc;
-border-radius: 8px;
-padding: 10px 20px;
-display: none;
-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  background-color:#4CAF50;
 }
 
 
-#popupContainer button {
-margin: 5px;
-padding: 8px 15px;
-font-size: 14px;
-cursor: pointer;
-border: none;
-border-radius: 4px;
-background-color: #007bff;
-color: #fff;
-transition: background-color 0.3s ease;
+/* Basic design for button */
+button {
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
 }
 
-#popupContainer button:hover {
-background-color: #0056b3;
+
+#edit-input {
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+  width: 300px;
+  font-size: 18px;
+  border-radius: 5px;
+  display: none;
 }
-=======
+
+.receiving-list {
+  width: 100%;
+  border-collapse: collapse;
 }
->>>>>>> a6b57a79dfdd67b4f6de51628b3bd76945406681
+
+th{
+  text-align: center;
+  white-space: nowrap;
+  font-size: 20px;
+  padding: 20px;
+}
+
+.receiving-list ,
+.receiving-list td {
+  padding: 15px;
+  text-align: center;
+  font-size: 15px;
+}
+
+#header-text{
+  font-size: 30px;
+}
+
+.editable-text {
+  font-size: 27px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-block;
+}
+
+#edit-input {
+  font-size: 27px;
+  padding: 10px;
+  border-radius: 5px;
+  display: none;
+  
+}
+

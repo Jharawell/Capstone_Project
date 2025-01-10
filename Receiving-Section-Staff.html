@@ -41,13 +41,16 @@
           </div>
           <div class="drawer-template" id="drawer-template">
             <div class="drawer-container">
-              <button class="toggle-drawer-button" onclick="toggleDrawerState()">Open</button>
+              <button class="toggle-drawer-button button-open" onclick="toggleDrawerState()">Open</button>
               <div class="drawer" style="display: none;">
-                <h4 id="month-header">
-                  <span id="header-text">January</span>
-                  <button id="edit-button" onclick="toggleEdit()"><i class="edit-icon"></i><span id="button-text">Edit</span></button>
-                </h4>
-                <input id="edit-input" type="text" style="display: none;" onblur="saveHeader()" />
+                
+                <div class="editable-box">
+                  <span id="editable-text" class="editable-text" onclick="enableEditing()">New Task</span>
+                  <input id="edit-input" type="text" style="display:none;" onblur="saveText()" onkeypress="saveOnEnter(event)">
+                </div>
+                
+                
+
                 <div class="receiving-list-container">
                   <table class="receiving-list" style="margin: 20px auto; border-collapse: collapse; width: 10%;">
                     <thead>
