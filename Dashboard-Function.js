@@ -116,6 +116,10 @@ function toggleDrawer() {
   drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
 }
 
-function editJanuary() {
+function editJanuaryReceiving() {
   window.location.href = "Receiving-January.html";
+}
+
+function editJanuaryAdmin() {
+  window.location.href = "Admin-January.html";
 }

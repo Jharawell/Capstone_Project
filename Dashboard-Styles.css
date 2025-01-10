@@ -192,19 +192,6 @@ border-radius: 13px;
 }
 
 .drawer {
-<<<<<<< HEAD
-margin-top: 10px;
-padding: 10px;
-border: 1px solid #ddd;
-background-color: white;
-width: 100%;
-display: flex;
-flex-direction: column;
-height: 100%; 
-position: relative; 
-overflow: hidden;
-align-items: center;
-=======
   margin-top: 70px;
   width: 100%; 
   background-color: rgb(219, 218, 218); 
@@ -213,7 +200,6 @@ align-items: center;
   border-radius: 8px; 
   position: relative;
   display: none;
->>>>>>> a6b57a79dfdd67b4f6de51628b3bd76945406681
 }
 
 .receiving-list-container {
@@ -280,72 +266,4 @@ align-items: center;
 
 .toggle-drawer-button:hover {
   background-color: #45a049;
-<<<<<<< HEAD
 }
-
-.drawer_Undo-button:hover {
-  background-color: yellow;
-}
-
-.drawer_Remove-button:hover {
-  background-color: red;
-}
-.submit:hover {
-  background-color: #618EDD;
-}
-
-.selected {
-background-color: #c8e6c9;
-transition: background-color 0.3s ease;
-}
-
-.drawer.open {
-background-color: #B8B8B8;
-color: black;
-padding: 10px;
-border-radius: 13px;
-}
-.drawer.open .receiving-list-container {
-background-color: transparent;
-}
-
-.drawer.open .receiving-list th {
-background-color: yellow;
-}
-.drawer.open .receiving-list td {
-background-color: white; 
-color: black; 
-}
-
-#popupContainer {
-position: fixed;
-bottom: 10px;
-left: 50%;
-transform: translateX(-50%);
-background-color: #f1f1f1;
-border: 1px solid #ccc;
-border-radius: 8px;
-padding: 10px 20px;
-display: none;
-box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-
-#popupContainer button {
-margin: 5px;
-padding: 8px 15px;
-font-size: 14px;
-cursor: pointer;
-border: none;
-border-radius: 4px;
-background-color: #007bff;
-color: #fff;
-transition: background-color 0.3s ease;
-}
-
-#popupContainer button:hover {
-background-color: #0056b3;
-}
-=======
-}
->>>>>>> a6b57a79dfdd67b4f6de51628b3bd76945406681

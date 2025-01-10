@@ -1,3 +1,4 @@
+//----------done----------//
 	(desktop - admin and staff)
 
 <div class="greeting"><strong>Receiving Section/Administrative office</strong></div>
@@ -10,13 +11,13 @@ admin and staff
 
 Office:
 
-
+//----------done----------//
 	(automatic system time and date)
 (admin) 
 	Time Received:
 	Date Received: 
 
-
+//----------done----------//
 	(remove)
 Delivered Letter Response: 
 no response yet
@@ -28,7 +29,7 @@ Date Delivered:
 
 Messenger:
 
-
+//----------done----------//
  	(drag down option)
 Status:
 

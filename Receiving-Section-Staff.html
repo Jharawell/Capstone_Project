@@ -30,7 +30,7 @@
       <div class="main-content">
         <div class="home-section">
           <header>
-            <div class="greeting">Let's get things done, <strong>Erin!</strong></div>
+            <div class="greeting"><strong>Receiving Section</strong></div>
           </header>
 
           <div class="menu-divider2"></div>
@@ -63,10 +63,6 @@
                         <th>Date Received</th>
                         <th>Endorsed To</th>
                         <th>Remarks</th>
-                        <th>Delivered Letter Response</th>
-                        <th>Time Delivered</th>
-                        <th>Date Delivered</th>
-                        <th>Messenger</th>
                         <th>File Code (For record keeping)</th>
                         <th>Status</th>
                       </tr>
@@ -74,7 +70,7 @@
                     <tbody id="tbody1"></tbody>
                   </table>
                 </div>
-                <button id="bottom-button" onclick="editJanuary()">Add/Update</button>
+                <button id="bottom-button" onclick="editJanuaryReceiving()">Add/Update</button>
               </div>
             </div>
             <!-- <div class="drawer-container">
@@ -283,7 +279,7 @@
 
           var No = 0;
           var tbody = document.getElementById('tbody1');
-          function AddItemToTable(ctrl_No, time, date, from, office, subject, time2, date2, remarks, dlr, tiDe, daDe, messenger, fL, status){
+          function AddItemToTable(ctrl_No, time, date, from, office, subject, time2, date2, endorsed, remarks, fC, status){
               let trow = document.createElement("tr");
               let td1 = document.createElement('td'); //No.
               let td2 = document.createElement('td'); //Ctrl_No
@@ -298,10 +294,7 @@
               let td11 = document.createElement('td'); //Subject
               let td12 = document.createElement('td'); //Subject
               let td13 = document.createElement('td'); //Subject
-              let td14 = document.createElement('td'); //Subject
-              let td15 = document.createElement('td'); //Subject
-              let td16 = document.createElement('td'); //Subject
-              let td17 = document.createElement('td'); //Subject
+              
 
               td1.innerHTML = ++No;
               td2.innerHTML = ctrl_No;
@@ -314,12 +307,8 @@
               td9.innerHTML = date2;
               td10.innerHTML = endorsed;
               td11.innerHTML = remarks;
-              td12.innerHTML = dlr;
-              td13.innerHTML = tiDe;
-              td14.innerHTML = daDe;
-              td15.innerHTML = messenger;
-              td16.innerHTML = fC;
-              td17.innerHTML = status;
+              td12.innerHTML = fC;
+              td13.innerHTML = status;
 
               trow.appendChild(td1);
               trow.appendChild(td2);
@@ -334,10 +323,6 @@
               trow.appendChild(td11);
               trow.appendChild(td12);
               trow.appendChild(td13);
-              trow.appendChild(td14);
-              trow.appendChild(td15);
-              trow.appendChild(td16);
-              trow.appendChild(td17);
 
               tbody.appendChild(trow);
           }
@@ -352,10 +337,6 @@
           var date2 = document.getElementById('date2')
           var endorsed = document.getElementById('endorsed')
           var remarks = document.getElementById('remarks')
-          var dlr = document.getElementById('dlr')
-          var tiDe = document.getElementById('tiDe')
-          var daDe = document.getElementById('daDe')
-          var messenger = document.getElementById('messenger')
           var fC = document.getElementById('fC')
           var status = document.getElementById('status')
 
@@ -363,7 +344,7 @@
               No = 0;
               tbody.innerHTML="";
               January.forEach(element => {
-                  AddItemToTable(element.ctrl_No, element.time, element.date, element.from, element.office, element.subject, element.time2, element.date2, element.endorsed, element.dlr, element.tiDe, element.daDe, element.messenger, element.fC, element.status);
+                  AddItemToTable(element.ctrl_No, element.time, element.date, element.from, element.office, element.subject, element.time2, element.date2, element.endorsed, element.remarks, element.fC, element.status);
               });
           }    
 
