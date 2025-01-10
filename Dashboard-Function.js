@@ -1,3 +1,32 @@
+// edit header
+
+function enableEditing() {
+  const editableText = document.getElementById('editable-text');
+  const editInput = document.getElementById('edit-input');
+  
+  // Hide the span and show the input field
+  editableText.style.display = 'none';
+  editInput.style.display = 'inline-block';
+  editInput.value = editableText.innerText; // Set the input field value to current text
+  editInput.focus();  // Focus on the input field so the user can start typing
+}
+
+function saveText() {
+  const editableText = document.getElementById('editable-text');
+  const editInput = document.getElementById('edit-input');
+  
+  editableText.innerText = editInput.value; // Set the span text to the new input value
+  editInput.style.display = 'none'; // Hide the input field
+  editableText.style.display = 'inline-block'; // Show the text again
+}
+
+function saveOnEnter(event) {
+  if (event.key === 'Enter') {
+    saveText();
+  }
+}
+
+
 let No = 0;
 function toggleEdit() {
   const headerText = document.getElementById('header-text');
@@ -116,6 +145,10 @@ function toggleDrawer() {
   drawer.style.display = drawer.style.display === 'none' ? 'block' : 'none';
 }
 
-function editJanuary() {
+function editJanuaryReceiving() {
   window.location.href = "Receiving-January.html";
+}
+
+function editJanuaryAdmin() {
+  window.location.href = "Admin-January.html";
 }

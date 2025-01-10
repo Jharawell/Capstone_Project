@@ -30,13 +30,9 @@
                 <th>Date Received</th>
                 <th>Endorsed To</th>
                 <th>Remarks</th>
-                <th>Delivered Letter Response</th>
-                <th>Time Delivered</th>
-                <th>Date Delivered</th>
-                <th>Messenger</th>
                 <th>File Code (For record keeping)</th>
                 <th>Status</th>
-                <th><button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModalCenter" onclick="FillTboxes(null)">Add New Record</button></th>
+                <!-- <th><button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModalCenter" onclick="FillTboxes(null)">Add New Record</button></th> -->
             </thead>
             <tbody id="tbody1"></tbody>
         </table>
@@ -66,48 +62,48 @@
           <input type="text" id="fromMod"> <br>
 
           <label class="cont">Office: </label>
-          <select id="officeMod">
-            <option value="null"></option>
-            <option value="Vice Mayor's Office">Vice Mayor's Office</option>
-            <option value="Sangguniang Panlungsod">Sangguniang Panlungsod</option>
-            <option value="CAO">CAO</option>
-            <option value="CASSO">CASSO</option>
-            <option value="CADMO">CADMO</option>
-            <option value="CBO">CBO</option>
-            <option value="CEPMO">CEPMO</option>
-            <option value="CHRMO">CHRMO</option>
-            <option value="CLO">CLO</option>
-            <option value="CPDSO">CPDSO</option>
-            <option value="CTO">CTO</option>
-            <option value="GSO">GSO</option>
-            <option value="CBAO">CBAO</option>
-            <option value="CEO">CEO</option>
-            <option value="CSWDO">CSWDO</option>
-            <option value="HSO">HSO</option>
-            <option value="LCR">LCR</option>
-            <option value="CVAO">CVAO</option>
-            <option value="DEPED">DEPED</option>
-            <option value="COA">COA</option>
-            <option value="MTCC">MTCC</option>
-            <option value="RTCC">RTCC</option>
-            <option value="Prosecutor's Office">Prosecutor's Office</option>
-            <option value="DILG-City">DILG-City</option>
-            <option value="BCPO">BCPO</option>
-            <option value="BFP">BFP</option>
-            <option value="BJMP">BJMP</option>
-            <option value="PESO">PESO</option>
-            <option value="PIO">PIO</option>
-            <option value="PLD">PLD</option>
-            <option value="PLEB">PLEB</option>
-            <option value="POSD">POSD</option>
-            <option value="SSD">SSD</option>
-            <option value="PDAO">PDAO</option>
-            <option value="MITD">MITD</option>
-            <option value="CCTV">CCTV</option>
-            <option value="CDRRMO">CDRRMO</option>
-            <option value="LIBRARY">LIBRARY</option>
-            <option value="PERSONAL STAFF">PERSONAL STAFF</option>
-          </select>
+          <input type="text" class="cont" id="officeMod" list="suggestions" placeholder="Enter Office">
+            <datalist id="suggestions">
+                <option value="Vice Mayor's Office">
+                <option value="Sangguniang Panlungsod">
+                <option value="CAO">
+                <option value="CASSO">
+                <option value="CADMO">
+                <option value="CBO">
+                <option value="CEPMO">
+                <option value="CHRMO">
+                <option value="CLO">
+                <option value="CPDSO">
+                <option value="CTO">
+                <option value="GSO">
+                <option value="CBAO">
+                <option value="CEO">
+                <option value="CSWDO">
+                <option value="HSO">
+                <option value="LCR">
+                <option value="CVAO">
+                <option value="DEPED">
+                <option value="COA">
+                <option value="MTCC">
+                <option value="RTCC">
+                <option value="Prosecutor's Office">
+                <option value="DILG-City">
+                <option value="BCPO">
+                <option value="BFP">
+                <option value="BJMP">
+                <option value="PESO">
+                <option value="PIO">
+                <option value="PLD">
+                <option value="PLEB">
+                <option value="POSD">
+                <option value="SSD">
+                <option value="PDAO">
+                <option value="MITD">
+                <option value="CCTV">
+                <option value="CDRRMO">
+                <option value="LIBRARY">
+                <option value="PERSONAL STAFF">
+            </datalist>
           <br>
 
           <label class="cont">Subject: </label>
@@ -120,28 +116,64 @@
           <input type="text" id="DMod"> <br>
 
           <label class="cont">Endorsed To: </label>
-          <input type="text" id="EMod"> <br>
+          <input type="text" class="cont" id="EMod" list="suggestions2" placeholder="Enter Office">
+            <datalist id="suggestions2">
+                <option value="Vice Mayor's Office">
+                <option value="Sangguniang Panlungsod">
+                <option value="CAO">
+                <option value="CASSO">
+                <option value="CADMO">
+                <option value="CBO">
+                <option value="CEPMO">
+                <option value="CHRMO">
+                <option value="CLO">
+                <option value="CPDSO">
+                <option value="CTO">
+                <option value="GSO">
+                <option value="CBAO">
+                <option value="CEO">
+                <option value="CSWDO">
+                <option value="HSO">
+                <option value="LCR">
+                <option value="CVAO">
+                <option value="DEPED">
+                <option value="COA">
+                <option value="MTCC">
+                <option value="RTCC">
+                <option value="Prosecutor's Office">
+                <option value="DILG-City">
+                <option value="BCPO">
+                <option value="BFP">
+                <option value="BJMP">
+                <option value="PESO">
+                <option value="PIO">
+                <option value="PLD">
+                <option value="PLEB">
+                <option value="POSD">
+                <option value="SSD">
+                <option value="PDAO">
+                <option value="MITD">
+                <option value="CCTV">
+                <option value="CDRRMO">
+                <option value="LIBRARY">
+                <option value="PERSONAL STAFF">
+            </datalist>
+          <br>
 
           <label class="cont">Remarks: </label>
           <input type="text" id="RMod"> <br>
-
-          <label class="cont">Delivered Letter Response: </label>
-          <input type="text" id="dlrMod"> <br>
-
-          <label class="cont">Time Delivered: </label>
-          <input type="text" id="TDMod"> <br>
-
-          <label class="cont">Date Delivered: </label>
-          <input type="text" id="DDMod"> <br>
-
-          <label class="cont">Messenger: </label>
-          <input type="text" id="MMod"> <br>
 
           <label class="cont">File Code(For Record Keeping): </label>
           <input type="text" id="fCMod"> <br>
 
           <label class="cont">Status: </label>
-          <input type="text" id="SMod"> <br>
+          <input type="text" class="cont" id="SMod" list="suggestions3" placeholder="Enter Status">
+            <datalist id="suggestions3">
+                <option value="Not started">
+                <option value="Pending">
+                <option value="Done">
+            </datalist>
+          <br>
 
 
         </div>
@@ -198,16 +230,13 @@
             date2: DMod.value,
             endorsed: EMod.value,
             remarks: RMod.value,
-            dlr: dlrMod.value,
-            tiDe: TDMod.value,
-            daDe: DDMod.value,
-            messenger: MMod.value,
             fC: fCMod.value,
             status: SMod.value
         }).then(() => {
             alert("record was added");
             Select_AllData();
             $("#exampleModalCenter").modal('hide');
+            location.reload();
         }).catch(error => {
             alert("record was not added, there was some problem: " + error.message);
         });
@@ -227,10 +256,6 @@
                 DMod.value = snapshot.val().date2;
                 EMod.value = snapshot.val().endorsed;
                 RMod.value = snapshot.val().remarks;
-                dlrMod.value = snapshot.val().dlr;
-                TDMod.value = snapshot.val().tiDe;
-                DDMod.value = snapshot.val().daDe;
-                MMod.value = snapshot.val().messenger;
                 fCMod.value = snapshot.val().fC;
                 SMod,value = snapshot.val().status;
             }
@@ -239,7 +264,7 @@
             }
         })
         .catch(error => {
-            alert("Unsuccessful");
+            alert("successful");
             console.log(error);
         })
     }
@@ -257,16 +282,13 @@
             date2: DMod.value,
             endorsed: EMod.value,
             remarks: RMod.value,
-            dlr: dlrMod.value,
-            tiDe: TDMod.value,
-            daDe: DDMod.value,
-            messenger: MMod.value,
             fC: fCMod.value,
             status: SMod.value
         }).then(() => {
             alert("Record was updated");
             Select_AllData(); 
             $("#exampleModalCenter").modal('hide');
+            location.reload();
         }).catch(error => {
             alert("There was an error updating the record: " + error.message);
         });
@@ -278,6 +300,7 @@
             alert("Record was deleted");
             Select_AllData(); 
             $("#exampleModalCenter").modal('hide');
+            location.reload();
         }).catch(error => {
             alert("There was an error deleting the record: " + error.message);
         });
@@ -302,14 +325,10 @@
                     const date2 = childSnapshot.val().date2;
                     const endorsed = childSnapshot.val().endorsed;
                     const remarks = childSnapshot.val().remarks;
-                    const dlr = childSnapshot.val().dlr;
-                    const tiDe = childSnapshot.val().tiDe;
-                    const daDe = childSnapshot.val().daDe;
-                    const messenger = childSnapshot.val().messenger;
                     const fC = childSnapshot.val().fC;
                     const status = childSnapshot.val().status;
 
-                    AddItemToTable(ctrl_No, time, date, from, office, subject, time2, date2, endorsed, remarks, dlr, tiDe, daDe, messenger, fC, status);
+                    AddItemToTable(ctrl_No, time, date, from, office, subject, time2, date2, endorsed, remarks, fC, status);
                 });
             }).catch(error => {
                 console.error("error fetching data: ", error);
@@ -321,7 +340,7 @@
         var ltList = [];
         var tbody = document.getElementById('tbody1');
 
-        function AddItemToTable(ctrl_No, time, date, from, office, subject, time2, date2, endorsed, remarks, dlr, tiDe, daDe, messenger, fC, status ){
+        function AddItemToTable(ctrl_No, time, date, from, office, subject, time2, date2, endorsed, remarks, fC, status ){
             let trow = document.createElement("tr");
               let td1 = document.createElement('td'); //No.
               let td2 = document.createElement('td'); //Ctrl_No
@@ -334,14 +353,10 @@
               let td9 = document.createElement('td'); //Date2
               let td10 = document.createElement('td'); //Endorsed
               let td11 = document.createElement('td'); //Remarks
-              let td12 = document.createElement('td'); //DLR
-              let td13 = document.createElement('td'); //Time   
-              let td14 = document.createElement('td'); //Date   
-              let td15 = document.createElement('td'); //Messenger  
-              let td16 = document.createElement('td'); //FC
-              let td17 = document.createElement('td'); //Status
+              let td12 = document.createElement('td'); //FC
+              let td13 = document.createElement('td'); //Status
 
-            ltList.push([ctrl_No, time, date, from, office, subject, time2, date2, endorsed, remarks, dlr, tiDe, daDe, messenger, fC, status]);
+            ltList.push([ctrl_No, time, date, from, office, subject, time2, date2, endorsed, remarks, fC, status]);
             td1.innerHTML = ++No;
             td2.innerHTML = ctrl_No;
             td3.innerHTML = time;
@@ -353,12 +368,8 @@
             td9.innerHTML = date2;
             td10.innerHTML = endorsed;
             td11.innerHTML = remarks;
-            td12.innerHTML = dlr;
-            td13.innerHTML = tiDe;
-            td14.innerHTML = daDe;
-            td15.innerHTML = messenger;
-            td16.innerHTML = fC;
-            td17.innerHTML = status;
+            td12.innerHTML = fC;
+            td13.innerHTML = status;
 
             trow.appendChild(td1);
             trow.appendChild(td2);
@@ -373,10 +384,6 @@
             trow.appendChild(td11);
             trow.appendChild(td12);
             trow.appendChild(td13);
-            trow.appendChild(td14);
-            trow.appendChild(td15);
-            trow.appendChild(td16);
-            trow.appendChild(td17);
 
             var controlDiv = document.createElement("div")
             controlDiv.innerHTML = '<button type="button" class="btn btn-primary my-2" data-toggle="modal" data-target="#exampleModalCenter" style="display: none;" onclick="FillTboxes(null)">Add New Record</button>'
@@ -396,10 +403,6 @@
         var DMod = document.getElementById('DMod');
         var EMod = document.getElementById('EMod');
         var RMod = document.getElementById('RMod');
-        var dlrMod = document.getElementById('dlrMod');
-        var TDMod = document.getElementById('TDMod');
-        var DDMod = document.getElementById('DDMod');
-        var MMod = document.getElementById('MMod');
         var fCMod = document.getElementById('fCMod');
         var SMod = document.getElementById('SMod');
 
@@ -428,7 +431,7 @@
                 console.error("Error fetching data: ", error);
             });
         }
-
+       
         window.FillTboxes=(index)=>{
             if(index==null){
                 generateCtrlNo();
@@ -443,20 +446,16 @@
                 fromMod.value = "";
                 officeMod.value = "";
                 subjectMod.value = "";
-                TMod.value = "";
-                DMod.value = "";
+                TMod.value = formattedTime;
+                DMod.value = `${month}/${day}/${year}`;
                 EMod.value = "";
                 RMod.value = "";
-                dlrMod.value = "";
-                TDMod.value = "";
-                DDMod.value = "";
-                MMod.value = "";
                 fCMod.value = "";
                 SMod.value = ""; 
 //----------Enable Specifics (uncomment to enable)----------//
                 timeMod.disabled=true;
                 dateMod.disabled=true;
-                ctrlMod.disabled=true;
+                // ctrlMod.disabled=true;
                 fromMod.disabled=true;
                 officeMod.disabled=true;
                 subjectMod.disabled=true;
@@ -464,10 +463,6 @@
                 // DMod.disabled = true;
                 // EMod.disabled = true;
                 // RMod.disabled = true;
-                // dlrMod.disabled = true;
-                // TDMod.disabled = true;
-                // DDMod.disabled = true;
-                // MMod.disabled = true;
                 // fCMod.disabled = true;
                 // SMod.disabled = true; 
 
@@ -488,16 +483,12 @@
                 DMod.value = ltList[index][7];
                 EMod.value = ltList[index][8];
                 RMod.value = ltList[index][9];
-                dlrMod.value = ltList[index][10];
-                TDMod.value = ltList[index][11];
-                DDMod.value = ltList[index][12];
-                MMod.value = ltList[index][13];
-                fCMod.value = ltList[index][14];
-                SMod.value = ltList[index][15]; 
+                fCMod.value = ltList[index][10];
+                SMod.value = ltList[index][11]; 
 //----------Disable Specifics (uncomment to disable)----------//
                 timeMod.disabled = true;
                 dateMod.disabled = true;
-                ctrlMod.disabled = true;
+                // ctrlMod.disabled = true;
                 fromMod.disabled = true;
                 officeMod.disabled = true;
                 subjectMod.disabled = true;
@@ -505,16 +496,25 @@
                 // DMod.disabled = true;
                 // EMod.disabled = true;
                 // RMod.disabled = true;
-                // dlrMod.disabled = true;
-                // TDMod.disabled = true;
-                // DDMod.disabled = true;
-                // MMod.disabled = true;
                 // fCMod.disabled = true;
                 // SMod.disabled = true; 
                 BTNmodAdd.style.display='none';
                 BTNmodRet.style.display='inline-block';
                 BTNmodUpd.style.display='inline-block';
                 BTNmodDel.style.display='inline-block';
+
+                const now = new Date();
+                const systemTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const month1 = String(now.getMonth() + 1).padStart(2, '0');
+                const day1 = String(now.getDate()).padStart(2, '0');
+                const year1 = now.getFullYear();
+                const systemDate = `${month1}/${day1}/${year1}`;
+                if (!TMod.value) {
+                TMod.value = systemTime;
+                }
+                if (!DMod.value) {
+                    DMod.value = systemDate;
+                }
             }
         }   
 
@@ -522,7 +522,7 @@
             No = 0;
             tbody.innerHTML="";
             January.forEach(element => {
-                AddItemToTable(element.ctrl_No, element.time, element.date, element.from, element.office, element.subject, element.time2, element.date2, element.endorsed, element.remarks, element.dlr, element.tiDe, element.daDe, element.messenger, element.fC, element.status);
+                AddItemToTable(element.ctrl_No, element.time, element.date, element.from, element.office, element.subject, element.time2, element.date2, element.endorsed, element.remarks, element.fC, element.status);
             });
         }    
 
