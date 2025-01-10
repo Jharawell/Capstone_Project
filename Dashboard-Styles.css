@@ -1,9 +1,21 @@
+:root {
+    --green: #246441;
+    --oliveGreen: #049948;
+    --lightGray: #F5F5F5;
+    --lightGreen: #3ec974;
+}
+
+html {
+	overflow-x: hidden;
+}
+
+
 body {
 font-family: Arial, sans-serif;
 margin: 0;
 padding: 0;
-background-color: #f0f0f0;
-overflow-x: hidden; 
+background-color: #f0f0f0; 
+overflow-x: hidden;
 }
 
 .container {
@@ -11,19 +23,16 @@ overflow-x: hidden;
   flex-direction: column; /* Align vertically */
   justify-content: flex-start;
   align-items: flex-start; /* Align elements to the left */
-  padding: 20px;
   position: relative;
 }
 
 main {
 width: 100%;
-overflow-x: hidden; 
 }
 
 nav {
 background-color: #fff;
-width: 170px;
-padding: 0;
+width: 250px;
 display: flex;
 flex-direction: column;
 height: 100vh;
@@ -53,7 +62,6 @@ nav ul li a {
   text-decoration: none;
   color: #333;
   display: flex;
-  align-items: center;
   padding: 10px 15px;
   transition: color 0.3s ease, background-color 0.3s ease;
   border-radius: 5px;
@@ -61,8 +69,19 @@ nav ul li a {
 
 nav ul li a:hover {
   color: #fff;
-  background-color: #4CAF50;
+  background-color: var(--oliveGreen);
 }
+
+nav ul li a img.icon {
+  width: 15px;
+  height: 15px;
+  margin-right: 10px;
+  transition: filter 0.3s ease;
+  }
+
+nav ul li a:hover img.icon {
+  filter: brightness(0) invert(1); /* Change icon color to white on hover */
+  }
 
 .menu-divider, .menu-divider2 {
   height: 1px;
@@ -74,39 +93,75 @@ nav ul li a:hover {
 .greeting {
   padding: 17.5px;
   font-size: 1.5em;
+  margin-left: 50px;
+  display: flex;
+  justify-content: flex-start;
 }
+
 .centralcomm-box {
 text-align: center;
 margin: 10px 0 0 0;
 font-size: 24px;
 }
 
+.logo-icon{
+  width: 28px;
+}
+
+.centralcomm-box a:hover {
+  background-color: transparent;
+  color: inherit; /* Avoid color change on hover */
+}
+
 .bottom-menu {
-margin-top: 250px;
+margin-top: 300px;
 }
 
 .top-bar {
-  display: flex;
-  justify-content: flex-start;
-  padding: 10px;
+  margin-left: 63px;
 }
 
+.banner {
+  width: 98.7%;
+  height: auto;
+  border-radius: 15px;
+}
 
 .new-item-button {
-  background-color: #4CAF50;
+  background-color: var(--oliveGreen);
   border: none;
   color: white;
-  padding: 10px 40px;
+  padding: 12px 25px;
   text-align: center;
-  font-size: 12px;
+  font-size: 15px;
   cursor: pointer;
   border-radius: 5px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.new-item-button:hover {
+  background-color: rgb(9, 127, 37);
 }
 
 .search-bar {
   width: 300px;
-  height: 30px;
   margin-left: 50px;
+}
+
+.profile-button { 
+  background-color: transparent;
+  border: none; 
+  cursor: pointer;
+  display: flex; 
+  align-items: center; 
+  margin-left: 45%;
+} 
+
+.profile-icon { 
+  width: 45px;
+  height: 45px;
 }
 
 .new-item-table-container {
@@ -114,7 +169,7 @@ margin-top: 250px;
   padding: 10px;
   border: 1px solid #ddd;
   background-color: #fff;
-border-radius: 13px;
+  border-radius: 13px;
 }
 
 .item-row {
@@ -192,7 +247,6 @@ border-radius: 13px;
 }
 
 .drawer {
-<<<<<<< HEAD
 margin-top: 10px;
 padding: 10px;
 border: 1px solid #ddd;
@@ -204,16 +258,6 @@ height: 100%;
 position: relative; 
 overflow: hidden;
 align-items: center;
-=======
-  margin-top: 70px;
-  width: 100%; 
-  background-color: rgb(219, 218, 218); 
-  padding-bottom: 50px; 
-  box-sizing: border-box;
-  border-radius: 8px; 
-  position: relative;
-  display: none;
->>>>>>> a6b57a79dfdd67b4f6de51628b3bd76945406681
 }
 
 .receiving-list-container {
@@ -241,6 +285,7 @@ align-items: center;
   position: relative;
   width: 95%;
   margin-top: 10px;
+  margin-left: 63px;
   background-color: rgb(255, 255, 255);
   padding: 40px;
   box-sizing: border-box;
@@ -250,6 +295,7 @@ align-items: center;
   border-radius: 5px;
   box-shadow: 12px;
 }
+
 #bottom-button {
   position: absolute;
   bottom: 10px;
@@ -280,7 +326,6 @@ align-items: center;
 
 .toggle-drawer-button:hover {
   background-color: #45a049;
-<<<<<<< HEAD
 }
 
 .drawer_Undo-button:hover {
@@ -346,6 +391,3 @@ transition: background-color 0.3s ease;
 #popupContainer button:hover {
 background-color: #0056b3;
 }
-=======
-}
->>>>>>> a6b57a79dfdd67b4f6de51628b3bd76945406681
