@@ -146,9 +146,9 @@ function toggleDrawer() {
 }
 
 function editJanuaryReceiving() {
-  window.location.href = "Receiving-January.html";
+  window.open('receiving-january.html', '_blank');
 }
 
 function editJanuaryAdmin() {
-  window.location.href = "Admin-January.html";
+  window.open('Admin-January.html', '_blank');
 }
