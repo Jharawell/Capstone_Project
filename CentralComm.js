@@ -31,3 +31,47 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+function showPopup(title, text) {
+    document.getElementById('popup-title').textContent = title;
+    document.getElementById('popup-text').textContent = text;
+    document.getElementById('popup').style.display = 'flex';
+    document.getElementById('popup').classList.add('show');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+function closePopup() {
+    const popup = document.getElementById('popup');
+    popup.classList.remove('show');
+    popup.style.display = 'none';
+    document.body.style.overflow = ''; // Restore scrolling
+}
+
+// Add search functionality
+document.getElementById('searchInput')?.addEventListener('input', function(e) {
+    const searchText = e.target.value.toLowerCase();
+    const popupText = document.getElementById('popup-text');
+    const originalText = popupText.getAttribute('data-original-text') || popupText.textContent;
+    
+    if (!popupText.getAttribute('data-original-text')) {
+        popupText.setAttribute('data-original-text', originalText);
+    }
+
+    if (searchText) {
+        const highlightedText = originalText.replace(
+            new RegExp(searchText, 'gi'),
+            match => `<mark style="background-color: #fff3cd;">${match}</mark>`
+        );
+        popupText.innerHTML = highlightedText;
+    } else {
+        popupText.textContent = originalText;
+    }
+});
+
+// Close popup when clicking outside
+window.addEventListener('click', function(event) {
+    const popup = document.getElementById('popup');
+    if (event.target === popup) {
+        closePopup();
+    }
+});
