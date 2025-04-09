@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link rel="icon" href="../assets/icons&images/logo.png" type="image/x-icon" />
+    <title>Select User Type</title>
+    <link rel="stylesheet" href="select-user-type.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="content-container"> <!-- New container for the content -->
+            <div class="main">
+                <div class="select-user-type">
+                    <h1 class="title">Select User Type</h1>
+                    <p class="sub-title">This will ensure you have access to the appropriate features <br> and dashboards tailored to your role in the system.</p>
+                </div>
+
+                <div class="container">
+                    <div class="receiving-user user-type" id="receiving-user">
+                        <img src="../icons&images/receiving.png" alt="Receiving Section Staff" class="user-img">
+                        <h2 class="staff-desc">Receiving Section</h2>
+                        <img src="../icons&images/check.svg" alt="User Checkmark" class="checkmark" id="check-receiving">
+                    </div>
+                    <div class="admin-user user-type" id="admin-user">
+                        <img src="../icons&images/admin.png" alt="Admin Staff" class="user-img">
+                        <h2 class="staff-desc">Admin</h2>
+                        <img src="../icons&images/check.svg" alt="User Checkmark" class="checkmark" id="check-admin">
+                    </div>
+                </div>
+
+                <div class="user-button">
+                    <button class="select-btn" id="continue-btn" disabled>Continue</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="../auth/select-user-type.js"></script>
+</body>
+</html>

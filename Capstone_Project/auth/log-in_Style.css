@@ -1,0 +1,155 @@
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(rgba(4, 153, 72, 0.8), rgba(4, 153, 72, 0.8)), url(icons&images/home-bg.jpg)
+}
+
+html {
+  position: relative;
+  height: 100%;
+}
+
+html::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.8;
+  z-index: -1;
+}
+
+/* Main container for content */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  max-width: 1000px;
+  height: 70vh; /* Set a height for the container (you can adjust this) */
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 40px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Left and Right Column */
+.left-column, .right-column {
+  width: 45%;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Left column with background image */
+.left-column {
+  background-image: url(icons&images/img-login.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+}
+
+/* Right column (form) */
+.right-column {
+  background-color: #f9f9f9;
+}
+
+/* Logo Styling */
+.logo-form {
+  width: 90px;
+  height: auto;
+}
+
+.title-heading {
+  text-align: center;
+  font-size: 2rem;
+  padding-bottom: 30px;
+  margin: 0;
+  animation: slideInTop 1s ease-out;
+  color: #049948;
+}
+
+input[type=email], input[type=password] {
+  width: 92.5%;
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+input[type=email]:focus, input[type=password]:focus {
+  border-color: #3ec974;
+  outline: none;
+}
+
+button {
+  background: linear-gradient(145deg, #049948, #3ec974);
+  color: #f9f9f9;
+  padding: 14px;
+  margin-top: 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 8px;
+  font-size: 1.2em;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-5px);
+  background: linear-gradient(145deg, #3ec974, #049948);
+}
+
+button:active {
+  transform: translateY(2px);
+}
+
+.redirect-to-signup {
+  text-align: center;
+  font-size: 0.9em;
+}
+
+.signup-desc {
+  text-decoration: none;
+  color: #049948;
+  font-weight: bold;
+}
+
+.signup-desc:hover {
+  text-decoration: underline;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInTop {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
