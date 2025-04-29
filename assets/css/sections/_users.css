@@ -1,0 +1,120 @@
+/* Users Section */
+.users-section {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+/* User List */
+.user-list {
+    margin-top: 1.5rem !important;
+}
+
+.user-item {
+    padding: 1rem !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease !important;
+}
+
+.user-item:last-child {
+    border-bottom: none !important;
+}
+
+.user-item:hover {
+    background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.user-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    margin-right: 1rem !important;
+}
+
+.user-info h5 {
+    margin-bottom: 0.25rem !important;
+    color: var(--text-muted) !important;
+}
+
+.user-info small {
+    color: var(--text-muted) !important;
+    opacity: 0.8 !important;
+}
+
+/* User Role Badges */
+.role-badge {
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 4px !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+}
+
+.role-admin {
+    background: var(--primary-green) !important;
+    color: white !important;
+}
+
+.role-user {
+    background: var(--light-green) !important;
+    color: white !important;
+}
+
+/* User Actions */
+.user-actions {
+    display: flex !important;
+    gap: 0.5rem !important;
+}
+
+.user-actions .btn {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* User Profile Card */
+.user-profile-card {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    box-shadow: var(--card-shadow) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.profile-header {
+    text-align: center !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.profile-avatar {
+    width: 120px !important;
+    height: 120px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    margin-bottom: 1rem !important;
+    border: 4px solid white !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.profile-stats {
+    display: flex !important;
+    justify-content: space-around !important;
+    margin-top: 1.5rem !important;
+    padding-top: 1rem !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.stat-item {
+    text-align: center !important;
+}
+
+.stat-value {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: var(--primary-green) !important;
+}
+
+.stat-label {
+    font-size: 0.875rem !important;
+    color: var(--text-muted) !important;
+} 

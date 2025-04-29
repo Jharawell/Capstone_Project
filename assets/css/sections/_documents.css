@@ -1,0 +1,98 @@
+/* Documents Section */
+.documents-section {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+/* Document List */
+.document-list {
+    margin-top: 1.5rem !important;
+}
+
+.document-item {
+    padding: 1rem !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease !important;
+}
+
+.document-item:last-child {
+    border-bottom: none !important;
+}
+
+.document-item:hover {
+    background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.document-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--light-green) !important;
+    color: white !important;
+    margin-right: 1rem !important;
+}
+
+.document-info h5 {
+    margin-bottom: 0.25rem !important;
+    color: var(--text-muted) !important;
+}
+
+.document-info small {
+    color: var(--text-muted) !important;
+    opacity: 0.8 !important;
+}
+
+/* Document Actions */
+.document-actions {
+    display: flex !important;
+    gap: 0.5rem !important;
+}
+
+.document-actions .btn {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* Document Upload */
+.document-upload {
+    border: 2px dashed var(--light-green) !important;
+    border-radius: 12px !important;
+    padding: 2rem !important;
+    text-align: center !important;
+    background: rgba(76, 175, 80, 0.05) !important;
+    transition: all 0.3s ease !important;
+}
+
+.document-upload:hover {
+    background: rgba(76, 175, 80, 0.1) !important;
+}
+
+.upload-icon {
+    font-size: 2.5rem !important;
+    color: var(--light-green) !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Document Preview */
+.document-preview {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    box-shadow: var(--card-shadow) !important;
+    margin-top: 1.5rem !important;
+}
+
+.preview-container {
+    min-height: 400px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--bg-light) !important;
+    border-radius: 8px !important;
+    margin-bottom: 1rem !important;
+} 

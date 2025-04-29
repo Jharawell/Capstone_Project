@@ -1,0 +1,2512 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+    />
+    <!-- Add DataTables CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css"
+    />
+    <style>
+      :root {
+        --primary-green: #2e7d32;
+        --secondary-green: #1b5e20;
+        --light-green: #4caf50;
+        --sidebar-bg: #1b5e20;
+        --card-hover: #388e3c;
+        --bg-light: #f8f9fa;
+        --text-muted: #6c757d;
+        --border-color: rgba(0, 0, 0, 0.1);
+      }
+
+      body {
+        background-color: var(--bg-light);
+        font-family: "Poppins", sans-serif;
+        overflow-x: hidden;
+      }
+
+      .sidebar {
+        min-height: 100vh;
+        background-color: var(--sidebar-bg);
+        color: white;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 300px;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.85);
+        padding: 0.75rem 1.5rem;
+        margin: 0.2rem 1rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+      }
+
+      .sidebar .nav-link:hover {
+        color: white;
+        background-color: var(--light-green);
+        transform: translateX(5px);
+      }
+
+      .sidebar .nav-link.active {
+        color: white;
+        background-color: var(--light-green);
+        font-weight: 600;
+      }
+
+      .main-content {
+        margin-left: 300px;
+        padding: 2.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        background: white;
+        height: 100%;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      .card-body {
+        padding: 1.75rem;
+      }
+
+      .card-title {
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+      }
+
+      .card-text {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-top: 0.5rem;
+        color: #2c3e50;
+      }
+
+      .btn-outline-light {
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-outline-light:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .dropdown-menu {
+        background-color: white;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 0.5rem;
+      }
+
+      .dropdown-item {
+        color: #2c3e50;
+        font-weight: 500;
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .dropdown-item:hover {
+        background-color: var(--light-green);
+        color: white;
+      }
+
+      .header-section {
+        background: linear-gradient(
+          135deg,
+          var(--primary-green),
+          var(--secondary-green)
+        );
+        padding: 1.75rem;
+        border-radius: 15px;
+        color: white;
+        margin-bottom: 2.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .icon-large {
+        font-size: 2.5rem;
+        opacity: 0.7;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 1rem;
+        border-radius: 12px;
+      }
+
+      .stat-icon {
+        font-size: 1.25rem;
+        margin-right: 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 0.5rem;
+        border-radius: 8px;
+      }
+
+      .user-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .progress {
+        height: 6px;
+        border-radius: 3px;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .progress-bar {
+        background-color: white;
+      }
+
+      .trend-indicator {
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .trend-up {
+        color: #4caf50;
+      }
+
+      .trend-down {
+        color: #f44336;
+      }
+
+      .activity-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+      }
+
+      .activity-item:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+
+      .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+      }
+
+      .chart-container {
+        position: relative;
+        height: 300px;
+        margin-top: 1rem;
+      }
+
+      .table-responsive {
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+        border-top: none;
+      }
+
+      .table td {
+        vertical-align: middle;
+      }
+
+      .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-active {
+        background-color: rgba(76, 175, 80, 0.1);
+        color: #4caf50;
+      }
+
+      .status-pending {
+        background-color: rgba(255, 152, 0, 0.1);
+        color: #ff9800;
+      }
+
+      .status-inactive {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+      }
+
+      /* Mobile Menu Toggle */
+      .menu-toggle {
+        display: none;
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1001;
+        background: var(--primary-green);
+        border: none;
+        color: white;
+        padding: 0.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 1200px) {
+        .card-text {
+          font-size: 1.75rem;
+        }
+
+        .header-section {
+          padding: 1.5rem;
+        }
+      }
+
+      @media (max-width: 992px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+        }
+
+        .menu-toggle {
+          display: block;
+        }
+
+        .card-text {
+          font-size: 1.5rem;
+        }
+
+        .header-section {
+          padding: 1.25rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          padding: 1.5rem;
+        }
+
+        .header-section {
+          padding: 1rem;
+        }
+
+        .card-body {
+          padding: 1.25rem;
+        }
+
+        .activity-icon {
+          width: 35px;
+          height: 35px;
+          margin-right: 0.75rem;
+        }
+
+        .status-badge {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.7rem;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .main-content {
+          padding: 1rem;
+        }
+
+        .card-text {
+          font-size: 1.25rem;
+        }
+
+        .btn-group {
+          flex-wrap: wrap;
+        }
+
+        .btn-group .btn {
+          margin-bottom: 0.5rem;
+        }
+
+        .table td,
+        .table th {
+          padding: 0.5rem;
+        }
+
+        .user-avatar {
+          width: 35px;
+          height: 35px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="menu-toggle" id="menuToggle">
+      <i class="bi bi-list"></i>
+    </button>
+
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 px-0 sidebar" id="sidebar">
+          <div class="d-flex flex-column p-4">
+            <a
+              href="/"
+              class="d-flex align-items-center mb-4 me-md-auto text-white text-decoration-none"
+            >
+              <i class="bi bi-shield-lock me-3 icon-large"></i>
+              <span class="fs-4">CentralComm</span>
+            </a>
+            <hr class="border-light opacity-50" />
+            <ul class="nav nav-pills flex-column mb-auto">
+              <li class="nav-item">
+                <a href="#" class="nav-link active" id="dashboardLink">
+                  <i class="bi bi-house-door stat-icon"></i>
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link" id="documentsLink">
+                  <i class="bi bi-file-earmark-text stat-icon"></i>
+                  Documents
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link" id="usersLink">
+                  <i class="bi bi-people stat-icon"></i>
+                  Users
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link" id="archivesLink">
+                  <i class="bi bi-archive stat-icon"></i>
+                  Archives
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link" id="historyLink">
+                  <i class="bi bi-clock-history stat-icon"></i>
+                  History
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link" id="profileLink">
+                  <i class="bi bi-person-circle stat-icon"></i>
+                  Profile
+                </a>
+              </li>
+            </ul>
+            <hr class="border-light opacity-50" />
+            <div class="dropdown">
+              <a
+                href="#"
+                class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                data-bs-toggle="dropdown"
+              >
+                <img
+                  src="https://github.com/mdo.png"
+                  alt=""
+                  class="user-avatar me-3"
+                />
+                <div>
+                  <strong>Admin</strong>
+                  <small class="d-block text-white-50">Administrator</small>
+                </div>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                <li>
+                  <a class="dropdown-item" href="#"
+                    ><i class="bi bi-person me-2"></i>Profile</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#"
+                    ><i class="bi bi-gear me-2"></i>Settings</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="#"
+                    ><i class="bi bi-box-arrow-right me-2"></i>Sign out</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="col-md-9 col-lg-10 main-content">
+          <!-- Dashboard Section -->
+          <div id="dashboardSection">
+            <div class="header-section">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h1 class="h2 mb-1">Dashboard Overview</h1>
+                  <p class="mb-0 text-white-50">Welcome back, Admin</p>
+                </div>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                  <div class="btn-group me-2">
+                    <button type="button" class="btn btn-sm btn-outline-light" data-bs-toggle="modal" data-bs-target="#createEntryModal">
+                      <i class="bi bi-plus-circle me-1"></i>Create New
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light" id="archiveAllBtn">
+                      <i class="bi bi-archive me-1"></i>Archive All
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light">
+                      <i class="bi bi-share me-1"></i>Share
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light">
+                      <i class="bi bi-download me-1"></i>Export
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-light dropdown-toggle"
+                  >
+                    <i class="bi bi-calendar3 me-1"></i>
+                    This week
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Monthly Statistics -->
+            <div class="card mb-4">
+              <div class="card-header bg-white">
+                <h5 class="card-title mb-0">Monthly Statistics</h5>
+              </div>
+              <div class="card-body p-0">
+                <div class="accordion" id="monthlyStatsAccordion">
+                  <!-- Monthly statistics will be populated here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Charts and Tables -->
+            <div class="row">
+              <!-- Recent Activity -->
+              <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title mb-4">Recent Activity</h5>
+                    <div class="activity-list">
+                      <!-- Activity items will be populated here -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Users -->
+              <div class="col-lg-6 mb-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h5 class="card-title mb-4">Recent Users</h5>
+                    <div class="table-responsive">
+                      <table class="table table-hover">
+                        <thead>
+                          <tr>
+                            <th>User</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Users will be populated here -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Archives Section -->
+          <div id="archivesSection" class="d-none">
+            <div class="header-section">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h1 class="h2 mb-1">Archived Entries</h1>
+                  <p class="mb-0 text-white-50">View archived entries by year</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="row" id="archivedYearsContainer">
+                  <!-- Archived years will be populated here -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents Section -->
+          <div id="documentsSection" class="d-none">
+            <div class="header-section">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h1 class="h2 mb-1">Documents Summary</h1>
+                  <p class="mb-0 text-white-50">View document statistics and analytics</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Yearly Statistics -->
+              <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h6 class="card-title text-primary mb-3">Yearly Statistics</h6>
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <tbody>
+                          <tr>
+                            <td>Total Letters Received</td>
+                            <td class="text-end" id="yearlyTotal">0</td>
+                          </tr>
+                          <tr>
+                            <td>Complaints</td>
+                            <td class="text-end" id="yearlyComplaints">0</td>
+                          </tr>
+                          <tr>
+                            <td>Requests</td>
+                            <td class="text-end" id="yearlyRequests">0</td>
+                          </tr>
+                          <tr>
+                            <td>Proposals</td>
+                            <td class="text-end" id="yearlyProposals">0</td>
+                          </tr>
+                          <tr>
+                            <td>Invitations</td>
+                            <td class="text-end" id="yearlyInvitations">0</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Monthly Statistics -->
+              <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                  <div class="card-body">
+                    <h6 class="card-title text-primary mb-3">Monthly Statistics</h6>
+                    <div class="table-responsive">
+                      <table class="table table-sm">
+                        <tbody>
+                          <tr>
+                            <td>Current Month Letters</td>
+                            <td class="text-end" id="monthlyTotal">0</td>
+                          </tr>
+                          <tr>
+                            <td>Average Daily Letters</td>
+                            <td class="text-end" id="avgDailyLetters">0</td>
+                          </tr>
+                          <tr>
+                            <td>Highest Volume Month</td>
+                            <td class="text-end" id="highestVolumeMonth">-</td>
+                          </tr>
+                          <tr>
+                            <td>Lowest Volume Month</td>
+                            <td class="text-end" id="lowestVolumeMonth">-</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Monthly Letters Graph -->
+              <div class="col-12 mb-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h6 class="card-title text-primary mb-3">Monthly Letters Received</h6>
+                    <canvas id="monthlyLettersChart" height="300"></canvas>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Remove Letter Types Distribution section -->
+            </div>
+          </div>
+
+          <!-- Users Section -->
+          <div id="usersSection" class="d-none">
+            <div class="header-section">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h1 class="h2 mb-1">Users</h1>
+                  <p class="mb-0 text-white-50">Manage system users</p>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover" id="usersTable">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Users will be populated here -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- History Section -->
+          <div id="historySection" class="d-none">
+            <div class="header-section">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h1 class="h2 mb-1">History</h1>
+                  <p class="mb-0 text-white-50">View system activity history</p>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover" id="historyTable">
+                    <thead>
+                      <tr>
+                        <th>Timestamp</th>
+                        <th>User</th>
+                        <th>Action</th>
+                        <th>Details</th>
+                        <th>Control Number</th>
+                        <th>IP Address</th>
+                        <th>User Agent</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- History will be populated here -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Section -->
+          <div id="profileSection" class="d-none">
+            <div class="header-section">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h1 class="h2 mb-1">Profile Management</h1>
+                  <p class="mb-0 text-white-50">Manage your account settings</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <!-- Profile Information -->
+              <div class="col-lg-4 mb-4">
+                <div class="card h-100">
+                  <div class="card-body text-center">
+                    <div class="mb-4">
+                      <img src="https://github.com/mdo.png" alt="Profile" class="rounded-circle" width="150" height="150">
+                      <div class="mt-3">
+                        <h5 class="mb-1">Admin User</h5>
+                        <p class="text-muted mb-0">Administrator</p>
+                      </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                      <button class="btn btn-outline-primary" onclick="document.getElementById('profileImageInput').click()">
+                        <i class="bi bi-camera me-2"></i>Change Photo
+                      </button>
+                      <input type="file" id="profileImageInput" class="d-none" accept="image/*">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Profile Settings -->
+              <div class="col-lg-8 mb-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h5 class="card-title mb-4">Account Settings</h5>
+                    <form id="profileForm">
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="firstName" class="form-label">First Name</label>
+                          <input type="text" class="form-control" id="firstName" value="Admin">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="lastName" class="form-label">Last Name</label>
+                          <input type="text" class="form-control" id="lastName" value="User">
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" value="admin@example.com">
+                      </div>
+                      <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" value="+1 234 567 8900">
+                      </div>
+                      <div class="mb-3">
+                        <label for="department" class="form-label">Department</label>
+                        <select class="form-select" id="department">
+                          <option value="Administration" selected>Administration</option>
+                          <option value="IT">IT Department</option>
+                          <option value="HR">Human Resources</option>
+                          <option value="Finance">Finance</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label for="position" class="form-label">Position</label>
+                        <input type="text" class="form-control" id="position" value="System Administrator">
+                      </div>
+                      <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- Change Password -->
+                <div class="card mt-4">
+                  <div class="card-body">
+                    <h5 class="card-title mb-4">Change Password</h5>
+                    <form id="passwordForm">
+                      <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <input type="password" class="form-control" id="currentPassword" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Update Password</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Entry Modal -->
+    <div class="modal fade" id="createEntryModal" tabindex="-1" aria-labelledby="createEntryModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createEntryModalLabel">Create New Entry</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="createEntryForm">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="letterType" class="form-label">Type</label>
+                  <select class="form-select" id="letterType" required>
+                    <option value="">Select Type</option>
+                    <option value="Complaint">Complaint</option>
+                    <option value="Request">Request</option>
+                    <option value="Proposal">Proposal</option>
+                    <option value="Invitation">Invitation</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="controlNumber" class="form-label">Control Number</label>
+                  <input type="text" class="form-control" id="controlNumber" readonly>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="dateReceived" class="form-label">Date Received</label>
+                  <input type="date" class="form-control" id="dateReceived" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="timeReceived" class="form-label">Time Received</label>
+                  <input type="time" class="form-control" id="timeReceived" required>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="from" class="form-label">From</label>
+                  <input type="text" class="form-control" id="from" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="office" class="form-label">Office</label>
+                  <input type="text" class="form-control" id="office" required>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="subject" class="form-label">Subject</label>
+                <input type="text" class="form-control" id="subject" required>
+              </div>
+              <div class="mb-3">
+                <label for="endorsedTo" class="form-label">Endorsed To</label>
+                <select class="form-select" id="endorsedTo" required>
+                  <option value="">Select Office</option>
+                  <option value="Vice Mayor's Office">Vice Mayor's Office</option>
+                  <option value="Sangguniang Panlungsod">Sangguniang Panlungsod</option>
+                  <option value="CAO">CAO</option>
+                  <option value="CASSO">CASSO</option>
+                  <option value="CADMO">CADMO</option>
+                  <option value="CBO">CBO</option>
+                  <option value="CEPMO">CEPMO</option>
+                  <option value="CHRMO">CHRMO</option>
+                  <option value="CLO">CLO</option>
+                  <option value="CPDSO">CPDSO</option>
+                  <option value="CTO">CTO</option>
+                  <option value="GSO">GSO</option>
+                  <option value="CBAO">CBAO</option>
+                  <option value="CEO">CEO</option>
+                  <option value="CSWDO">CSWDO</option>
+                  <option value="HSO">HSO</option>
+                  <option value="LCR">LCR</option>
+                  <option value="CVAO">CVAO</option>
+                  <option value="DepEd">DepEd</option>
+                  <option value="COA">COA</option>
+                  <option value="MTCC">MTCC</option>
+                  <option value="RTCC">RTCC</option>
+                  <option value="Prosecutor's Office">Prosecutor's Office</option>
+                  <option value="PESO">PESO</option>
+                  <option value="PIO">PIO</option>
+                  <option value="PLD">PLD</option>
+                  <option value="PLEB">PLEB</option>
+                  <option value="POSD">POSD</option>
+                  <option value="SSD">SSD</option>
+                  <option value="PDAO">PDAO</option>
+                  <option value="MITD">MITD</option>
+                  <option value="CCTV/EWSS">CCTV/EWSS</option>
+                  <option value="CDRRMO">CDRRMO</option>
+                  <option value="LIBRARY">LIBRARY</option>
+                  <option value="PERSONAL STAFF">PERSONAL STAFF</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="fileUpload" class="form-label">File Upload</label>
+                <input type="file" class="form-control" id="fileUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                <div class="form-text">Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG</div>
+              </div>
+              <div class="mb-3">
+                <label for="remarks" class="form-label">Remarks</label>
+                <textarea class="form-control" id="remarks" rows="3"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" required>
+                  <option value="">Select Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Archived">Archived</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="saveEntry">Save Entry</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Entry Modal -->
+    <div class="modal fade" id="editEntryModal" tabindex="-1" aria-labelledby="editEntryModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editEntryModalLabel">Edit Entry</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="editEntryForm">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="editType" class="form-label">Type</label>
+                  <select class="form-select" id="editType" required>
+                    <option value="">Select Type</option>
+                    <option value="Complaint">Complaint</option>
+                    <option value="Request">Request</option>
+                    <option value="Proposal">Proposal</option>
+                    <option value="Invitation">Invitation</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="editControlNumber" class="form-label">Control Number</label>
+                  <input type="text" class="form-control" id="editControlNumber" required>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="editDateReceived" class="form-label">Date Received</label>
+                  <input type="date" class="form-control" id="editDateReceived" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="editTimeReceived" class="form-label">Time Received</label>
+                  <input type="time" class="form-control" id="editTimeReceived" required>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="editFrom" class="form-label">From</label>
+                  <input type="text" class="form-control" id="editFrom" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="editOffice" class="form-label">Office</label>
+                  <input type="text" class="form-control" id="editOffice" required>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="editSubject" class="form-label">Subject</label>
+                <input type="text" class="form-control" id="editSubject" required>
+              </div>
+              <div class="mb-3">
+                <label for="editEndorsedTo" class="form-label">Endorsed To</label>
+                <select class="form-select" id="editEndorsedTo" required>
+                  <option value="">Select Office</option>
+                  <option value="Vice Mayor's Office">Vice Mayor's Office</option>
+                  <option value="Sangguniang Panlungsod">Sangguniang Panlungsod</option>
+                  <option value="CAO">CAO</option>
+                  <option value="CASSO">CASSO</option>
+                  <option value="CADMO">CADMO</option>
+                  <option value="CBO">CBO</option>
+                  <option value="CEPMO">CEPMO</option>
+                  <option value="CHRMO">CHRMO</option>
+                  <option value="CLO">CLO</option>
+                  <option value="CPDSO">CPDSO</option>
+                  <option value="CTO">CTO</option>
+                  <option value="GSO">GSO</option>
+                  <option value="CBAO">CBAO</option>
+                  <option value="CEO">CEO</option>
+                  <option value="CSWDO">CSWDO</option>
+                  <option value="HSO">HSO</option>
+                  <option value="LCR">LCR</option>
+                  <option value="CVAO">CVAO</option>
+                  <option value="DepEd">DepEd</option>
+                  <option value="COA">COA</option>
+                  <option value="MTCC">MTCC</option>
+                  <option value="RTCC">RTCC</option>
+                  <option value="Prosecutor's Office">Prosecutor's Office</option>
+                  <option value="PESO">PESO</option>
+                  <option value="PIO">PIO</option>
+                  <option value="PLD">PLD</option>
+                  <option value="PLEB">PLEB</option>
+                  <option value="POSD">POSD</option>
+                  <option value="SSD">SSD</option>
+                  <option value="PDAO">PDAO</option>
+                  <option value="MITD">MITD</option>
+                  <option value="CCTV/EWSS">CCTV/EWSS</option>
+                  <option value="CDRRMO">CDRRMO</option>
+                  <option value="LIBRARY">LIBRARY</option>
+                  <option value="PERSONAL STAFF">PERSONAL STAFF</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="editFileUpload" class="form-label">File Upload</label>
+                <input type="file" class="form-control" id="editFileUpload" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                <div class="form-text">Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG</div>
+              </div>
+              <div class="mb-3">
+                <label for="editRemarks" class="form-label">Remarks</label>
+                <textarea class="form-control" id="editRemarks" rows="3"></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="editStatus" class="form-label">Status</label>
+                <select class="form-select" id="editStatus" required>
+                  <option value="">Select Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Archived">Archived</option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="updateEntry">Update Entry</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Archived Entry Modal -->
+    <div class="modal fade" id="viewArchivedModal" tabindex="-1" aria-labelledby="viewArchivedModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="viewArchivedModalLabel">Archived Entry Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Entry details will be populated here -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Audit Log Modal -->
+    <div class="modal fade" id="viewAuditLogModal" tabindex="-1" aria-labelledby="viewAuditLogModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="viewAuditLogModalLabel">Audit Log Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>Timestamp:</strong> <span id="auditTimestamp"></span>
+              </div>
+              <div class="col-md-6">
+                <strong>User:</strong> <span id="auditUser"></span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>Action:</strong> <span id="auditAction"></span>
+              </div>
+              <div class="col-md-6">
+                <strong>Control Number:</strong> <span id="auditControlNumber"></span>
+              </div>
+            </div>
+            <div class="mb-3">
+              <strong>Details:</strong>
+              <p id="auditDetails" class="mt-2"></p>
+            </div>
+            <div class="mb-3">
+              <strong>IP Address:</strong> <span id="auditIP"></span>
+            </div>
+            <div class="mb-3">
+              <strong>User Agent:</strong>
+              <p id="auditUserAgent" class="mt-2 small text-muted"></p>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create User Modal -->
+    <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createUserModalLabel">Create New User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="createUserForm">
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label for="newFirstName" class="form-label">First Name</label>
+                  <input type="text" class="form-control" id="newFirstName" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="newLastName" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" id="newLastName" required>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="newEmail" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="newEmail" required>
+              </div>
+              <div class="mb-3">
+                <label for="newPhone" class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="newPhone">
+              </div>
+              <div class="mb-3">
+                <label for="newDepartment" class="form-label">Department</label>
+                <select class="form-select" id="newDepartment" required>
+                  <option value="">Select Department</option>
+                  <option value="Administration">Administration</option>
+                  <option value="IT">IT Department</option>
+                  <option value="HR">Human Resources</option>
+                  <option value="Finance">Finance</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="newPosition" class="form-label">Position</label>
+                <input type="text" class="form-control" id="newPosition" required>
+              </div>
+              <div class="mb-3">
+                <label for="newRole" class="form-label">Role</label>
+                <select class="form-select" id="newRole" required>
+                  <option value="">Select Role</option>
+                  <option value="admin">Administrator</option>
+                  <option value="user">Regular User</option>
+                  <option value="manager">Manager</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="newPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="newPassword" required>
+              </div>
+              <div class="mb-3">
+                <label for="confirmNewPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="confirmNewPassword" required>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="saveUser">Create User</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Add DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    <!-- Add SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Add Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      // Initialize Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyCaSHRLbIRWW8COl5iwHb19dMDYYLJ2DIk",
+        authDomain: "centralcomm-248a9.firebaseapp.com",
+        databaseURL: "https://centralcomm-248a9-default-rtdb.firebaseio.com",
+        projectId: "centralcomm-248a9",
+        storageBucket: "centralcomm-248a9.firebasestorage.app",
+        messagingSenderId: "796912003621",
+        appId: "1:796912003621:web:0d6fd82e43399871a9edcc",
+        measurementId: "G-CN0S9L5YV4"
+      };
+
+      // Initialize Firebase if not already initialized
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+
+      const database = firebase.database();
+      const entriesRef = database.ref('entries');
+
+      // Function to generate control number based on date
+      function generateControlNumber(date) {
+        const d = new Date(date);
+        const year = String(d.getFullYear()).slice(-2); // Get last 2 digits of year
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        return `${year}${day}${month}-1/100`;
+      }
+
+      // Function to check and archive old entries
+      function checkAndArchiveEntries() {
+        // Show loading state
+        Swal.fire({
+          title: 'Checking Entries',
+          text: 'Please wait while we check for entries to archive...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        const currentYear = new Date().getFullYear();
+        entriesRef.once('value', (snapshot) => {
+          const entries = snapshot.val();
+          if (entries) {
+            let archivedCount = 0;
+            let totalToArchive = 0;
+
+            // First count how many entries need to be archived
+            Object.entries(entries).forEach(([_, entry]) => {
+              const entryYear = new Date(entry.dateReceived).getFullYear();
+              if (currentYear === 2025 && entryYear < 2025 && entry.status !== 'Archived') {
+                totalToArchive++;
+              }
+            });
+
+            if (totalToArchive === 0) {
+              Swal.close();
+              return;
+            }
+
+            // Update loading message
+            Swal.update({
+              title: 'Archiving Entries',
+              html: `Archiving ${totalToArchive} entries...`
+            });
+
+            // Archive each entry
+            Object.entries(entries).forEach(([key, entry]) => {
+              const entryYear = new Date(entry.dateReceived).getFullYear();
+              if (currentYear === 2025 && entryYear < 2025 && entry.status !== 'Archived') {
+                entriesRef.child(key).update({
+                  status: 'Archived',
+                  archivedAt: firebase.database.ServerValue.TIMESTAMP
+                })
+                .then(() => {
+                  archivedCount++;
+                  logActivity('archive', `Archived entry from ${entryYear}: ${entry.subject}`, entry.controlNumber);
+                  
+                  // Update progress
+                  if (archivedCount === totalToArchive) {
+                    Swal.fire({
+                      title: 'Success!',
+                      text: `Successfully archived ${archivedCount} entries!`,
+                      icon: 'success',
+                      confirmButtonColor: '#2e7d32'
+                    });
+                  }
+                })
+                .catch((error) => {
+                  console.error('Error archiving entry:', error);
+                  Swal.fire({
+                    title: 'Error!',
+                    text: 'Error archiving entries. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#dc3545'
+                  });
+                });
+              }
+            });
+          }
+          Swal.close();
+        }).catch((error) => {
+          console.error('Error checking entries:', error);
+          Swal.close();
+          showErrorAlert('Error checking entries. Please try again.');
+        });
+      }
+
+      // Function to load entries into the table
+      function loadEntries() {
+        const currentYear = new Date().getFullYear();
+        entriesRef.on('value', (snapshot) => {
+          const entries = snapshot.val();
+          const accordionContainer = document.getElementById('monthlyStatsAccordion');
+          
+          // Create months array
+          const months = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+          ];
+
+          // Clear existing content
+          accordionContainer.innerHTML = '';
+
+          // Create accordion structure for all months
+          months.forEach(month => {
+            const monthKey = `${month.toLowerCase()}${currentYear}`;
+            const monthEntries = entries ? Object.entries(entries)
+              .filter(([_, entry]) => {
+                try {
+                  const date = new Date(entry.dateReceived);
+                  if (isNaN(date.getTime())) return false;
+                  const entryMonth = date.toLocaleString('default', { month: 'long' });
+                  const entryYear = date.getFullYear();
+                  // Only show non-archived entries
+                  return entryMonth === month && entryYear === currentYear && entry.status !== 'Archived';
+                } catch (error) {
+                  console.error('Error processing entry:', error);
+                  return false;
+                }
+              })
+              .map(([key, entry]) => ({ key, ...entry })) : [];
+
+            // Sort entries by date
+            monthEntries.sort((a, b) => {
+              return new Date(b.dateReceived) - new Date(a.dateReceived);
+            });
+
+            // Calculate statistics (only for non-archived entries)
+            const stats = {
+              complaints: monthEntries.filter(e => e.type === 'Complaint').length,
+              proposals: monthEntries.filter(e => e.type === 'Proposal').length,
+              invitations: monthEntries.filter(e => e.type === 'Invitation').length,
+              requests: monthEntries.filter(e => e.type === 'Request').length
+            };
+
+            // Create accordion item
+            const accordionItem = document.createElement('div');
+            accordionItem.className = 'accordion-item border-0 mb-2';
+            accordionItem.innerHTML = `
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${monthKey}">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <div>
+                      <span class="fw-bold">${month} ${currentYear}</span>
+                      <span class="badge bg-success ms-2">Active</span>
+                    </div>
+                    <div class="text-muted small">
+                      <i class="bi bi-arrow-down-circle me-1"></i>
+                      Click to view details
+                    </div>
+                  </div>
+                </button>
+              </h2>
+              <div id="${monthKey}" class="accordion-collapse collapse" data-bs-parent="#monthlyStatsAccordion">
+                <div class="accordion-body">
+                  <!-- ${month} Statistics -->
+                  <div class="row mb-4">
+                    <div class="col-md-3">
+                      <div class="card bg-primary bg-opacity-10">
+                        <div class="card-body">
+                          <h6 class="card-title text-primary">Complaints</h6>
+                          <h2 class="card-text">${stats.complaints}</h2>
+                          <div class="d-flex align-items-center">
+                            <span class="trend-indicator trend-up text-primary">
+                              <i class="bi bi-arrow-up me-1"></i>0%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card bg-warning bg-opacity-10">
+                        <div class="card-body">
+                          <h6 class="card-title text-warning">Proposals</h6>
+                          <h2 class="card-text">${stats.proposals}</h2>
+                          <div class="d-flex align-items-center">
+                            <span class="trend-indicator trend-up text-warning">
+                              <i class="bi bi-arrow-up me-1"></i>0%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card bg-info bg-opacity-10">
+                        <div class="card-body">
+                          <h6 class="card-title text-info">Invitations</h6>
+                          <h2 class="card-text">${stats.invitations}</h2>
+                          <div class="d-flex align-items-center">
+                            <span class="trend-indicator trend-up text-info">
+                              <i class="bi bi-arrow-up me-1"></i>0%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card bg-success bg-opacity-10">
+                        <div class="card-body">
+                          <h6 class="card-title text-success">Requests</h6>
+                          <h2 class="card-text">${stats.requests}</h2>
+                          <div class="d-flex align-items-center">
+                            <span class="trend-indicator trend-up text-success">
+                              <i class="bi bi-arrow-up me-1"></i>0%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-hover monthly-stats-table">
+                      <thead>
+                        <tr>
+                          <th>Control #</th>
+                          <th>Type</th>
+                          <th>Time Received</th>
+                          <th>Date Received</th>
+                          <th>From</th>
+                          <th>Office</th>
+                          <th>Subject</th>
+                          <th>Endorsed To</th>
+                          <th>Remarks</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        ${monthEntries.length > 0 ? monthEntries.map(entry => `
+                          <tr>
+                            <td>${entry.controlNumber}</td>
+                            <td>${entry.type}</td>
+                            <td>${entry.timeReceived}</td>
+                            <td>${formatDate(entry.dateReceived)}</td>
+                            <td>${entry.from}</td>
+                            <td>${entry.office}</td>
+                            <td>${entry.subject}</td>
+                            <td>${entry.endorsedTo}</td>
+                            <td>${entry.remarks || ''}</td>
+                            <td><span class="badge bg-${getStatusColor(entry.status)}">${entry.status}</span></td>
+                            <td>
+                              <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editEntryModal" onclick="editEntry('${entry.key}')">
+                                <i class="bi bi-pencil"></i>
+                              </button>
+                              <button class="btn btn-sm btn-danger" onclick="deleteEntry('${entry.key}')">
+                                <i class="bi bi-trash"></i>
+                              </button>
+                            </td>
+                          </tr>
+                        `).join('') : `
+                          <tr>
+                            <td colspan="11" class="text-center text-muted">No entries for ${month}</td>
+                          </tr>
+                        `}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            `;
+            accordionContainer.appendChild(accordionItem);
+          });
+        });
+      }
+
+      // Function to get status color
+      function getStatusColor(status) {
+        switch(status) {
+          case 'Pending': return 'warning';
+          case 'Processing': return 'info';
+          case 'Completed': return 'success';
+          case 'Archived': return 'secondary';
+          default: return 'primary';
+        }
+      }
+
+      // Function to format date
+      function formatDate(dateString) {
+        try {
+          const date = new Date(dateString);
+          if (isNaN(date.getTime())) {
+            return dateString;
+          }
+          return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (error) {
+          console.error('Error formatting date:', error);
+          return dateString;
+        }
+      }
+
+      // Function to log activity
+      function logActivity(action, details, controlNumber) {
+        const logData = {
+          timestamp: firebase.database.ServerValue.TIMESTAMP,
+          user: 'Admin', // Replace with actual user when authentication is implemented
+          action: action,
+          details: details,
+          controlNumber: controlNumber,
+          ipAddress: '127.0.0.1' // Replace with actual IP when available
+        };
+
+        database.ref('logs').push(logData)
+          .catch((error) => {
+            console.error('Error logging activity:', error);
+          });
+      }
+
+      // Function to show success alert
+      function showSuccessAlert(message) {
+        Swal.fire({
+          title: 'Success!',
+          text: message,
+          icon: 'success',
+          confirmButtonColor: '#2e7d32',
+          timer: 2000,
+          timerProgressBar: true
+        });
+      }
+
+      // Function to show error alert
+      function showErrorAlert(message) {
+        Swal.fire({
+          title: 'Error!',
+          text: message,
+          icon: 'error',
+          confirmButtonColor: '#dc3545'
+        });
+      }
+
+      // Function to show confirmation dialog
+      function showConfirmDialog(title, text, confirmButtonText) {
+        return Swal.fire({
+          title: title,
+          text: text,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#2e7d32',
+          cancelButtonColor: '#dc3545',
+          confirmButtonText: confirmButtonText
+        });
+      }
+
+      // Update delete entry function
+      function deleteEntry(key) {
+        showConfirmDialog('Are you sure?', 'You won\'t be able to revert this!', 'Yes, delete it!')
+          .then((result) => {
+            if (result.isConfirmed) {
+              entriesRef.child(key).once('value', (snapshot) => {
+                const entry = snapshot.val();
+                entriesRef.child(key).remove()
+                  .then(() => {
+                    logActivity('delete', `Deleted entry: ${entry.subject}`, entry.controlNumber);
+                    showSuccessAlert('Entry deleted successfully!');
+                  })
+                  .catch((error) => {
+                    console.error('Error deleting entry:', error);
+                    showErrorAlert('Error deleting entry. Please try again.');
+                  });
+              });
+            }
+          });
+      }
+
+      // Function to archive all entries
+      function archiveAllEntries() {
+        showConfirmDialog('Archive All Entries', 'Are you sure you want to archive all entries? This action cannot be undone.', 'Yes, archive all!')
+          .then((result) => {
+            if (result.isConfirmed) {
+              // Show initial loading state
+              Swal.fire({
+                title: 'Preparing to Archive',
+                text: 'Please wait while we prepare to archive entries...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                }
+              });
+
+              entriesRef.once('value', (snapshot) => {
+                const entries = snapshot.val();
+                if (entries) {
+                  let archivedCount = 0;
+                  let totalToArchive = 0;
+                  
+                  // First count how many entries need to be archived
+                  Object.entries(entries).forEach(([_, entry]) => {
+                    if (entry.status !== 'Archived') {
+                      totalToArchive++;
+                    }
+                  });
+
+                  if (totalToArchive === 0) {
+                    Swal.fire({
+                      title: 'No Entries to Archive',
+                      text: 'There are no entries available to archive.',
+                      icon: 'info',
+                      confirmButtonColor: '#2e7d32'
+                    });
+                    return;
+                  }
+
+                  // Update loading message
+                  Swal.update({
+                    title: 'Archiving Entries',
+                    html: `Archiving ${totalToArchive} entries...<br><br>
+                          <div class="progress" style="height: 20px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" 
+                                 style="width: 0%" 
+                                 id="archiveProgress">
+                              0%
+                            </div>
+                          </div>`
+                  });
+
+                  // Archive each entry
+                  Object.entries(entries).forEach(([key, entry]) => {
+                    if (entry.status !== 'Archived') {
+                      entriesRef.child(key).update({
+                        status: 'Archived',
+                        archivedAt: firebase.database.ServerValue.TIMESTAMP
+                      })
+                      .then(() => {
+                        archivedCount++;
+                        logActivity('archive', `Archived entry: ${entry.subject}`, entry.controlNumber);
+                        
+                        // Update progress bar
+                        const progress = Math.round((archivedCount / totalToArchive) * 100);
+                        document.getElementById('archiveProgress').style.width = `${progress}%`;
+                        document.getElementById('archiveProgress').textContent = `${progress}%`;
+                        
+                        // Update progress
+                        if (archivedCount === totalToArchive) {
+                          Swal.fire({
+                            title: 'Success!',
+                            text: `Successfully archived ${archivedCount} entries!`,
+                            icon: 'success',
+                            confirmButtonColor: '#2e7d32'
+                          }).then(() => {
+                            loadEntries();
+                          });
+                        }
+                      })
+                      .catch((error) => {
+                        console.error('Error archiving entry:', error);
+                        Swal.fire({
+                          title: 'Error!',
+                          text: 'Error archiving entries. Please try again.',
+                          icon: 'error',
+                          confirmButtonColor: '#dc3545'
+                        });
+                      });
+                    }
+                  });
+                } else {
+                  Swal.fire({
+                    title: 'No Entries Found',
+                    text: 'There are no entries in the database.',
+                    icon: 'info',
+                    confirmButtonColor: '#2e7d32'
+                  });
+                }
+              }).catch((error) => {
+                console.error('Error preparing to archive:', error);
+                Swal.fire({
+                  title: 'Error!',
+                  text: 'Error preparing to archive entries. Please try again.',
+                  icon: 'error',
+                  confirmButtonColor: '#dc3545'
+                });
+              });
+            }
+          });
+      }
+
+      // Update restore entry function
+      function restoreEntry(key) {
+        showConfirmDialog('Restore Entry', 'Are you sure you want to restore this entry?', 'Yes, restore it!')
+          .then((result) => {
+            if (result.isConfirmed) {
+              entriesRef.child(key).update({
+                status: 'Pending',
+                restoredAt: firebase.database.ServerValue.TIMESTAMP
+              })
+              .then(() => {
+                logActivity('restore', `Restored archived entry: ${key}`, key);
+                showSuccessAlert('Entry restored successfully!');
+                loadArchivedEntries();
+              })
+              .catch((error) => {
+                console.error('Error restoring entry:', error);
+                showErrorAlert('Error restoring entry. Please try again.');
+              });
+            }
+          });
+      }
+
+      // Update create entry handler
+      document.getElementById('saveEntry').addEventListener('click', function() {
+        const formData = {
+          type: document.getElementById('letterType').value,
+          controlNumber: document.getElementById('controlNumber').value,
+          dateReceived: document.getElementById('dateReceived').value,
+          timeReceived: document.getElementById('timeReceived').value,
+          from: document.getElementById('from').value,
+          office: document.getElementById('office').value,
+          subject: document.getElementById('subject').value,
+          endorsedTo: document.getElementById('endorsedTo').value,
+          remarks: document.getElementById('remarks').value,
+          status: document.getElementById('status').value,
+          createdAt: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        entriesRef.push(formData)
+          .then(() => {
+            logActivity('create', `Created new entry: ${formData.subject}`, formData.controlNumber);
+            
+            document.getElementById('createEntryForm').reset();
+            
+            const now = new Date();
+            const currentDate = now.toISOString().split('T')[0];
+            const currentTime = now.toTimeString().slice(0, 5);
+            document.getElementById('dateReceived').value = currentDate;
+            document.getElementById('timeReceived').value = currentTime;
+            document.getElementById('controlNumber').value = generateControlNumber(currentDate);
+            
+            showSuccessAlert('Entry created successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('createEntryModal'));
+            modal.hide();
+
+            const currentMonth = now.toLocaleString('default', { month: 'long' }).toLowerCase() + now.getFullYear();
+            loadEntries();
+            setTimeout(() => {
+              const accordionButton = document.querySelector(`button[data-bs-target="#${currentMonth}"]`);
+              if (accordionButton) {
+                accordionButton.click();
+              }
+            }, 500);
+          })
+          .catch((error) => {
+            console.error('Error creating entry:', error);
+            showErrorAlert('Error creating entry. Please try again.');
+          });
+      });
+
+      // Update edit entry handler
+      document.getElementById('updateEntry').addEventListener('click', function() {
+        const key = document.getElementById('editEntryForm').dataset.key;
+        const formData = {
+          type: document.getElementById('editType').value,
+          controlNumber: document.getElementById('editControlNumber').value,
+          dateReceived: document.getElementById('editDateReceived').value,
+          timeReceived: document.getElementById('editTimeReceived').value,
+          from: document.getElementById('editFrom').value,
+          office: document.getElementById('editOffice').value,
+          subject: document.getElementById('editSubject').value,
+          endorsedTo: document.getElementById('editEndorsedTo').value,
+          remarks: document.getElementById('editRemarks').value,
+          status: document.getElementById('editStatus').value,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        entriesRef.child(key).update(formData)
+          .then(() => {
+            logActivity('update', `Updated entry: ${formData.subject}`, formData.controlNumber);
+            
+            showSuccessAlert('Entry updated successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editEntryModal'));
+            modal.hide();
+
+            const entryDate = new Date(formData.dateReceived);
+            const monthKey = entryDate.toLocaleString('default', { month: 'long' }).toLowerCase() + entryDate.getFullYear();
+            loadEntries();
+            setTimeout(() => {
+              const accordionButton = document.querySelector(`button[data-bs-target="#${monthKey}"]`);
+              if (accordionButton) {
+                accordionButton.click();
+              }
+            }, 500);
+          })
+          .catch((error) => {
+            console.error('Error updating entry:', error);
+            showErrorAlert('Error updating entry. Please try again.');
+          });
+      });
+
+      // Update profile form submission
+      document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const profileData = {
+          firstName: document.getElementById('firstName').value,
+          lastName: document.getElementById('lastName').value,
+          email: document.getElementById('email').value,
+          phone: document.getElementById('phone').value,
+          department: document.getElementById('department').value,
+          position: document.getElementById('position').value,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        };
+
+        database.ref('users/admin').update(profileData)
+          .then(() => {
+            showSuccessAlert('Profile updated successfully!');
+            logActivity('profile_update', 'Updated profile information', 'admin');
+          })
+          .catch((error) => {
+            console.error('Error updating profile:', error);
+            showErrorAlert('Error updating profile. Please try again.');
+          });
+      });
+
+      // Update password change form submission
+      document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (newPassword !== confirmPassword) {
+          showErrorAlert('New passwords do not match!');
+          return;
+        }
+
+        showSuccessAlert('Password updated successfully!');
+        logActivity('password_change', 'Changed password', 'admin');
+        document.getElementById('passwordForm').reset();
+      });
+
+      // Update profile image upload
+      document.getElementById('profileImageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          showSuccessAlert('Profile image updated successfully!');
+          logActivity('profile_image', 'Updated profile image', 'admin');
+        }
+      });
+
+      // Edit entry function
+      function editEntry(key) {
+        entriesRef.child(key).once('value', (snapshot) => {
+          const entry = snapshot.val();
+          if (entry) {
+            document.getElementById('editType').value = entry.type;
+            document.getElementById('editControlNumber').value = entry.controlNumber;
+            document.getElementById('editDateReceived').value = entry.dateReceived;
+            document.getElementById('editTimeReceived').value = entry.timeReceived;
+            document.getElementById('editFrom').value = entry.from;
+            document.getElementById('editOffice').value = entry.office;
+            document.getElementById('editSubject').value = entry.subject;
+            document.getElementById('editEndorsedTo').value = entry.endorsedTo;
+            document.getElementById('editRemarks').value = entry.remarks || '';
+            document.getElementById('editStatus').value = entry.status;
+
+            // Store the key for updating
+            document.getElementById('editEntryForm').dataset.key = key;
+          }
+        });
+      }
+
+      // Update control number when date changes in create form
+      document.getElementById('dateReceived').addEventListener('change', function() {
+        const controlNumber = generateControlNumber(this.value);
+        document.getElementById('controlNumber').value = controlNumber;
+      });
+
+      // Update control number when date changes in edit form
+      document.getElementById('editDateReceived').addEventListener('change', function() {
+        const controlNumber = generateControlNumber(this.value);
+        document.getElementById('editControlNumber').value = controlNumber;
+      });
+
+      // Set current time and generate control number when modal opens
+      document.getElementById('createEntryModal').addEventListener('show.bs.modal', function() {
+        const now = new Date();
+        const currentDate = now.toISOString().split('T')[0];
+        const currentTime = now.toTimeString().slice(0, 5);
+        
+        document.getElementById('dateReceived').value = currentDate;
+        document.getElementById('timeReceived').value = currentTime;
+        document.getElementById('controlNumber').value = generateControlNumber(currentDate);
+      });
+
+      // Load entries and check for archiving when page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        checkAndArchiveEntries();
+        loadEntries();
+      });
+
+      // Function to load archived entries
+      function loadArchivedEntries() {
+        // Show loading state
+        Swal.fire({
+          title: 'Loading Archived Entries',
+          text: 'Please wait...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        entriesRef.once('value', (snapshot) => {
+          const entries = snapshot.val();
+          const archivedYearsContainer = document.getElementById('archivedYearsContainer');
+          archivedYearsContainer.innerHTML = '';
+
+          if (entries) {
+            // Group entries by year
+            const entriesByYear = {};
+            Object.entries(entries).forEach(([key, entry]) => {
+              if (entry.status === 'Archived') {
+                const year = new Date(entry.dateReceived).getFullYear();
+                if (!entriesByYear[year]) {
+                  entriesByYear[year] = [];
+                }
+                entriesByYear[year].push({ key, ...entry });
+              }
+            });
+
+            // Sort years in descending order
+            const years = Object.keys(entriesByYear).sort((a, b) => b - a);
+
+            // Create accordion for each year
+            years.forEach(year => {
+              const yearEntries = entriesByYear[year];
+              const yearAccordion = document.createElement('div');
+              yearAccordion.className = 'col-12 mb-4';
+              yearAccordion.innerHTML = `
+                <div class="card">
+                  <div class="card-header">
+                    <h5 class="card-title mb-0">${year}</h5>
+                  </div>
+                  <div class="card-body">
+                    <div class="table-responsive">
+                      <table class="table table-hover archived-entries-table" id="archivedTable${year}">
+                        <thead>
+                          <tr>
+                            <th>Control #</th>
+                            <th>Type</th>
+                            <th>Time Received</th>
+                            <th>Date Received</th>
+                            <th>From</th>
+                            <th>Office</th>
+                            <th>Subject</th>
+                            <th>Endorsed To</th>
+                            <th>Remarks</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          ${yearEntries.map(entry => `
+                            <tr>
+                              <td>${entry.controlNumber}</td>
+                              <td>${entry.type}</td>
+                              <td>${entry.timeReceived}</td>
+                              <td>${formatDate(entry.dateReceived)}</td>
+                              <td>${entry.from}</td>
+                              <td>${entry.office}</td>
+                              <td>${entry.subject}</td>
+                              <td>${entry.endorsedTo}</td>
+                              <td>${entry.remarks || ''}</td>
+                              <td><span class="badge bg-secondary">Archived</span></td>
+                              <td>
+                                <button class="btn btn-sm btn-info" onclick="viewArchivedEntry('${entry.key}')">
+                                  <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="restoreEntry('${entry.key}')">
+                                  <i class="bi bi-arrow-counterclockwise"></i>
+                                </button>
+                              </td>
+                            </tr>
+                          `).join('')}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              `;
+              archivedYearsContainer.appendChild(yearAccordion);
+
+              // Initialize DataTable for this year's entries
+              $(`#archivedTable${year}`).DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                  'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                pageLength: 10,
+                order: [[3, 'desc']],
+                destroy: true,
+                language: {
+                  search: "Search entries:"
+                }
+              });
+            });
+
+            if (years.length === 0) {
+              archivedYearsContainer.innerHTML = `
+                <div class="col-12 text-center">
+                  <p class="text-muted">No archived entries found.</p>
+                </div>
+              `;
+            }
+          }
+
+          // Close loading state
+          Swal.close();
+        }).catch((error) => {
+          console.error('Error loading archived entries:', error);
+          Swal.close();
+          showErrorAlert('Error loading archived entries. Please try again.');
+        });
+      }
+
+      // Function to view archived entry details
+      function viewArchivedEntry(key) {
+        entriesRef.child(key).once('value', (snapshot) => {
+          const entry = snapshot.val();
+          if (entry) {
+            // Show entry details in a modal
+            const modal = new bootstrap.Modal(document.getElementById('viewArchivedModal'));
+            document.getElementById('viewArchivedModal').querySelector('.modal-body').innerHTML = `
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <strong>Control Number:</strong> ${entry.controlNumber}
+                </div>
+                <div class="col-md-6">
+                  <strong>Type:</strong> ${entry.type}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <strong>Date Received:</strong> ${formatDate(entry.dateReceived)}
+                </div>
+                <div class="col-md-6">
+                  <strong>Time Received:</strong> ${entry.timeReceived}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <strong>From:</strong> ${entry.from}
+                </div>
+                <div class="col-md-6">
+                  <strong>Office:</strong> ${entry.office}
+                </div>
+              </div>
+              <div class="mb-3">
+                <strong>Subject:</strong> ${entry.subject}
+              </div>
+              <div class="mb-3">
+                <strong>Endorsed To:</strong> ${entry.endorsedTo}
+              </div>
+              <div class="mb-3">
+                <strong>Remarks:</strong> ${entry.remarks || 'None'}
+              </div>
+              <div class="mb-3">
+                <strong>Archived On:</strong> ${formatDate(entry.archivedAt)}
+              </div>
+            `;
+            modal.show();
+          }
+        });
+      }
+
+      // Function to handle navigation
+      function handleNavigation(sectionId) {
+        // Hide all sections
+        document.querySelectorAll('.main-content > div').forEach(section => {
+          section.classList.add('d-none');
+        });
+        
+        // Show selected section
+        document.getElementById(sectionId).classList.remove('d-none');
+        
+        // Update active state in sidebar
+        document.querySelectorAll('.nav-link').forEach(link => {
+          link.classList.remove('active');
+        });
+        document.querySelector(`#${sectionId.replace('Section', 'Link')}`).classList.add('active');
+        
+        // Load section-specific data
+        switch(sectionId) {
+          case 'documentsSection':
+            loadDocuments();
+            break;
+          case 'usersSection':
+            loadUsers();
+            break;
+          case 'archivesSection':
+            loadArchivedEntries();
+            break;
+          case 'historySection':
+            loadHistory();
+            break;
+          case 'profileSection':
+            loadProfile();
+            break;
+          default:
+            loadEntries();
+        }
+      }
+
+      // Add event listeners for navigation
+      document.getElementById('dashboardLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation('dashboardSection');
+      });
+
+      document.getElementById('documentsLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation('documentsSection');
+      });
+
+      document.getElementById('usersLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation('usersSection');
+      });
+
+      document.getElementById('archivesLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation('archivesSection');
+      });
+
+      document.getElementById('historyLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation('historySection');
+      });
+
+      document.getElementById('profileLink').addEventListener('click', function(e) {
+        e.preventDefault();
+        handleNavigation('profileSection');
+      });
+
+      // Function to load documents
+      function loadDocuments() {
+        entriesRef.once('value', (snapshot) => {
+          const entries = snapshot.val();
+          const currentYear = new Date().getFullYear();
+          const currentMonth = new Date().getMonth();
+
+          // Initialize statistics
+          const yearlyStats = {
+            total: 0,
+            complaints: 0,
+            requests: 0,
+            proposals: 0,
+            invitations: 0
+          };
+
+          const monthlyStats = {
+            total: 0,
+            dailyAverage: 0,
+            highestVolume: { month: '', count: 0 },
+            lowestVolume: { month: '', count: Infinity }
+          };
+
+          const monthlyData = Array(12).fill(0);
+
+          if (entries) {
+            Object.entries(entries).forEach(([_, entry]) => {
+              const entryDate = new Date(entry.dateReceived);
+              const entryYear = entryDate.getFullYear();
+              const entryMonth = entryDate.getMonth();
+
+              // Yearly statistics
+              if (entryYear === currentYear) {
+                yearlyStats.total++;
+                yearlyStats[entry.type.toLowerCase() + 's']++;
+
+                // Monthly statistics
+                if (entryMonth === currentMonth) {
+                  monthlyStats.total++;
+                }
+                monthlyData[entryMonth]++;
+              }
+            });
+
+            // Calculate monthly statistics
+            const nonZeroMonths = monthlyData.filter(count => count > 0);
+            monthlyStats.dailyAverage = nonZeroMonths.length > 0 ? 
+              Math.round(nonZeroMonths.reduce((a, b) => a + b, 0) / nonZeroMonths.length) : 0;
+
+            monthlyData.forEach((count, month) => {
+              if (count > monthlyStats.highestVolume.count) {
+                monthlyStats.highestVolume = {
+                  month: new Date(2000, month).toLocaleString('default', { month: 'long' }),
+                  count: count
+                };
+              }
+              if (count < monthlyStats.lowestVolume.count && count > 0) {
+                monthlyStats.lowestVolume = {
+                  month: new Date(2000, month).toLocaleString('default', { month: 'long' }),
+                  count: count
+                };
+              }
+            });
+          }
+
+          // Update yearly statistics
+          document.getElementById('yearlyTotal').textContent = yearlyStats.total;
+          document.getElementById('yearlyComplaints').textContent = yearlyStats.complaints;
+          document.getElementById('yearlyRequests').textContent = yearlyStats.requests;
+          document.getElementById('yearlyProposals').textContent = yearlyStats.proposals;
+          document.getElementById('yearlyInvitations').textContent = yearlyStats.invitations;
+
+          // Update monthly statistics
+          document.getElementById('monthlyTotal').textContent = monthlyStats.total;
+          document.getElementById('avgDailyLetters').textContent = monthlyStats.dailyAverage;
+          document.getElementById('highestVolumeMonth').textContent = 
+            `${monthlyStats.highestVolume.month} (${monthlyStats.highestVolume.count})`;
+          document.getElementById('lowestVolumeMonth').textContent = 
+            `${monthlyStats.lowestVolume.month} (${monthlyStats.lowestVolume.count})`;
+
+          // Create monthly letters chart
+          const monthlyCtx = document.getElementById('monthlyLettersChart').getContext('2d');
+          new Chart(monthlyCtx, {
+            type: 'line',
+            data: {
+              labels: ['January', 'February', 'March', 'April', 'May', 'June', 
+                      'July', 'August', 'September', 'October', 'November', 'December'],
+              datasets: [{
+                label: 'Letters Received',
+                data: monthlyData,
+                borderColor: '#2e7d32',
+                backgroundColor: 'rgba(46, 125, 50, 0.1)',
+                tension: 0.4,
+                fill: true
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: false
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    stepSize: 1
+                  }
+                }
+              }
+            }
+          });
+        });
+      }
+
+      // Function to load users
+      function loadUsers() {
+        // Check if DataTable is already initialized
+        if ($.fn.DataTable.isDataTable('#usersTable')) {
+          $('#usersTable').DataTable().destroy();
+        }
+
+        // Show loading state
+        Swal.fire({
+          title: 'Loading Users',
+          text: 'Please wait...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        database.ref('users').once('value', (snapshot) => {
+          const users = snapshot.val();
+          const tbody = document.querySelector('#usersTable tbody');
+          tbody.innerHTML = '';
+
+          if (users) {
+            Object.entries(users).forEach(([key, user]) => {
+              if (key !== 'admin') { // Skip the admin user
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                  <td>${user.firstName} ${user.lastName}</td>
+                  <td>${user.email}</td>
+                  <td>${user.role}</td>
+                  <td><span class="badge bg-success">Active</span></td>
+                  <td>
+                    <button class="btn btn-sm btn-primary" onclick="editUser('${key}')">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteUser('${key}')">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </td>
+                `;
+                tbody.appendChild(row);
+              }
+            });
+          }
+
+          // Initialize DataTable
+          $('#usersTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+              'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            pageLength: 10,
+            order: [[0, 'asc']],
+            destroy: true,
+            language: {
+              search: "Search users:"
+            }
+          });
+
+          // Close loading state
+          Swal.close();
+        }).catch((error) => {
+          console.error('Error loading users:', error);
+          Swal.close();
+          showErrorAlert('Error loading users. Please try again.');
+        });
+      }
+
+      // Function to load history
+      function loadHistory() {
+        // Check if DataTable is already initialized
+        if ($.fn.DataTable.isDataTable('#historyTable')) {
+          $('#historyTable').DataTable().destroy();
+        }
+
+        // Show loading state
+        Swal.fire({
+          title: 'Loading History',
+          text: 'Please wait...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        database.ref('logs').on('value', (snapshot) => {
+          const logs = snapshot.val();
+          const tbody = document.querySelector('#historyTable tbody');
+          tbody.innerHTML = '';
+
+          if (logs) {
+            Object.entries(logs).forEach(([key, log]) => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${formatDate(log.timestamp)}</td>
+                <td>${log.user}</td>
+                <td>${log.action}</td>
+                <td>${log.details}</td>
+                <td>${log.controlNumber || '-'}</td>
+                <td>${log.ipAddress || '-'}</td>
+                <td class="small text-muted">${log.userAgent || '-'}</td>
+              `;
+              tbody.appendChild(row);
+            });
+          }
+
+          // Initialize DataTable
+          $('#historyTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+              'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            pageLength: 10,
+            order: [[0, 'desc']],
+            destroy: true,
+            language: {
+              search: "Search history:"
+            },
+            columnDefs: [
+              { width: '15%', targets: 0 },
+              { width: '10%', targets: 1 },
+              { width: '10%', targets: 2 },
+              { width: '25%', targets: 3 },
+              { width: '10%', targets: 4 },
+              { width: '15%', targets: 5 },
+              { width: '15%', targets: 6 }
+            ]
+          });
+
+          // Close loading state
+          Swal.close();
+        }).catch((error) => {
+          console.error('Error loading history:', error);
+          Swal.close();
+          showErrorAlert('Error loading history. Please try again.');
+        });
+      }
+
+      // Function to view audit log details
+      function viewAuditLog(key, log) {
+        const modal = new bootstrap.Modal(document.getElementById('viewAuditLogModal'));
+        
+        // Format timestamp
+        const timestamp = new Date(log.timestamp);
+        const formattedTimestamp = timestamp.toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+
+        // Update modal content
+        document.getElementById('auditTimestamp').textContent = formattedTimestamp;
+        document.getElementById('auditUser').textContent = log.user;
+        document.getElementById('auditAction').textContent = log.action;
+        document.getElementById('auditControlNumber').textContent = log.controlNumber || '-';
+        document.getElementById('auditDetails').textContent = log.details;
+        document.getElementById('auditIP').textContent = log.ipAddress || 'Not available';
+        document.getElementById('auditUserAgent').textContent = log.userAgent || 'Not available';
+
+        // Show modal
+        modal.show();
+      }
+
+      // Function to load profile
+      function loadProfile() {
+        // Implementation of loadProfile function
+      }
+
+      // Initialize the dashboard on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        handleNavigation('dashboardSection');
+      });
+
+      // Add event listener for the Archive All button
+      document.addEventListener('DOMContentLoaded', function() {
+        const archiveAllBtn = document.getElementById('archiveAllBtn');
+        if (archiveAllBtn) {
+          archiveAllBtn.addEventListener('click', archiveAllEntries);
+        }
+      });
+    </script>
+  </body>
+</html>

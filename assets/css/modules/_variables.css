@@ -1,0 +1,12 @@
+:root {
+    --primary-green: #2e7d32;  /* Deep green */
+    --secondary-green: #1b5e20;  /* Darker green */
+    --light-green: #4caf50;  /* Bright green */
+    --dark-green: #1b5e20;  /* Dark green */
+    --gradient-start: #2e7d32;
+    --gradient-end: #1b5e20;
+    --card-shadow: 0 4px 6px rgba(46,125,50,0.1);
+    --hover-shadow: 0 8px 15px rgba(46,125,50,0.2);
+    --bg-light: #f8f9fa;
+    --text-muted: #6c757d;
+} 

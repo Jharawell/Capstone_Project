@@ -1,0 +1,339 @@
+/* Import all CSS modules */
+@import 'modules/_variables.css';
+@import 'modules/_animations.css';
+@import 'modules/_base.css';
+@import 'modules/_sidebar.css';
+@import 'modules/_components.css';
+
+/* Import section-specific styles */
+@import 'sections/_dashboard.css';
+@import 'sections/_documents.css';
+@import 'sections/_users.css';
+@import 'sections/_archives.css';
+@import 'sections/_history.css';
+@import 'sections/_profile.css';
+
+:root {
+    --primary-green: #2e7d32;  /* Deep green */
+    --secondary-green: #1b5e20;  /* Darker green */
+    --light-green: #4caf50;  /* Bright green */
+    --dark-green: #1b5e20;  /* Dark green */
+    --accent-color: #4caf50;  /* Bright green */
+    --text-color: #1a237e;  /* Deep blue for text */
+    --light-bg: #f1f8e9;  /* Light green background */
+    --gradient-start: #2e7d32;
+    --gradient-end: #1b5e20;
+    --card-shadow: 0 4px 6px rgba(46,125,50,0.1);
+    --hover-shadow: 0 8px 15px rgba(46,125,50,0.2);
+    --bg-light: #f8f9fa;
+    --text-muted: #6c757d;
+}
+
+/* Enhanced Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Base Styles */
+body {
+    font-family: 'Poppins', sans-serif !important;
+    color: var(--text-color) !important;
+    background-color: var(--light-bg) !important;
+    line-height: 1.6 !important;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) !important;
+    min-height: 100vh !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 1000 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    padding: 0.8rem 1rem !important;
+    margin: 0.2rem 0 !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+}
+
+.sidebar .nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: translateX(5px) !important;
+}
+
+.sidebar .nav-link.active {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.sidebar .nav-link i {
+    margin-right: 0.5rem !important;
+    font-size: 1.1rem !important;
+}
+
+/* Main Content Styles */
+.main-content {
+    margin-left: 16.666667% !important;
+    padding: 2rem !important;
+    transition: all 0.3s ease !important;
+    animation: fadeInUp 0.5s ease-out !important;
+}
+
+.header-section {
+    background: white !important;
+    padding: 1.5rem !important;
+    border-radius: 12px !important;
+    box-shadow: var(--card-shadow) !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Card Styles */
+.card {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: var(--card-shadow) !important;
+    margin-bottom: 1.5rem !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+}
+
+.card:hover {
+    box-shadow: var(--hover-shadow) !important;
+    transform: translateY(-5px) !important;
+}
+
+.card-header {
+    background-color: var(--primary-green) !important;
+    color: white !important;
+    border-bottom: none !important;
+    padding: 1.25rem !important;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.card-body {
+    padding: 1.5rem !important;
+}
+
+/* Table Styles */
+.table {
+    margin-bottom: 0 !important;
+}
+
+.table th {
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
+    border-top: none !important;
+}
+
+.table td {
+    vertical-align: middle !important;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 8px !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-green), var(--secondary-green)) !important;
+    border: none !important;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, var(--secondary-green), var(--primary-green)) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: var(--hover-shadow) !important;
+}
+
+/* Form Styles */
+.form-control {
+    border-radius: 8px !important;
+    border: 1px solid #e9ecef !important;
+    padding: 0.5rem 0.75rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.form-control:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.15) !important;
+}
+
+/* Badge Styles */
+.badge {
+    padding: 0.5em 0.75em !important;
+    border-radius: 6px !important;
+    font-weight: 500 !important;
+}
+
+/* Modal Styles */
+.modal-content {
+    border-radius: 12px !important;
+    border: none !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    padding: 1.25rem !important;
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
+    padding: 1.25rem !important;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100% !important;
+        position: relative !important;
+        min-height: auto !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+    }
+}
+
+/* Menu Toggle Button */
+.menu-toggle {
+    display: none !important;
+    position: fixed !important;
+    top: 1rem !important;
+    left: 1rem !important;
+    z-index: 1001 !important;
+    background: var(--primary-green) !important;
+    border: none !important;
+    color: white !important;
+    padding: 0.5rem !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+}
+
+.menu-toggle:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: var(--hover-shadow) !important;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block !important;
+    }
+
+    .sidebar {
+        transform: translateX(-100%) !important;
+    }
+
+    .sidebar.show {
+        transform: translateX(0) !important;
+    }
+}
+
+/* User Avatar */
+.user-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    transition: all 0.3s ease !important;
+}
+
+.user-avatar:hover {
+    transform: scale(1.1) !important;
+}
+
+/* Activity List */
+.activity-list {
+    max-height: 400px !important;
+    overflow-y: auto !important;
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative !important;
+    height: 300px !important;
+    width: 100% !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1 !important;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--accent-color) !important;
+    border-radius: 4px !important;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-green) !important;
+}
+
+/* Dashboard Overview Styles */
+.dashboard-overview {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) !important;
+    color: white !important;
+    padding: 2rem !important;
+    border-radius: 12px !important;
+    margin-bottom: 2rem !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.dashboard-overview h2 {
+    color: white !important;
+    font-weight: 600 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.dashboard-overview .stat-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 1.5rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.dashboard-overview .stat-card:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-5px) !important;
+}
+
+.dashboard-overview .stat-card h3 {
+    color: white !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.dashboard-overview .stat-card p {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin-bottom: 0 !important;
+}

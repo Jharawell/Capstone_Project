@@ -1,0 +1,122 @@
+/* Archives Section */
+.archives-section {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+/* Archive List */
+.archive-list {
+    margin-top: 1.5rem !important;
+}
+
+.archive-item {
+    padding: 1rem !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.3s ease !important;
+}
+
+.archive-item:last-child {
+    border-bottom: none !important;
+}
+
+.archive-item:hover {
+    background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.archive-icon {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--light-green) !important;
+    color: white !important;
+    margin-right: 1rem !important;
+}
+
+.archive-info h5 {
+    margin-bottom: 0.25rem !important;
+    color: var(--text-muted) !important;
+}
+
+.archive-info small {
+    color: var(--text-muted) !important;
+    opacity: 0.8 !important;
+}
+
+/* Archive Status */
+.archive-status {
+    padding: 0.25rem 0.5rem !important;
+    border-radius: 4px !important;
+    font-size: 0.75rem !important;
+    font-weight: 500 !important;
+}
+
+.status-active {
+    background: var(--light-green) !important;
+    color: white !important;
+}
+
+.status-inactive {
+    background: var(--text-muted) !important;
+    color: white !important;
+}
+
+/* Archive Actions */
+.archive-actions {
+    display: flex !important;
+    gap: 0.5rem !important;
+}
+
+.archive-actions .btn {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+}
+
+/* Archive Preview */
+.archive-preview {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    box-shadow: var(--card-shadow) !important;
+    margin-top: 1.5rem !important;
+}
+
+.preview-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 1rem !important;
+}
+
+.preview-content {
+    min-height: 400px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--bg-light) !important;
+    border-radius: 8px !important;
+    margin-bottom: 1rem !important;
+}
+
+/* Archive Filters */
+.archive-filters {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    box-shadow: var(--card-shadow) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.filter-group {
+    margin-bottom: 1rem !important;
+}
+
+.filter-label {
+    font-weight: 500 !important;
+    color: var(--text-muted) !important;
+    margin-bottom: 0.5rem !important;
+} 

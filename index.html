@@ -1,12 +1,1901 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0;url=auth/select-user-type.html">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CentralComm</title>
-    <link rel="icon" href="assets/icons&images/logo.png" type="image/x-icon">
-</head>
-<body>
-    <p>Redirecting to login...</p>
-</body>
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" href="logo.png" type="image/x-icon" />
+    <!-- Custom CSS -->
+    <style>
+      :root {
+        --primary-color: #2e7d32; /* Deep green */
+        --secondary-color: #1b5e20; /* Darker green */
+        --accent-color: #4caf50; /* Bright green */
+        --text-color: #1a237e; /* Deep blue for text */
+        --light-bg: #f1f8e9; /* Light green background */
+        --gradient-start: #2e7d32;
+        --gradient-end: #1b5e20;
+        --card-shadow: 0 4px 6px rgba(46, 125, 50, 0.1);
+        --hover-shadow: 0 8px 15px rgba(46, 125, 50, 0.2);
+      }
+
+      /* Enhanced Animations */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      /* Improved Base Styles */
+      body {
+        font-family: "Poppins", sans-serif;
+        color: var(--text-color);
+        background-color: var(--light-bg);
+        line-height: 1.6;
+      }
+
+      /* Enhanced Navbar Styles */
+      .navbar {
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 2px 10px rgba(46, 125, 50, 0.1);
+        padding: 1rem 2rem;
+        transition: all 0.3s ease;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .navbar.scrolled {
+        padding: 0.8rem 2rem;
+        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.15);
+        background: rgba(255, 255, 255, 0.98);
+      }
+
+      .navbar-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        color: var(--primary-color);
+        transition: all 0.3s ease;
+        font-size: 1.3rem;
+      }
+
+      .navbar-brand:hover {
+        transform: translateX(5px);
+      }
+
+      .navbar-brand img {
+        height: 45px;
+        width: auto;
+        transition: all 0.3s ease;
+      }
+
+      .navbar-brand:hover img {
+        transform: rotate(5deg);
+      }
+
+      .nav-link {
+        color: var(--text-color);
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        margin: 0 0.3rem;
+        border-radius: 8px;
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        transition: width 0.3s ease;
+        border-radius: 2px;
+      }
+
+      .nav-link:hover::after,
+      .nav-link.active::after {
+        width: 100%;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--primary-color);
+        background: rgba(46, 125, 50, 0.05);
+      }
+
+      .login-btn {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 0.6rem 1.8rem;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        border: none;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .login-btn::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.2),
+          transparent
+        );
+        transition: 0.5s;
+      }
+
+      .login-btn:hover::before {
+        left: 100%;
+      }
+
+      .login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+      }
+
+      .navbar-toggler {
+        border: none;
+        padding: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .navbar-toggler:focus {
+        box-shadow: none;
+      }
+
+      .navbar-toggler-icon {
+        background-image: none;
+        position: relative;
+        width: 30px;
+        height: 2px;
+        background: var(--primary-color);
+        transition: all 0.3s ease;
+      }
+
+      .navbar-toggler-icon::before,
+      .navbar-toggler-icon::after {
+        content: "";
+        position: absolute;
+        width: 30px;
+        height: 2px;
+        background: var(--primary-color);
+        transition: all 0.3s ease;
+      }
+
+      .navbar-toggler-icon::before {
+        transform: translateY(-8px);
+      }
+
+      .navbar-toggler-icon::after {
+        transform: translateY(8px);
+      }
+
+      .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+        background: transparent;
+      }
+
+      .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+        transform: rotate(45deg);
+      }
+
+      .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+        transform: rotate(-45deg);
+      }
+
+      /* Responsive Improvements */
+      @media (max-width: 991.98px) {
+        .navbar-collapse {
+          background: white;
+          padding: 1rem;
+          border-radius: 15px;
+          box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+          margin-top: 1rem;
+        }
+
+        .nav-item {
+          margin: 0.5rem 0;
+        }
+
+        .nav-link {
+          padding: 0.8rem 1rem;
+        }
+
+        .login-btn {
+          margin-top: 0.5rem;
+          width: 100%;
+          text-align: center;
+        }
+      }
+
+      @media (max-width: 767.98px) {
+        .hero-section {
+          padding: 6rem 0 4rem;
+        }
+
+        .hero-content h1 {
+          font-size: 2.2rem;
+        }
+
+        .hero-content p {
+          font-size: 1rem;
+        }
+
+        .search-container {
+          padding: 1.5rem;
+        }
+
+        .search-title h2 {
+          font-size: 2rem;
+        }
+
+        .search-form {
+          flex-direction: column;
+        }
+
+        .search-button {
+          width: 100%;
+        }
+
+        .feature-card {
+          padding: 2rem;
+        }
+
+        .contact-form {
+          padding: 2rem;
+        }
+
+        .section-title h2 {
+          font-size: 2rem;
+        }
+      }
+
+      @media (max-width: 575.98px) {
+        .navbar {
+          padding: 0.8rem 1rem;
+        }
+
+        .navbar-brand {
+          font-size: 1.1rem;
+        }
+
+        .navbar-brand img {
+          height: 30px;
+        }
+
+        .hero-content h1 {
+          font-size: 1.8rem;
+        }
+
+        .search-title h2 {
+          font-size: 1.5rem;
+        }
+
+        .feature-icon {
+          width: 50px;
+          height: 50px;
+        }
+
+        .feature-icon i {
+          font-size: 1.5rem;
+        }
+
+        .feature-title {
+          font-size: 1.2rem;
+        }
+
+        .btn {
+          padding: 0.6rem 1.2rem;
+          font-size: 0.9rem;
+        }
+      }
+
+      /* Enhanced Landing Page Styles */
+      .hero-section {
+        background: linear-gradient(135deg, var(--light-bg) 0%, #e8f5e9 100%);
+        padding: 8rem 0 6rem;
+        position: relative;
+        overflow: hidden;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+      }
+
+      .hero-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%232e7d32" fill-opacity="0.05" d="M0 0h100v100H0z"/></svg>');
+        opacity: 0.5;
+      }
+
+      .hero-content {
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 1s ease-out;
+      }
+
+      .hero-content h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1.2;
+      }
+
+      .hero-content p {
+        font-size: 1.2rem;
+        color: #666;
+        margin-bottom: 2rem;
+        max-width: 600px;
+      }
+
+      .hero-image {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      /* Enhanced Feature Boxes */
+      .feature-box {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: var(--card-shadow);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s ease;
+      }
+
+      .feature-box:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--hover-shadow);
+      }
+
+      .feature-box:hover::before {
+        transform: scaleX(1);
+      }
+
+      .feature-box i {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .feature-box:hover i {
+        transform: scale(1.1);
+      }
+
+      .feature-box h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .feature-box p {
+        color: #666;
+        font-size: 1rem;
+      }
+
+      /* Enhanced Modal */
+      .modal-content {
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.2);
+        overflow: hidden;
+      }
+
+      .modal-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        padding: 1.5rem;
+      }
+
+      .modal-title {
+        font-weight: 600;
+      }
+
+      .modal-body {
+        padding: 2rem;
+      }
+
+      /* Enhanced Form Elements */
+      .form-control {
+        padding: 1rem;
+        border-radius: 12px;
+        border: 2px solid rgba(46, 125, 50, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
+      }
+
+      .btn {
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border: none;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+      }
+
+      /* Enhanced Footer Styles */
+      .footer {
+        background: linear-gradient(
+          135deg,
+          var(--secondary-color),
+          var(--primary-color)
+        );
+        color: white;
+        padding: 4rem 0 2rem;
+        position: relative;
+        margin-top: 4rem;
+      }
+
+      .footer::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--accent-color),
+          var(--primary-color)
+        );
+      }
+
+      .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 3rem;
+        margin-bottom: 3rem;
+      }
+
+      .footer-section h4 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      .footer-section h4::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 50px;
+        height: 3px;
+        background: var(--accent-color);
+        border-radius: 2px;
+      }
+
+      .footer-section p {
+        color: rgba(255, 255, 255, 0.8);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .footer-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-links li {
+        margin-bottom: 0.8rem;
+      }
+
+      .footer-links a {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .footer-links a:hover {
+        color: white;
+        transform: translateX(5px);
+      }
+
+      .footer-links a i {
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+      }
+
+      .footer-links a:hover i {
+        transform: rotate(360deg);
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+      }
+
+      .social-icons a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        transition: all 0.3s ease;
+        font-size: 1.2rem;
+      }
+
+      .social-icons a:hover {
+        background: var(--accent-color);
+        transform: translateY(-3px) rotate(5deg);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .footer-bottom p {
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+      }
+
+      .footer-bottom a {
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .footer-bottom a:hover {
+        color: var(--accent-color);
+      }
+
+      @media (max-width: 991.98px) {
+        .footer-content {
+          gap: 2rem;
+        }
+      }
+
+      @media (max-width: 767.98px) {
+        .footer {
+          padding: 3rem 0 1.5rem;
+        }
+
+        .footer-section {
+          text-align: center;
+        }
+
+        .footer-section h4::after {
+          left: 50%;
+          transform: translateX(-50%);
+        }
+
+        .social-icons {
+          justify-content: center;
+        }
+      }
+
+      /* Enhanced Chatbot Styles */
+      .chatbot-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 400px;
+        height: 600px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.2);
+        display: none;
+        flex-direction: column;
+        z-index: 1000;
+        transform: translateY(100%);
+        opacity: 0;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        border: 1px solid rgba(46, 125, 50, 0.1);
+      }
+
+      .chatbot-container.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .chatbot-header {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        padding: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(46, 125, 50, 0.1);
+        position: relative;
+      }
+
+      .chatbot-header::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .chatbot-header h3 {
+        margin: 0;
+        font-size: 1.3rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .chatbot-header h3 i {
+        font-size: 1.2rem;
+      }
+
+      #close-chat {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #close-chat:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
+      }
+
+      .chatbot-messages {
+        flex: 1;
+        padding: 1.2rem;
+        overflow-y: auto;
+        background: var(--light-bg);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .chatbot-questions {
+        padding: 1.2rem;
+        display: grid;
+        gap: 0.8rem;
+        background: white;
+        border-top: 1px solid rgba(46, 125, 50, 0.1);
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .chatbot-footer {
+        padding: 1rem;
+        text-align: center;
+        font-size: 0.9rem;
+        color: #666;
+        background: white;
+        border-top: 1px solid rgba(46, 125, 50, 0.1);
+      }
+
+      .chat-toggle {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        border: none;
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+        transition: all 0.3s ease;
+      }
+
+      .chat-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
+      }
+
+      .chat-toggle i {
+        font-size: 1.5rem;
+      }
+
+      .typing-indicator {
+        display: none;
+        align-items: center;
+        padding: 0.8rem 1.2rem;
+        background: white;
+        border-radius: 15px;
+        width: fit-content;
+        margin: 0.5rem 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .typing-indicator::before {
+        content: "";
+        position: absolute;
+        left: -8px;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-right-color: white;
+        border-bottom-color: white;
+      }
+
+      .typing-indicator span {
+        width: 8px;
+        height: 8px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        display: inline-block;
+        margin: 0 2px;
+        animation: typing 1.4s infinite ease-in-out;
+      }
+
+      .typing-indicator span:nth-child(1) {
+        animation-delay: 0s;
+      }
+
+      .typing-indicator span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .typing-indicator span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes typing {
+        0%, 100% {
+          transform: translateY(0);
+          opacity: 0.4;
+        }
+        50% {
+          transform: translateY(-5px);
+          opacity: 1;
+        }
+      }
+
+      .bot-message {
+        background: white;
+        border-radius: 15px;
+        padding: 1rem 1.2rem;
+        margin-bottom: 0.5rem;
+        max-width: 85%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: relative;
+        animation: fadeIn 0.3s ease-out;
+        line-height: 1.5;
+      }
+
+      .bot-message::before {
+        content: "";
+        position: absolute;
+        left: -8px;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-right-color: white;
+        border-bottom-color: white;
+      }
+
+      .user-message {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        margin-left: auto;
+        border-radius: 15px 15px 0 15px;
+        box-shadow: 0 2px 5px rgba(46, 125, 50, 0.2);
+        position: relative;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .user-message::before {
+        content: "";
+        position: absolute;
+        right: -8px;
+        bottom: 0;
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-left-color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .faq-question {
+        background: var(--light-bg);
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 1.2rem;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        font-size: 0.95rem;
+        color: var(--text-color);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      }
+
+      .faq-question:hover {
+        background: rgba(46, 125, 50, 0.1);
+        transform: translateX(5px);
+        box-shadow: 0 4px 8px rgba(46, 125, 50, 0.1);
+      }
+
+      .faq-question i {
+        font-size: 1.2rem;
+        color: var(--primary-color);
+        width: 24px;
+        text-align: center;
+      }
+
+      /* Custom scrollbar for chatbot */
+      .chatbot-messages::-webkit-scrollbar,
+      .chatbot-questions::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .chatbot-messages::-webkit-scrollbar-track,
+      .chatbot-questions::-webkit-scrollbar-track {
+        background: var(--light-bg);
+      }
+
+      .chatbot-messages::-webkit-scrollbar-thumb,
+      .chatbot-questions::-webkit-scrollbar-thumb {
+        background: rgba(46, 125, 50, 0.2);
+        border-radius: 3px;
+      }
+
+      .chatbot-messages::-webkit-scrollbar-thumb:hover,
+      .chatbot-questions::-webkit-scrollbar-thumb:hover {
+        background: rgba(46, 125, 50, 0.3);
+      }
+
+      /* Add new styles for professional landing page */
+      .search-container {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.1);
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 1s ease-out 0.3s backwards;
+      }
+
+      .search-title {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .search-title h2 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .search-title p {
+        color: #666;
+        font-size: 1.1rem;
+      }
+
+      .search-form {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .search-input {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        border: 2px solid rgba(46, 125, 50, 0.1);
+        border-radius: 12px;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+      }
+
+      .search-input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
+        outline: none;
+      }
+
+      .search-button {
+        padding: 1rem 2rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .search-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+      }
+
+      .search-results {
+        display: none;
+        animation: fadeInUp 0.5s ease-out;
+      }
+
+      .result-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-top: 2rem;
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+        border-left: 4px solid var(--accent-color);
+        transition: all 0.3s ease;
+      }
+
+      .result-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.15);
+      }
+
+      .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(46, 125, 50, 0.1);
+      }
+
+      .result-title {
+        color: var(--primary-color);
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .result-status {
+        padding: 0.5rem 1.2rem;
+        border-radius: 20px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .result-details {
+        padding: 1rem 0;
+      }
+
+      .detail-item {
+        padding: 1rem;
+        background: var(--light-bg);
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .detail-item:hover {
+        transform: translateX(5px);
+        background: rgba(46, 125, 50, 0.05);
+      }
+
+      .detail-label {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .detail-value {
+        color: var(--text-color);
+        font-size: 1.1rem;
+        font-weight: 500;
+      }
+
+      .remarks-item {
+        background: rgba(46, 125, 50, 0.05);
+        border-left: 3px solid var(--accent-color);
+      }
+
+      .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+      }
+
+      .status-progress {
+        background-color: #cce5ff;
+        color: #004085;
+      }
+
+      .status-completed {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .status-archived {
+        background-color: #e2e3e5;
+        color: #383d41;
+      }
+
+      .features-section {
+        padding: 6rem 0;
+        background: white;
+        position: relative;
+      }
+
+      .features-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        background: linear-gradient(to bottom, var(--light-bg), white);
+      }
+
+      .section-title {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .section-title h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .section-title p {
+        color: #666;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem 0;
+      }
+
+      .feature-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px rgba(46, 125, 50, 0.2);
+      }
+
+      .feature-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: rgba(46, 125, 50, 0.1);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+      }
+
+      .feature-card:hover .feature-icon i {
+        color: white;
+      }
+
+      .feature-icon i {
+        font-size: 2rem;
+        color: var(--primary-color);
+        transition: all 0.3s ease;
+      }
+
+      .feature-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: var(--text-color);
+      }
+
+      .feature-description {
+        color: #666;
+        line-height: 1.6;
+      }
+
+      .contact-section {
+        padding: 6rem 0;
+        background: var(--light-bg);
+        position: relative;
+      }
+
+      .contact-section::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        background: linear-gradient(to bottom, white, var(--light-bg));
+      }
+
+      .contact-form {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.1);
+      }
+
+      .form-control {
+        padding: 1rem 1.2rem;
+        border: 2px solid rgba(46, 125, 50, 0.1);
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+      }
+
+      /* Add styles for message input */
+      .message-input {
+        display: flex;
+        padding: 1rem;
+        background: white;
+        border-top: 1px solid rgba(46, 125, 50, 0.1);
+      }
+
+      .message-input input {
+        flex: 1;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 20px;
+        background: var(--light-bg);
+        margin-right: 1rem;
+        font-size: 0.9rem;
+      }
+
+      .message-input input:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+      }
+
+      .message-input button {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .message-input button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <img src="icons&images/logo.png" alt="CentralComm Logo" />
+          CentralComm
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#home">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link login-btn" href="pages/selection.html">
+                <i class="fas fa-sign-in-alt me-2"></i>Log in
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="hero-content">
+              <h1>Streamline Your Document Management</h1>
+              <p>
+                Simplify your workflow with our comprehensive document tracking
+                system. Get real-time updates, secure tracking, and efficient
+                processing for all your documents.
+              </p>
+              <div class="d-flex gap-3">
+                <a href="#search" class="btn btn-primary" onclick="focusSearchInput()">
+                  <i class="fas fa-search me-2"></i> Track Document
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="search-container">
+              <div class="search-title">
+                <h2>Track Your Document</h2>
+                <p>Enter your control number to check the current status of your document</p>
+              </div>
+              <div class="search-form">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="search-input"
+                    id="controlNumberInput"
+                    placeholder="Enter control number"
+                    pattern="[0-9]{4}-[0-9]{6}"
+                  />
+                  <button class="search-button" onclick="searchDocument()">
+                    <i class="fas fa-search"></i> Search
+                  </button>
+                </div>
+              </div>
+              <div id="search-results" class="search-results">
+                <!-- Results will be displayed here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+      <div class="container">
+        <div class="section-title">
+          <h2>Why Choose Our Service</h2>
+          <p>
+            Experience efficient document management with our advanced tracking
+            system
+          </p>
+        </div>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <h3 class="feature-title">Real-time Updates</h3>
+            <p class="feature-description">
+              Get instant notifications about your document's status and
+              progress through the system.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h3 class="feature-title">Secure Tracking</h3>
+            <p class="feature-description">
+              Your document information is protected with advanced security
+              measures and encryption.
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-history"></i>
+            </div>
+            <h3 class="feature-title">Document History</h3>
+            <p class="feature-description">
+              View complete history and track your document's journey through
+              the system.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section
+    <section class="contact-section" id="contact">
+      <div class="container">
+        <div class="section-title">
+          <h2>Contact Us</h2>
+          <p>
+            Have questions? We're here to help you with your document management
+            needs
+          </p>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <img
+              src="icons&images/contact-img.svg"
+              alt="Contact Image"
+              class="img-fluid"
+            />
+          </div>
+          <div class="col-lg-6">
+            <div class="contact-form">
+              <form>
+                <div class="mb-3">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Full Name"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <input
+                    type="email"
+                    class="form-control"
+                    placeholder="Email Address"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <input
+                    type="tel"
+                    class="form-control"
+                    placeholder="Phone Number"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <textarea
+                    class="form-control"
+                    rows="5"
+                    placeholder="Your Message"
+                    required
+                  ></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">
+                  <i class="fas fa-paper-plane me-2"></i> Send Message
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h4>About Us</h4>
+            <p>
+              CentralComm is a comprehensive document management system designed
+              to streamline workflows and enhance productivity for Baguio City
+              Hall.
+            </p>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+              <li>
+                <a href="#home"><i class="fas fa-chevron-right"></i> Home</a>
+              </li>
+              <li>
+                <a href="#features"
+                  ><i class="fas fa-chevron-right"></i> Features</a
+                >
+              </li>
+              <li>
+                <a href="auth/login.html"
+                  ><i class="fas fa-chevron-right"></i> Login</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h4>Contact Info</h4>
+            <ul class="footer-links">
+              <li>
+                <a href="#"
+                  ><i class="fas fa-map-marker-alt"></i> Baguio City Hall,
+                  Baguio City</a
+                >
+              </li>
+              <li>
+                <a href="tel:+63744423939"
+                  ><i class="fas fa-phone"></i> (074) 442-3939</a
+                >
+              </li>
+              <li>
+                <a href="mailto:cmobaguio2600@gmail.com"
+                  ><i class="fas fa-envelope"></i> cmobaguio2600@gmail.com</a
+                >
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-clock"></i> Mon-Fri: 8:00 AM - 5:00 PM</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2024-2025 <a href="#">CentralComm</a> | All Rights Reserved</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Chatbot Container -->
+    <div class="chatbot-container" id="chatbot-container">
+      <div class="chatbot-header">
+        <h3><i class="fas fa-robot"></i> City Hall Assistant</h3>
+        <button id="close-chat" aria-label="Close chat">×</button>
+      </div>
+      <div class="chatbot-messages" id="chatbot-messages">
+        <div class="bot-message">
+          👋 Welcome to Baguio City Hall's Virtual Assistant! How may I help you
+          today?
+        </div>
+        <div class="typing-indicator" id="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div class="chatbot-questions">
+        <button class="faq-question" data-question="1">
+          <i class="fas fa-file-alt"></i>
+          Letter Submission Requirements
+        </button>
+        <button class="faq-question" data-question="2">
+          <i class="fas fa-map-marker-alt"></i>
+          Office Location & Hours
+        </button>
+        <button class="faq-question" data-question="3">
+          <i class="fas fa-phone-alt"></i>
+          Contact Information
+        </button>
+        <button class="faq-question" data-question="4">
+          <i class="fas fa-clock"></i>
+          Processing Timeline
+        </button>
+        <button class="faq-question" data-question="5">
+          <i class="fas fa-info-circle"></i>
+          Status Updates & Support
+        </button>
+      </div>
+      <div class="chatbot-footer">
+        <p>
+          Need additional assistance?<br />
+          Email us at
+          <a href="mailto:cmobaguio2600@gmail.com">cmobaguio2600@gmail.com</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Chatbot Toggle Button -->
+    <button class="chat-toggle" id="chat-toggle" aria-label="Open chat">
+      <i class="fas fa-comments"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="assets/js/chatbot.js"></script>
+    <!-- <script src="assets/js/script.js"></script> -->
+
+    <script>
+      // Add focus function
+      function focusSearchInput() {
+        setTimeout(() => {
+          const input = document.getElementById("controlNumberInput");
+          if (input) {
+            input.focus();
+          }
+        }, 100);
+      }
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCaSHRLbIRWW8COl5iwHb19dMDYYLJ2DIk",
+        authDomain: "centralcomm-248a9.firebaseapp.com",
+        databaseURL: "https://centralcomm-248a9-default-rtdb.firebaseio.com",
+        projectId: "centralcomm-248a9",
+        storageBucket: "centralcomm-248a9.firebasestorage.app",
+        messagingSenderId: "796912003621",
+        appId: "1:796912003621:web:0d6fd82e43399871a9edcc",
+        measurementId: "G-CN0S9L5YV4",
+      };
+
+      // Initialize Firebase
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      const database = firebase.database();
+
+      // Document search functionality
+      function searchDocument() {
+        const controlNumber = document.getElementById('controlNumberInput').value.trim();
+        const searchResults = document.getElementById('search-results');
+        
+        // Clear previous results
+        searchResults.innerHTML = '';
+        searchResults.style.display = 'none';
+        
+        // Show loading state
+        searchResults.style.display = 'block';
+        searchResults.innerHTML = `
+          <div class="result-card">
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <p class="ms-3 mt-2">Searching for document...</p>
+            </div>
+          </div>
+        `;
+
+        // Search in entries node (main database)
+        database.ref('entries')
+          .orderByChild('controlNumber')
+          .equalTo(controlNumber)
+          .once('value')
+          .then(snapshot => {
+            if (snapshot.exists()) {
+              snapshot.forEach(childSnapshot => {
+                const data = childSnapshot.val();
+                displaySearchResults(data);
+              });
+            } else {
+              showError(`No document found with control number "${controlNumber}"`);
+            }
+          })
+          .catch(error => {
+            console.error('Error searching document:', error);
+            showError('An error occurred while searching. Please try again.');
+          });
+      }
+
+      function showError(message) {
+        const searchResults = document.getElementById('search-results');
+        searchResults.innerHTML = `
+          <div class="result-card">
+            <div class="alert alert-danger" role="alert">
+              <i class="fas fa-exclamation-circle me-2"></i>${message}
+            </div>
+          </div>
+        `;
+        searchResults.style.display = 'block';
+      }
+
+      function displaySearchResults(data) {
+        const searchResults = document.getElementById("search-results");
+        searchResults.innerHTML = `
+          <div class="result-card">
+            <div class="result-header">
+              <h3 class="result-title">Document Status</h3>
+              <span class="result-status ${getStatusClass(data.status)}">${data.status}</span>
+            </div>
+            <div class="result-details">
+              <div class="detail-item">
+                <div class="row">
+                  <div class="col-md-6">
+                    <strong>Control Number:</strong> ${data.controlNumber}
+                  </div>
+                  <div class="col-md-6" hidden>
+                    <strong>Type:</strong> ${data.type}
+                  </div>
+                </div>
+              </div>
+              <div class="detail-item" hidden>
+                <div class="row">
+                  <div class="col-md-6">
+                    <strong>Date Received:</strong> ${formatDate(data.dateReceived)}
+                  </div>
+                  <div class="col-md-6">
+                    <strong>Time Received:</strong> ${data.timeReceived}
+                  </div>
+                </div>
+              </div>
+              <div class="detail-item" hidden>
+                <div class="row">
+                  <div class="col-md-6">
+                    <strong>From:</strong> ${data.from}
+                  </div>
+                  <div class="col-md-6">
+                    <strong>Office:</strong> ${data.office}
+                  </div>
+                </div>
+              </div>
+              <div class="detail-item" hidden>
+                <strong>Subject:</strong> ${data.subject}
+              </div>
+              <div class="detail-item">
+                <strong>Endorsed To:</strong> ${data.endorsedTo || 'Not yet endorsed'}
+              </div>
+              <div class="detail-item" hidden>
+                <strong>Remarks:</strong> ${data.remarks || 'No remarks'}
+              </div>
+            </div>
+          </div>
+        `;
+        searchResults.style.display = 'block';
+      }
+
+      function formatDate(dateString) {
+        try {
+          const date = new Date(dateString);
+          if (isNaN(date.getTime())) {
+            return dateString;
+          }
+          return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        } catch (error) {
+          console.error('Error formatting date:', error);
+          return dateString;
+        }
+      }
+
+      function getStatusClass(status) {
+        const statusClasses = {
+          // Regular statuses
+          Pending: "bg-warning",
+          Processing: "bg-info",
+          Completed: "bg-success",
+          Archived: "bg-secondary",
+          
+          // Complaint statuses
+          "Under Investigation": "bg-danger",
+          "Inspection": "bg-success",
+          
+          // Request statuses
+          "For Review": "bg-info",
+          "Request Granted": "bg-success",
+          
+          // Invitation statuses
+          "Calendar Pending": "bg-warning",
+          "Mayor Decision": "bg-info",
+          
+          // Proposal statuses
+          "Review Study": "bg-info",
+          "Decision Made": "bg-success"
+        };
+        return statusClasses[status] || "bg-warning";
+      }
+
+      // Initialize event listeners when DOM is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        // Focus the control number input field
+        focusSearchInput();
+        
+        // Add event listener for Enter key in search input
+        document.getElementById("controlNumberInput").addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            searchDocument();
+          }
+        });
+      });
+    </script>
+  </body>
 </html>

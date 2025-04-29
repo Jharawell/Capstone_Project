@@ -1,0 +1,67 @@
+.main-content {
+    margin-left: 16.666667% !important;
+    padding: 2rem !important;
+    transition: all 0.3s ease !important;
+    animation: fadeInUp 0.5s ease-out !important;
+}
+
+.header-section {
+    background: white !important;
+    padding: 1.5rem !important;
+    border-radius: 12px !important;
+    box-shadow: var(--card-shadow) !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Dashboard Overview Styles */
+.dashboard-overview {
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) !important;
+    color: white !important;
+    padding: 2rem !important;
+    border-radius: 12px !important;
+    margin-bottom: 2rem !important;
+    box-shadow: var(--card-shadow) !important;
+}
+
+.dashboard-overview h2 {
+    color: white !important;
+    font-weight: 600 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.dashboard-overview .stat-card {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 1.5rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.dashboard-overview .stat-card:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-5px) !important;
+}
+
+.dashboard-overview .stat-card h3 {
+    color: white !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.dashboard-overview .stat-card p {
+    color: rgba(255, 255, 255, 0.8) !important;
+    margin-bottom: 0 !important;
+}
+
+/* Chart Container */
+.chart-container {
+    position: relative !important;
+    height: 300px !important;
+    width: 100% !important;
+}
+
+/* Activity List */
+.activity-list {
+    max-height: 400px !important;
+    overflow-y: auto !important;
+} 
