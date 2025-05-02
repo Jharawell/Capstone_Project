@@ -16,22 +16,27 @@
     />
     <!-- Google Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="icon" href="logo.png" type="image/x-icon" />
     <!-- Custom CSS -->
     <style>
       :root {
-        --primary-color: #2e7d32; /* Deep green */
-        --secondary-color: #1b5e20; /* Darker green */
-        --accent-color: #4caf50; /* Bright green */
+        --primary-color: #020333; /* Darker navy blue */
+        --secondary-color: #1C1F26; /* Slate gray */
+        --btn-primary-color: #FFD43B; /* Yellow */
+        --btn-hover-color: #FAB005; /* Deep yellow */
+        --accent-color: #4c6aaf; /* Bright blue */
         --text-color: #1a237e; /* Deep blue for text */
-        --light-bg: #f1f8e9; /* Light green background */
-        --gradient-start: #2e7d32;
-        --gradient-end: #1b5e20;
-        --card-shadow: 0 4px 6px rgba(46, 125, 50, 0.1);
-        --hover-shadow: 0 8px 15px rgba(46, 125, 50, 0.2);
+        --light-bg: #e9edf8; /* Light blue background */
+        --light-blue: rgb(212, 212, 243);
+        --gradient-start: #03167f;
+        --gradient-end: #004bf9;
+        --card-shadow: 0 4px 6px rgba(63, 95, 199, 0.1);
+        --hover-shadow: 0 8px 15px rgba(46, 68, 125, 0.33);
+        --secondary-hover-shadow: #74C0FC;
+        --box-shadow: 0 5px 15px rgba(46, 53, 125, 0.3);
       }
 
       /* Enhanced Animations */
@@ -61,16 +66,15 @@
       /* Improved Base Styles */
       body {
         font-family: "Poppins", sans-serif;
-        color: var(--text-color);
         background-color: var(--light-bg);
         line-height: 1.6;
       }
 
       /* Enhanced Navbar Styles */
       .navbar {
-        background: rgba(255, 255, 255, 0.98);
+        background: var(--primary-color);
         backdrop-filter: blur(10px);
-        box-shadow: 0 2px 10px rgba(46, 125, 50, 0.1);
+        box-shadow: var(--box-shadow);
         padding: 1rem 2rem;
         transition: all 0.3s ease;
         position: fixed;
@@ -81,26 +85,28 @@
 
       .navbar.scrolled {
         padding: 0.8rem 2rem;
-        box-shadow: 0 4px 15px rgba(46, 125, 50, 0.15);
-        background: rgba(255, 255, 255, 0.98);
+        box-shadow: var(--box-shadow);
+        background: var(--primary-color);
       }
 
       .navbar-brand {
         display: flex;
         align-items: center;
-        gap: 12px;
         font-weight: 600;
-        color: var(--primary-color);
+        color: whitesmoke;
         transition: all 0.3s ease;
         font-size: 1.3rem;
+        text-shadow: .5px .5px 4px var(--gradient-end);
+
       }
 
       .navbar-brand:hover {
         transform: translateX(5px);
+        color: whitesmoke;
       }
 
       .navbar-brand img {
-        height: 45px;
+        height: 40px;
         width: auto;
         transition: all 0.3s ease;
       }
@@ -110,12 +116,12 @@
       }
 
       .nav-link {
-        color: var(--text-color);
+        color: whitesmoke;
         font-weight: 500;
         padding: 0.5rem 1rem;
         transition: all 0.3s ease;
         position: relative;
-        margin: 0 0.3rem;
+        margin: 0 0.5rem;
         border-radius: 8px;
       }
 
@@ -125,11 +131,11 @@
         bottom: 0;
         left: 0;
         width: 0;
-        height: 2px;
+        height: 3px;
         background: linear-gradient(
           90deg,
-          var(--primary-color),
-          var(--accent-color)
+          var(--gradient-start),
+          var(--gradient-end)
         );
         transition: width 0.3s ease;
         border-radius: 2px;
@@ -143,16 +149,12 @@
       .nav-link:hover,
       .nav-link.active {
         color: var(--primary-color);
-        background: rgba(46, 125, 50, 0.05);
+        background: var(--light-blue)
       }
 
       .login-btn {
-        background: linear-gradient(
-          135deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
-        color: white;
+        background: var(--btn-primary-color);
+        color: var(--primary-color);
         padding: 0.6rem 1.8rem;
         border-radius: 25px;
         transition: all 0.3s ease;
@@ -184,7 +186,8 @@
 
       .login-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        box-shadow: var(--box-shadow);
+        background: var(--secondary-hover-shadow);
       }
 
       .navbar-toggler {
@@ -244,7 +247,7 @@
           background: white;
           padding: 1rem;
           border-radius: 15px;
-          box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+          box-shadow: var(--box-shadow);
           margin-top: 1rem;
         }
 
@@ -402,41 +405,68 @@
 
       /* Enhanced Landing Page Styles */
       .hero-section {
-        background: linear-gradient(135deg, var(--light-bg) 0%, #e8f5e9 100%);
-        padding: 8rem 0 6rem;
         position: relative;
-        overflow: hidden;
         min-height: 100vh;
         display: flex;
         align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 8rem 0 6rem;
       }
 
-      .hero-section::before {
-        content: "";
+      .bg-image {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%232e7d32" fill-opacity="0.05" d="M0 0h100v100H0z"/></svg>');
-        opacity: 0.5;
+        background: 
+          linear-gradient(to right, rgba(0, 0, 0, 0.77), rgba(16, 15, 15, 0)),
+          url('assets/images/bg-landing-page.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: 0;
       }
 
       .hero-content {
         position: relative;
         z-index: 1;
         animation: fadeInUp 1s ease-out;
+      } 
+
+      .city-brand {
+        position: absolute;
+        top: 90px;
+        left: 300px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 2;
+      }
+
+      .city-logo {
+        width: 80px;
+        height: auto;
+      }
+
+      .city-brand p {
+        margin: 0;
+        font-size: 1rem;
+        line-height: 1.4;
+        color: var(--light-bg)
+      }
+
+      .mayor-name {
+        font-size: 0.85rem;
+        font-weight: normal;
       }
 
       .hero-content h1 {
         font-size: 3.5rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
-        background: linear-gradient(
-          135deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
+        background: var(--light-bg);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         line-height: 1.2;
@@ -444,9 +474,11 @@
 
       .hero-content p {
         font-size: 1.2rem;
-        color: #666;
+        color: var(--light-bg);
         margin-bottom: 2rem;
         max-width: 600px;
+        font-weight: 500;
+        
       }
 
       .hero-image {
@@ -516,7 +548,7 @@
       .modal-content {
         border: none;
         border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.2);
+        box-shadow: var(--box-shadow);
         overflow: hidden;
       }
 
@@ -547,28 +579,32 @@
 
       .form-control:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
+        box-shadow: var(--box-shadow);
       }
 
       .btn {
         padding: 0.8rem 1.5rem;
-        border-radius: 12px;
         font-weight: 500;
         transition: all 0.3s ease;
+        border-radius: 12px;
       }
 
       .btn-primary {
-        background: linear-gradient(
-          135deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
-        border: none;
+        background: var(--btn-primary-color);
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+        border-radius: 12px;
+        border-bottom: 8px solid var(--primary-color);
+        transition: all 0.2s ease;
       }
 
-      .btn-primary:hover {
+      .btn-primary:hover,
+      .btn-primary:active {
+        background-color: var(--btn-hover-color);
+        color: var(--primary-color);
+        border-color: var(--primary-color);
         transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        box-shadow: var(--box-shadow);
       }
 
       /* Enhanced Footer Styles */
@@ -742,7 +778,7 @@
         height: 500px;
         background: white;
         border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.2);
+        box-shadow: var(--box-shadow);
         display: none;
         flex-direction: column;
         z-index: 1000;
@@ -769,7 +805,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 2px 10px rgba(46, 125, 50, 0.1);
+        box-shadow: var(--box-shadow);
         position: relative;
       }
 
@@ -860,7 +896,7 @@
         );
         color: white;
         border: none;
-        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        box-shadow: var(--box-shadow);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -871,7 +907,7 @@
 
       .chat-toggle:hover {
         transform: scale(1.1);
-        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
+        box-shadow: var(--box-shadow);
       }
 
       .chat-toggle i {
@@ -886,7 +922,7 @@
         border-radius: 15px;
         width: fit-content;
         margin: 0.5rem 0;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--box-shadow);
         position: relative;
         animation: fadeIn 0.3s ease-out;
       }
@@ -942,7 +978,7 @@
         padding: 1rem 1.2rem;
         margin-bottom: 0.5rem;
         max-width: 85%;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--box-shadow);
         position: relative;
         animation: fadeIn 0.3s ease-out;
         line-height: 1.5;
@@ -965,7 +1001,7 @@
         color: white;
         margin-left: auto;
         border-radius: 15px 15px 0 15px;
-        box-shadow: 0 2px 5px rgba(46, 125, 50, 0.2);
+        box-shadow: var(--box-shadow);
         position: relative;
         animation: fadeIn 0.3s ease-out;
       }
@@ -1006,13 +1042,13 @@
         gap: 1rem;
         font-size: 0.95rem;
         color: var(--text-color);
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--box-shadow);
       }
 
       .faq-question:hover {
         background: rgba(46, 125, 50, 0.1);
         transform: translateX(5px);
-        box-shadow: 0 4px 8px rgba(46, 125, 50, 0.1);
+        box-shadow: var(--box-shadow);
       }
 
       .faq-question i {
@@ -1049,7 +1085,7 @@
         background: white;
         border-radius: 20px;
         padding: 2.5rem;
-        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.1);
+        box-shadow: var(--box-shadow);
         position: relative;
         z-index: 1;
         animation: fadeInUp 1s ease-out 0.3s backwards;
@@ -1089,7 +1125,7 @@
 
       .search-input:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
+        box-shadow: var(--box-shadow);
         outline: none;
       }
 
@@ -1113,6 +1149,10 @@
         min-width: fit-content; /* Ensures button doesn't get too narrow */
       }
 
+      .search-button:hover{
+        font-size: 1.2rem;
+      }
+
       .search-results {
         display: none;
         animation: fadeInUp 0.5s ease-out;
@@ -1123,14 +1163,14 @@
         border-radius: 15px;
         padding: 2rem;
         margin-top: 2rem;
-        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+        box-shadow: var(--box-shadow);
         border-left: 4px solid var(--accent-color);
         transition: all 0.3s ease;
       }
 
       .result-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.15);
+        box-shadow: var(--box-shadow);
       }
 
       .result-header {
@@ -1259,7 +1299,7 @@
         background: white;
         border-radius: 20px;
         padding: 2.5rem;
-        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.1);
+        box-shadow: var(--box-shadow);
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -1284,7 +1324,7 @@
 
       .feature-card:hover {
         transform: translateY(-10px);
-        box-shadow: 0 10px 25px rgba(46, 125, 50, 0.2);
+        box-shadow: var(--box-shadow);
       }
 
       .feature-card:hover::before {
@@ -1354,7 +1394,7 @@
         background: white;
         border-radius: 20px;
         padding: 3rem;
-        box-shadow: 0 10px 30px rgba(46, 125, 50, 0.1);
+        box-shadow: var(--box-shadow);
       }
 
       .form-control {
@@ -1367,25 +1407,7 @@
 
       .form-control:focus {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
-      }
-
-      .btn-primary {
-        background: linear-gradient(
-          135deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
-        border: none;
-        padding: 1rem 2rem;
-        font-size: 1.1rem;
-        font-weight: 500;
-        transition: all 0.3s ease;
-      }
-
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        box-shadow: var(--box-shadow);
       }
 
       /* Add styles for message input */
@@ -1408,7 +1430,7 @@
 
       .message-input input:focus {
         outline: none;
-        box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        box-shadow: var(--box-shadow);
       }
 
       .message-input button {
@@ -1427,7 +1449,7 @@
 
       .message-input button:hover {
         transform: scale(1.1);
-        box-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+        box-shadow: var(--box-shadow);
       }
 
       /* Add these specific styles for Pixel 7 and similar devices */
@@ -1522,7 +1544,7 @@
       /* Update the existing search button styles */
       .search-button {
         padding: 0.8rem 1.5rem;
-        radius: 25px;
+        border-radius: 25px;
         font-size: 1rem;
         width: auto;
         white-space: nowrap;
@@ -1559,9 +1581,9 @@
     <nav class="navbar navbar-expand-lg navbar-light">
       <div class="container">
         <a class="navbar-brand" href="#">
-          <img src="icons&images/logo.png" alt="CentralComm Logo" />
+          <img src="assets/images/logo.svg" alt="CentralComm Logo" />
           CentralComm
-        </a>
+        </a>  
         <button
           class="navbar-toggler"
           type="button"
@@ -1594,6 +1616,14 @@
     <!-- Hero Section -->
     <section class="hero-section" id="home">
       <div class="container">
+        <div class="bg-image"></div>
+        <div class="city-brand">
+          <img src="assets/images/logo-city.png" alt="City logo" class="city-logo"/>
+          <p class>
+            <strong>City of Baguio</strong><br>
+            <span class="mayor-name">Mayor Benjamin B. Magalong</span>
+          </p>
+        </div>
         <div class="row align-items-center">
           <div class="col-lg-6">
             <div class="hero-content">
