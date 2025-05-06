@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Staff Dashboard</title>
+    <title>Receiving Section Dashboard</title>
     <link rel="shortcut icon" href="../assets/images/logo.svg" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -37,6 +37,10 @@
       .dt-buttons .btn:last-child {
         margin-right: 0;
       }
+
+      #currentUserEmailreceiving{
+        font-size: 15px;
+      }
     </style>
   </head>
   <body>
@@ -61,8 +65,8 @@
                   class="mb-1"
                   style="width: 50px; height: 50px"
                 />
-                <span class="fs-4 mt-2">CentralComm</span>
-                <span id="currentUserEmail"></span>
+                <span class="fs-2 mt-6">CentralComm</span>
+                <span id="currentUserEmailreceiving">receivingbaguio645@gmail.com</span>
               </a>
             </div>
 
@@ -124,7 +128,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <h1 class="h2 mb-1">Receiving Section - Mayor's Office Dashboard</h1>
-                  <p class="mb-0 text-muted">Welcome back, <span id="currentUserName">Staff</span></p>
+                  <p class="mb-0 text-muted">Welcome back, <span id="currentUserName">Receiving</span></p>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mb-2 mb-md-0">
                   <!-- Create New Button -->
@@ -747,7 +751,7 @@
                   rows="3"
                 ></textarea>
               </div>
-              <!-- <div class="mb-3">
+              <div class="mb-3">
                 <label for="editStatus" class="form-label">Status</label>
                 <select class="form-select" id="editStatus" required disabled>
                   <option value="Pending">Pending</option>
@@ -757,7 +761,7 @@
                   <option value="Under Investigation">Under Investigation (Ongoing)</option>
                   <option value="Inspection">Inspection, Acted Upon (Done)</option>
                 </select>
-              </div> -->
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -1156,7 +1160,7 @@
                           title: "Success!",
                           text: `Successfully archived ${archivedCount} entries!`,
                           icon: "success",
-                          confirmButtonColor: "#2e7d32",
+                          confirmButtonColor: "",
                         });
                       }
                     })
@@ -1480,7 +1484,7 @@
           text: text,
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#2e7d32",
+          confirmButtonColor: "#002C75",
           cancelButtonColor: "#dc3545",
           confirmButtonText: confirmButtonText,
         });
@@ -1570,7 +1574,7 @@
                       title: "No Entries to Archive",
                       text: "There are no entries available to archive.",
                       icon: "info",
-                      confirmButtonColor: "#2e7d32",
+                      confirmButtonColor: "#002C75",
                     });
                     return;
                   }
@@ -1623,7 +1627,7 @@
                               title: "Success!",
                               text: `Successfully archived ${archivedCount} entries!`,
                               icon: "success",
-                              confirmButtonColor: "#2e7d32",
+                              confirmButtonColor: "#002C75",
                             }).then(() => {
                               loadEntries();
                             });
@@ -1645,7 +1649,7 @@
                     title: "No Entries Found",
                     text: "There are no entries in the database.",
                     icon: "info",
-                    confirmButtonColor: "#2e7d32",
+                    confirmButtonColor: "#002C75",
                   });
                 }
               })
@@ -2184,25 +2188,28 @@
                 </div>
               </div>
               <div class="row mb-3">
-                <div class="col-md-6">
-                  <strong>From:</strong> ${entry.from}
-                </div>
-                <div class="col-md-6">
-                  <strong>Office:</strong> ${entry.office}
-                </div>
+              <div class="col-md-6">
+                <strong>From:</strong> ${entry.from}
               </div>
-              <div class="mb-3">
-                <strong>Subject:</strong> ${entry.subject}
+              <div class="col-md-6">
+                <strong>Office:</strong> ${entry.office}
               </div>
-              <div class="mb-3">
-                <strong>Endorsed To:</strong> ${entry.endorsedTo}
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6 onset-md-6">
+                <strong>Archived On:</strong> ${entry.archivedOn}
               </div>
-              <div class="mb-3">
-                <strong>Remarks:</strong> ${entry.remarks || "None"}
-              </div>
-              <div class="mb-3">
-                <strong>Archived On:</strong> ${formatDate(entry.archivedAt)}
-              </div>
+            </div>
+            <div class="mb-3">
+              <strong>Subject:</strong> ${entry.subject}
+            </div>
+            <div class="mb-3">
+              <strong>Endorsed To:</strong> ${entry.endorsedTo}
+            </div>
+            <div class="mb-3">
+              <strong>Remarks:</strong> ${entry.remarks || "None"}
+            </div>
+              
             `;
             modal.show();
           }
@@ -2415,7 +2422,7 @@
                 {
                   label: "Letters Received",
                   data: monthlyData,
-                  borderColor: "#2e7d32",
+                  borderColor: "#002C75",
                   backgroundColor: "rgba(46, 125, 50, 0.1)",
                   tension: 0.4,
                   fill: true,
@@ -2758,7 +2765,7 @@
                   `,
                   showCancelButton: false,
                   confirmButtonText: 'Save Profile',
-                  confirmButtonColor: '#2e7d32',
+                  confirmButtonColor: '#002C75',
                   allowOutsideClick: false,
                   preConfirm: () => {
                     const firstName = document.getElementById('initialFirstName').value;
@@ -2801,7 +2808,7 @@
                           title: 'Success!',
                           text: 'Profile completed successfully!',
                           icon: 'success',
-                          confirmButtonColor: '#2e7d32'
+                          confirmButtonColor: '#002C75'
                         });
                       })
                       .catch((error) => {
@@ -2902,7 +2909,7 @@
               title: "Success!",
               text: "User created successfully!",
               icon: "success",
-              confirmButtonColor: "#2e7d32",
+              confirmButtonColor: "#002C75",
             }).then(() => {
               // Close modal
               const modal = bootstrap.Modal.getInstance(
@@ -3124,8 +3131,9 @@
             { data: 'from' },
             { data: 'office' },
             { data: 'subject' },
-            { data: 'endorsedTo' },
-            { data: 'remarks' },
+            { data: 'endorsedTo', defaultContent: '' },
+            { data: 'remarks', defaultContent: '' },
+
             { data: 'status' },
             {
               data: null,

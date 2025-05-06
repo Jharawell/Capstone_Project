@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Admin Dashboard</title>
+    <title>Administrative Division Dashboard</title>
     <link rel="shortcut icon" href="../assets/images/logo.svg" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -1206,7 +1206,7 @@
                           title: "Success!",
                           text: `Successfully archived ${archivedCount} entries!`,
                           icon: "success",
-                          confirmButtonColor: "#2e7d32",
+                          confirmButtonColor: "#002C75",
                         });
                       }
                     })
@@ -1551,7 +1551,7 @@
           title: "Success!",
           text: message,
           icon: "success",
-          confirmButtonColor: "#2e7d32",
+          confirmButtonColor: "#002C75",
           timer: 2000,
           timerProgressBar: true,
         });
@@ -1574,7 +1574,7 @@
           text: text,
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#2e7d32",
+          confirmButtonColor: "#002C75",
           cancelButtonColor: "#dc3545",
           confirmButtonText: confirmButtonText,
         });
@@ -1664,7 +1664,7 @@
                       title: "No Entries to Archive",
                       text: "There are no entries available to archive.",
                       icon: "info",
-                      confirmButtonColor: "#2e7d32",
+                      confirmButtonColor: "#002C75",
                     });
                     return;
                   }
@@ -1717,7 +1717,7 @@
                               title: "Success!",
                               text: `Successfully archived ${archivedCount} entries!`,
                               icon: "success",
-                              confirmButtonColor: "#2e7d32",
+                              confirmButtonColor: "#002C75",
                             }).then(() => {
                               loadEntries();
                             });
@@ -1739,7 +1739,7 @@
                     title: "No Entries Found",
                     text: "There are no entries in the database.",
                     icon: "info",
-                    confirmButtonColor: "#2e7d32",
+                    confirmButtonColor: "#002C75",
                   });
                 }
               })
@@ -2304,6 +2304,9 @@
                 <div class="col-md-6">
                   <strong>Office:</strong> ${entry.office}
                 </div>
+                 <div class="md-6">
+                <strong>Archived On:</strong> ${formatDate(entry.archivedAt)}
+              </div>
               </div>
               <div class="mb-3">
                 <strong>Subject:</strong> ${entry.subject}
@@ -2314,9 +2317,7 @@
               <div class="mb-3">
                 <strong>Remarks:</strong> ${entry.remarks || "None"}
               </div>
-              <div class="mb-3">
-                <strong>Archived On:</strong> ${formatDate(entry.archivedAt)}
-              </div>
+             
             `;
             modal.show();
           }
@@ -3266,25 +3267,20 @@
         const table = $(`#${tableId}`).DataTable({
           data: data,
           columns: [
-            { 
-              data: null,
-              render: function(data, type, row, meta) {
-                return meta.row + 1;
-              }
-            },
-            { data: 'controlNumber' },
-            { data: 'type' },
-            { data: 'timeReceived' },
-            { data: 'dateReceived' },
-            { data: 'from' },
-            { data: 'office' },
-            { data: 'subject' },
-            { data: 'adminTimeReceived' },
-            { data: 'adminDateReceived' },
-            { data: 'endorsedTo' },
-            { data: 'remarks' },
-            { data: 'fileCode' },
-            { 
+              { data: null, render: (data, type, row, meta) => meta.row + 1 },
+              { data: 'controlNumber' },
+              { data: 'type' },
+              { data: 'timeReceived' },
+              { data: 'dateReceived' },
+              { data: 'from' },
+              { data: 'office' },
+              { data: 'subject' },
+              { data: 'adminTimeReceived', defaultContent: '' },
+              { data: 'adminDateReceived', defaultContent: '' },
+              { data: 'endorsedTo', defaultContent: '' },
+              { data: 'remarks', defaultContent: '' },
+              { data: 'fileCode', defaultContent: '' },
+              {
               data: 'status',
               render: function(data, type, row) {
                 return `<span class="badge bg-${getStatusColor(data)}">${data || 'Pending'}</span>`;
