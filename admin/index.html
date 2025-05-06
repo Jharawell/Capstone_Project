@@ -3266,25 +3266,20 @@
         const table = $(`#${tableId}`).DataTable({
           data: data,
           columns: [
-            { 
-              data: null,
-              render: function(data, type, row, meta) {
-                return meta.row + 1;
-              }
-            },
-            { data: 'controlNumber' },
-            { data: 'type' },
-            { data: 'timeReceived' },
-            { data: 'dateReceived' },
-            { data: 'from' },
-            { data: 'office' },
-            { data: 'subject' },
-            { data: 'adminTimeReceived' },
-            { data: 'adminDateReceived' },
-            { data: 'endorsedTo' },
-            { data: 'remarks' },
-            { data: 'fileCode' },
-            { 
+              { data: null, render: (data, type, row, meta) => meta.row + 1 },
+              { data: 'controlNumber' },
+              { data: 'type' },
+              { data: 'timeReceived' },
+              { data: 'dateReceived' },
+              { data: 'from' },
+              { data: 'office' },
+              { data: 'subject' },
+              { data: 'adminTimeReceived', defaultContent: '' },
+              { data: 'adminDateReceived', defaultContent: '' },
+              { data: 'endorsedTo', defaultContent: '' },
+              { data: 'remarks', defaultContent: '' },
+              { data: 'fileCode', defaultContent: '' },
+              {
               data: 'status',
               render: function(data, type, row) {
                 return `<span class="badge bg-${getStatusColor(data)}">${data || 'Pending'}</span>`;
