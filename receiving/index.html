@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Staff Dashboard</title>
+    <title>Receiving Section Dashboard</title>
     <link rel="shortcut icon" href="../assets/images/logo.svg" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -124,7 +124,7 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <h1 class="h2 mb-1">Receiving Section - Mayor's Office Dashboard</h1>
-                  <p class="mb-0 text-muted">Welcome back, <span id="currentUserName">Staff</span></p>
+                  <p class="mb-0 text-muted">Welcome back, <span id="currentUserName">Receiving</span></p>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mb-2 mb-md-0">
                   <!-- Create New Button -->
@@ -1156,7 +1156,7 @@
                           title: "Success!",
                           text: `Successfully archived ${archivedCount} entries!`,
                           icon: "success",
-                          confirmButtonColor: "#2e7d32",
+                          confirmButtonColor: "",
                         });
                       }
                     })
@@ -1480,7 +1480,7 @@
           text: text,
           icon: "warning",
           showCancelButton: true,
-          confirmButtonColor: "#2e7d32",
+          confirmButtonColor: "#002C75",
           cancelButtonColor: "#dc3545",
           confirmButtonText: confirmButtonText,
         });
@@ -1570,7 +1570,7 @@
                       title: "No Entries to Archive",
                       text: "There are no entries available to archive.",
                       icon: "info",
-                      confirmButtonColor: "#2e7d32",
+                      confirmButtonColor: "#002C75",
                     });
                     return;
                   }
@@ -1623,7 +1623,7 @@
                               title: "Success!",
                               text: `Successfully archived ${archivedCount} entries!`,
                               icon: "success",
-                              confirmButtonColor: "#2e7d32",
+                              confirmButtonColor: "#002C75",
                             }).then(() => {
                               loadEntries();
                             });
@@ -1645,7 +1645,7 @@
                     title: "No Entries Found",
                     text: "There are no entries in the database.",
                     icon: "info",
-                    confirmButtonColor: "#2e7d32",
+                    confirmButtonColor: "#002C75",
                   });
                 }
               })
@@ -2415,7 +2415,7 @@
                 {
                   label: "Letters Received",
                   data: monthlyData,
-                  borderColor: "#2e7d32",
+                  borderColor: "#002C75",
                   backgroundColor: "rgba(46, 125, 50, 0.1)",
                   tension: 0.4,
                   fill: true,
@@ -2758,7 +2758,7 @@
                   `,
                   showCancelButton: false,
                   confirmButtonText: 'Save Profile',
-                  confirmButtonColor: '#2e7d32',
+                  confirmButtonColor: '#002C75',
                   allowOutsideClick: false,
                   preConfirm: () => {
                     const firstName = document.getElementById('initialFirstName').value;
@@ -2801,7 +2801,7 @@
                           title: 'Success!',
                           text: 'Profile completed successfully!',
                           icon: 'success',
-                          confirmButtonColor: '#2e7d32'
+                          confirmButtonColor: '#002C75'
                         });
                       })
                       .catch((error) => {
@@ -2902,7 +2902,7 @@
               title: "Success!",
               text: "User created successfully!",
               icon: "success",
-              confirmButtonColor: "#2e7d32",
+              confirmButtonColor: "#002C75",
             }).then(() => {
               // Close modal
               const modal = bootstrap.Modal.getInstance(
