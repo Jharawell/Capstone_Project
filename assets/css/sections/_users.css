@@ -52,12 +52,12 @@
 }
 
 .role-admin {
-    background: var(--primary-green) !important;
+    background: var(--primary-color) !important;
     color: white !important;
 }
 
 .role-user {
-    background: var(--light-green) !important;
+    background: var(--light-bg) !important;
     color: white !important;
 }
 
@@ -111,7 +111,7 @@
 .stat-value {
     font-size: 1.5rem !important;
     font-weight: 600 !important;
-    color: var(--primary-green) !important;
+    color: var(--primary-color) !important;
 }
 
 .stat-label {

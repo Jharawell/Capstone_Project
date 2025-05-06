@@ -23,7 +23,7 @@
     <!-- Custom CSS -->
     <style>
       :root {
-        --primary-color: #020333; /* Darker navy blue */
+        --primary-color: #183153; /* Darker navy blue */
         --secondary-color: #1C1F26; /* Slate gray */
         --btn-primary-color: #FFD43B; /* Yellow */
         --btn-hover-color: #FAB005; /* Deep yellow */
@@ -96,7 +96,7 @@
         color: whitesmoke;
         transition: all 0.3s ease;
         font-size: 1.3rem;
-        text-shadow: .5px .5px 4px var(--gradient-end);
+        text-shadow: .8px .8px 4px var(--secondary-color);
 
       }
 
@@ -420,12 +420,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: 
-          linear-gradient(to right, rgba(0, 0, 0, 0.77), rgba(16, 15, 15, 0)),
-          url('assets/images/bg-landing-page.jpg');
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-position: center;
+        background: url('assets/images/bg-landing-page.png') no-repeat center center;
         z-index: 0;
       }
 
@@ -466,19 +461,16 @@
         font-size: 3.5rem;
         font-weight: 700;
         margin-bottom: 1.5rem;
-        background: var(--light-bg);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: var(--primary-color);
         line-height: 1.2;
       }
 
       .hero-content p {
         font-size: 1.2rem;
-        color: var(--light-bg);
+        color: var(--primary-color);
         margin-bottom: 2rem;
         max-width: 600px;
         font-weight: 500;
-        
       }
 
       .hero-image {
@@ -697,30 +689,6 @@
 
       .footer-links a:hover i {
         transform: rotate(360deg);
-      }
-
-      .social-icons {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1.5rem;
-      }
-
-      .social-icons a {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        color: white;
-        transition: all 0.3s ease;
-        font-size: 1.2rem;
-      }
-
-      .social-icons a:hover {
-        background: var(--accent-color);
-        transform: translateY(-3px) rotate(5deg);
       }
 
       .footer-bottom {
@@ -1089,6 +1057,7 @@
         position: relative;
         z-index: 1;
         animation: fadeInUp 1s ease-out 0.3s backwards;
+        
       }
 
       .search-title {
@@ -1164,7 +1133,7 @@
         padding: 2rem;
         margin-top: 2rem;
         box-shadow: var(--box-shadow);
-        border-left: 4px solid var(--accent-color);
+        border-left: 4px solid var(--primary-color);
         transition: all 0.3s ease;
       }
 
@@ -1615,8 +1584,8 @@
 
     <!-- Hero Section -->
     <section class="hero-section" id="home">
+      <div class="bg-image"></div>
       <div class="container">
-        <div class="bg-image"></div>
         <!--<div class="city-brand">
           <img src="assets/images/logo-city.png" alt="City logo" class="city-logo"/>
           <p class>
@@ -1788,12 +1757,6 @@
               to streamline workflows and enhance productivity for Baguio City
               Hall.
             </p>
-            <div class="social-icons">
-              <a href="#"><i class="fab fa-facebook-f"></i></a>
-              <a href="#"><i class="fab fa-twitter"></i></a>
-              <a href="#"><i class="fab fa-instagram"></i></a>
-              <a href="#"><i class="fab fa-linkedin-in"></i></a>
-            </div>
           </div>
           <div class="footer-section">
             <h4>Quick Links</h4>

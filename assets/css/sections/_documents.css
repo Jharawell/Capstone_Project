@@ -32,7 +32,7 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: var(--light-green) !important;
+    background: var(--light-bg) !important;
     color: white !important;
     margin-right: 1rem !important;
 }
@@ -60,7 +60,7 @@
 
 /* Document Upload */
 .document-upload {
-    border: 2px dashed var(--light-green) !important;
+    border: 2px dashed var(--light-bg) !important;
     border-radius: 12px !important;
     padding: 2rem !important;
     text-align: center !important;
@@ -74,7 +74,7 @@
 
 .upload-icon {
     font-size: 2.5rem !important;
-    color: var(--light-green) !important;
+    color: var(--light-bg) !important;
     margin-bottom: 1rem !important;
 }
 
@@ -92,7 +92,7 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: var(--bg-light) !important;
+    background: var(--light-bg) !important;
     border-radius: 8px !important;
     margin-bottom: 1rem !important;
 } 

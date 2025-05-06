@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CentralComm - Login Selection</title>
+    <link rel="shortcut icon" href="../assets/images/logo.svg" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -19,25 +20,44 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
     />
     <style>
+
+      :root {
+        --light-blue: rgb(179, 179, 240);
+        --primary-color: #183153;
+        --secondary-color: #4c6aaf;
+        --box-shadow: 0 5px 20px rgba(46, 53, 125, 0.3);
+      }
       body {
         font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        background: url(../assets/images/bg-select-page.jpg);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        width: 100%;
       }
+
       .login-container {
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        border-radius: 12px;
         padding: 2rem;
         max-width: 500px;
         width: 90%;
+        color: white;
+        box-shadow: var(--box-shadow);
+
       }
+
       .logo {
-        width: 120px;
-        height: 120px;
+        width: 50px;
+        height: 50px;
         margin-bottom: 1.5rem;
       }
       .login-option {
@@ -52,7 +72,7 @@
         color: inherit;
       }
       .login-option:hover {
-        border-color: #2e7d32;
+        border-color: #FFD43B;
         transform: translateY(-2px);
         text-decoration: none;
         color: inherit;
@@ -63,24 +83,24 @@
       .login-option i {
         font-size: 2rem;
         margin-bottom: 1rem;
-        color: #2e7d32;
+        color: #FFD43B;
       }
       .login-option h3 {
         font-size: 1.25rem;
         margin-bottom: 0.5rem;
-        color: #2e7d32;
+        color: white;
       }
       .login-option p {
-        color: #6c757d;
+        color: white;
         margin-bottom: 0;
       }
     </style>
   </head>
   <body>
     <div class="login-container text-center">
-      <img src="../icons&images/logo.png" alt="CentralComm Logo" class="logo" />
+      <img src="../assets/images/logo.svg" alt="CentralComm Logo" class="logo" />
       <h1 class="mb-4">Welcome to CentralComm</h1>
-      <p class="text-muted mb-4">Please select your login type</p>
+      <p class="mb-4">Please select your login type</p>
 
       <div class="row">
         <div class="col-md-6 mb-3">

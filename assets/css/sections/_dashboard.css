@@ -1,6 +1,6 @@
 /* Dashboard Overview */
 .dashboard-overview {
-    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)) !important;
+    background: linear-gradient(135deg, var(--gradient-start), var(--primary-color)) !important;
     color: white !important;
     padding: 2rem !important;
     border-radius: 12px !important;
@@ -87,7 +87,7 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background: var(--light-green) !important;
+    background: var(--light-bg) !important;
     color: white !important;
     margin-right: 1rem !important;
 } 

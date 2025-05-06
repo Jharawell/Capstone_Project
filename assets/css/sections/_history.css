@@ -19,7 +19,7 @@
     left: 1.5rem !important;
     height: 100% !important;
     width: 2px !important;
-    background: var(--light-green) !important;
+    background: var(--light-bg) !important;
 }
 
 .timeline-item {
@@ -38,13 +38,13 @@
     width: 12px !important;
     height: 12px !important;
     border-radius: 50% !important;
-    background: var(--light-green) !important;
+    background: var(--light-bg) !important;
     border: 2px solid white !important;
-    box-shadow: 0 0 0 2px var(--light-green) !important;
+    box-shadow: 0 0 0 2px var(--light-bg) !important;
 }
 
 .timeline-content {
-    background: var(--bg-light) !important;
+    background: var(--light-bg) !important;
     border-radius: 8px !important;
     padding: 1rem !important;
     transition: all 0.3s ease !important;
@@ -110,7 +110,7 @@
 .stat-value {
     font-size: 1.5rem !important;
     font-weight: 600 !important;
-    color: var(--primary-green) !important;
+    color: var(--primary-color) !important;
     margin-bottom: 0.5rem !important;
 }
 
