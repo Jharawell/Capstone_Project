@@ -2304,6 +2304,9 @@
                 <div class="col-md-6">
                   <strong>Office:</strong> ${entry.office}
                 </div>
+                 <div class="md-6">
+                <strong>Archived On:</strong> ${formatDate(entry.archivedAt)}
+              </div>
               </div>
               <div class="mb-3">
                 <strong>Subject:</strong> ${entry.subject}
@@ -2314,9 +2317,7 @@
               <div class="mb-3">
                 <strong>Remarks:</strong> ${entry.remarks || "None"}
               </div>
-              <div class="mb-3">
-                <strong>Archived On:</strong> ${formatDate(entry.archivedAt)}
-              </div>
+             
             `;
             modal.show();
           }

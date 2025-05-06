@@ -37,6 +37,10 @@
       .dt-buttons .btn:last-child {
         margin-right: 0;
       }
+
+      #currentUserEmailreceiving{
+        font-size: 15px;
+      }
     </style>
   </head>
   <body>
@@ -61,8 +65,8 @@
                   class="mb-1"
                   style="width: 50px; height: 50px"
                 />
-                <span class="fs-4 mt-2">CentralComm</span>
-                <span id="currentUserEmail">receivingbaguio645@gmail.com</span>
+                <span class="fs-2 mt-6">CentralComm</span>
+                <span id="currentUserEmailreceiving">receivingbaguio645@gmail.com</span>
               </a>
             </div>
 
@@ -2184,25 +2188,28 @@
                 </div>
               </div>
               <div class="row mb-3">
-                <div class="col-md-6">
-                  <strong>From:</strong> ${entry.from}
-                </div>
-                <div class="col-md-6">
-                  <strong>Office:</strong> ${entry.office}
-                </div>
+              <div class="col-md-6">
+                <strong>From:</strong> ${entry.from}
               </div>
-              <div class="mb-3">
-                <strong>Subject:</strong> ${entry.subject}
+              <div class="col-md-6">
+                <strong>Office:</strong> ${entry.office}
               </div>
-              <div class="mb-3">
-                <strong>Endorsed To:</strong> ${entry.endorsedTo}
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6 onset-md-6">
+                <strong>Archived On:</strong> ${entry.archivedOn}
               </div>
-              <div class="mb-3">
-                <strong>Remarks:</strong> ${entry.remarks || "None"}
-              </div>
-              <div class="mb-3">
-                <strong>Archived On:</strong> ${formatDate(entry.archivedAt)}
-              </div>
+            </div>
+            <div class="mb-3">
+              <strong>Subject:</strong> ${entry.subject}
+            </div>
+            <div class="mb-3">
+              <strong>Endorsed To:</strong> ${entry.endorsedTo}
+            </div>
+            <div class="mb-3">
+              <strong>Remarks:</strong> ${entry.remarks || "None"}
+            </div>
+              
             `;
             modal.show();
           }
