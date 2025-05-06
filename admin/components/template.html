@@ -387,6 +387,36 @@
           height: 35px;
         }
       }
+
+      .table {
+        border-collapse: separate;
+        border-spacing: 0;
+      }
+
+      .table th,
+      .table td {
+        border: 1px solid rgba(3, 12, 138, 0.1);
+        padding: 0.75rem;
+      }
+
+      .table thead th {
+        background-color: rgba(82, 4, 4, 0.05);
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid rgba(0, 44, 117, 0.1);
+        padding: 0.75rem;
+      }
+
+      .table tbody tr:last-child td {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+      }
     </style>
   </head>
   <body>
@@ -675,7 +705,7 @@
                 <div class="card">
                   <div class="card-body">
                     <h6 class="card-title text-primary mb-3">Monthly Letters Received</h6>
-                    <canvas id="monthlyLettersChart" height="300"></canvas>
+                    <canvas id="monthlyLettersChart" height="100"></canvas>
                   </div>
                 </div>
               </div>
@@ -2292,17 +2322,18 @@
           // Create monthly letters chart
           const monthlyCtx = document.getElementById('monthlyLettersChart').getContext('2d');
           new Chart(monthlyCtx, {
-            type: 'line',
+            type: 'bar', // Changed from 'line' to 'bar'
             data: {
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 
-                      'July', 'August', 'September', 'October', 'November', 'December'],
+              labels: [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+              ],
               datasets: [{
                 label: 'Letters Received',
                 data: monthlyData,
+                backgroundColor: 'rgba(46, 125, 50, 0.2)', // Bar fill color
                 borderColor: '#2e7d32',
-                backgroundColor: 'rgba(46, 125, 50, 0.1)',
-                tension: 0.4,
-                fill: true
+                borderWidth: 1,
               }]
             },
             options: {
