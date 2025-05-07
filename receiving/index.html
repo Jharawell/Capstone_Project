@@ -551,6 +551,17 @@
                 <label for="subject" class="form-label">Subject</label>
                 <input type="text" class="form-control" id="subject" required />
               </div>
+              <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" id="status" required readonly disabled>
+                  <option value="Pending" selected>Pending</option>
+                  <option value="Processing">Processing</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Archived">Archived</option>
+                  <option value="Under Investigation">Under Investigation (Ongoing)</option>
+                  <option value="Inspection">Inspection, Acted Upon (Done)</option>
+                </select>
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -742,7 +753,7 @@
               </div>
               <div class="mb-3">
                 <label for="editStatus" class="form-label">Status</label>
-                <select class="form-select" id="editStatus" required readonly disabled>
+                <select class="form-select" id="editStatus" required disabled>
                   <option value="Pending">Pending</option>
                   <option value="Processing">Processing</option>
                   <option value="Completed">Completed</option>
