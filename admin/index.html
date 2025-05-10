@@ -275,7 +275,7 @@
                     <h6 class="card-title text-primary mb-3">
                       Monthly Letters Received
                     </h6>
-                    <canvas id="monthlyLettersChart" height="300"></canvas>
+                    <canvas id="monthlyLettersChart" height="100"></canvas>
                   </div>
                 </div>
               </div>
@@ -2510,7 +2510,7 @@
             .getElementById("monthlyLettersChart")
             .getContext("2d");
           new Chart(monthlyCtx, {
-            type: "line",
+            type: "bar",
             data: {
               labels: [
                 "January",
