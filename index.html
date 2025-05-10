@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CentralComm</title>
-    <link rel="shortcut icon" href="../assets/images/logo.svg" type="image/x-icon" />
+    <link rel="shortcut icon" href="../assets/images/logo.png" type="image/x-icon" />
     <link>
     <!-- Bootstrap 5 CSS -->
     <link
@@ -19,27 +19,29 @@
     />
     <!-- Google Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <link rel="icon" href="logo.png" type="image/x-icon" />
     <!-- Custom CSS -->
     <style>
       :root {
-        --primary-color: #183153; /* Darker navy blue */
-        --secondary-color: #1C1F26; /* Slate gray */
-        --btn-primary-color: #FFD43B; /* Yellow */
-        --btn-hover-color: #FAB005; /* Deep yellow */
-        --accent-color: #4c6aaf; /* Bright blue */
-        --text-color: #1a237e; /* Deep blue for text */
-        --light-bg: #e9edf8; /* Light blue background */
-        --light-blue: rgb(212, 212, 243);
-        --gradient-start: #03167f;
-        --gradient-end: #004bf9;
-        --card-shadow: 0 4px 6px rgba(63, 95, 199, 0.1);
-        --hover-shadow: 0 8px 15px rgba(46, 68, 125, 0.33);
-        --secondary-hover-shadow: #74C0FC;
+        --primary-color: #1572B9; /* Darker navy blue */
+        --text-color: #0f1b22;
+        --light-bg: #cde9ff; /* Light blue background */
+        --dark-blue-color: #04111b;
+        --hover-shadow: #54ADD6;
+        --gradient-start: #217DC0; 
+        --gradient-end: #4da9ef;
         --box-shadow: 0 5px 15px rgba(46, 53, 125, 0.3);
+        --card-shadow: 0 4px 6px rgba(63, 95, 199, 0.1);
+
+        --secondary-color: #1C1F26; /* Slate gray */
+        --accent-color: #4c6aaf; /* Bright blue */
+        --light-blue: rgb(212, 212, 243);
+        
+        --secondary-hover-shadow: #74C0FC;
+       
       }
 
       /* Enhanced Animations */
@@ -75,7 +77,7 @@
 
       /* Enhanced Navbar Styles */
       .navbar {
-        background: var(--primary-color);
+        background: white;
         backdrop-filter: blur(10px);
         box-shadow: var(--box-shadow);
         padding: 1rem 2rem;
@@ -95,12 +97,10 @@
       .navbar-brand {
         display: flex;
         align-items: center;
-        font-weight: 600;
-        color: whitesmoke;
+        font-weight: 900;
+        color: var(--primary-color);
         transition: all 0.3s ease;
         font-size: 1.3rem;
-        text-shadow: .8px .8px 4px var(--secondary-color);
-
       }
 
       .navbar-brand:hover {
@@ -119,7 +119,7 @@
       }
 
       .nav-link {
-        color: whitesmoke;
+        color: var(--primary-color);
         font-weight: 500;
         padding: 0.5rem 1rem;
         transition: all 0.3s ease;
@@ -137,7 +137,7 @@
         height: 3px;
         background: linear-gradient(
           90deg,
-          var(--gradient-start),
+          var(--hover-shadow),
           var(--gradient-end)
         );
         transition: width 0.3s ease;
@@ -151,13 +151,17 @@
 
       .nav-link:hover,
       .nav-link.active {
-        color: var(--primary-color);
-        background: var(--light-blue)
+        color: var(--hover-shadow);
+        background: var(white);
       }
 
       .login-btn {
-        background: var(--btn-primary-color);
-        color: var(--primary-color);
+        background: linear-gradient(
+          180deg,
+          var(--gradient-start),
+          var(--gradient-end)
+        );
+        color: white;
         padding: 0.6rem 1.8rem;
         border-radius: 25px;
         transition: all 0.3s ease;
@@ -435,6 +439,7 @@
         .hero-content p {
           font-size: 0.9rem;
         }
+        
 
         /* Search container adjustments */
         .search-container {
@@ -556,13 +561,12 @@
         padding: 8rem 0 6rem;
       }
 
-      .bg-image {
+      .bg-hero {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: url('assets/images/bg-landing-page.png') no-repeat center center;
         z-index: 0;
       }
 
@@ -571,33 +575,6 @@
         z-index: 1;
         animation: fadeInUp 1s ease-out;
       } 
-
-      .city-brand {
-        position: absolute;
-        top: 90px;
-        left: 300px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        z-index: 2;
-      }
-
-      .city-logo {
-        width: 80px;
-        height: auto;
-      }
-
-      .city-brand p {
-        margin: 0;
-        font-size: 1rem;
-        line-height: 1.4;
-        color: var(--light-bg)
-      }
-
-      .mayor-name {
-        font-size: 0.85rem;
-        font-weight: normal;
-      }
 
       .hero-content h1 {
         font-size: 3.5rem;
@@ -609,7 +586,7 @@
 
       .hero-content p {
         font-size: 1.2rem;
-        color: var(--primary-color);
+        color: var(--text-color);
         margin-bottom: 2rem;
         max-width: 600px;
         font-weight: 500;
@@ -724,22 +701,14 @@
       }
 
       .btn-primary {
-        background: var(--btn-primary-color);
-        color: var(--primary-color);
+        background: var(--primary-color);
+        color: white;
         border: 2px solid var(--primary-color);
         border-radius: 12px;
         border-bottom: 8px solid var(--primary-color);
         transition: all 0.2s ease;
       }
 
-      .btn-primary:hover,
-      .btn-primary:active {
-        background-color: var(--btn-hover-color);
-        color: var(--primary-color);
-        border-color: var(--primary-color);
-        transform: translateY(-2px);
-        box-shadow: var(--box-shadow);
-      }
 
       /* Enhanced Footer Styles */
       .footer {
@@ -1692,7 +1661,7 @@
     <nav class="navbar navbar-expand-lg navbar-light">
       <div class="container">
         <a class="navbar-brand" href="#">
-          <img src="assets/images/logo.svg" alt="CentralComm Logo" />
+          <img src="assets/images/logo.png" alt="CentralComm Logo" />
           CentralComm
         </a>  
         <button
@@ -1726,7 +1695,7 @@
 
     <!-- Hero Section -->
     <section class="hero-section" id="home">
-      <div class="bg-image"></div>
+      <div class="bg-hero"></div>
       <div class="container">
         <!--<div class="city-brand">
           <img src="assets/images/logo-city.png" alt="City logo" class="city-logo"/>
@@ -1913,7 +1882,7 @@
               </li>
               <li>
                 <a href="auth/login.html"
-                  ><i class="fas fa-chevron-right"></i> Login</a
+                  ><i></i> Login</a
                 >
               </li>
             </ul>
