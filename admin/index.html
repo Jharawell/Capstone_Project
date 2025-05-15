@@ -71,13 +71,13 @@
               <li class="nav-item">
                 <a href="#" class="nav-link active" id="dashboardLink">
                   <i class="bi bi-house-door stat-icon"></i>
-                  Dashboard
+                  Documents
                 </a>
               </li>
               <li>
                 <a href="#" class="nav-link" id="documentsLink">
                   <i class="bi bi-file-earmark-text stat-icon"></i>
-                  Documents
+                  Dashboard
                 </a>
               </li>
               <li hidden>
@@ -280,51 +280,19 @@
                 </div>
               </div>
 
-              <!-- Remove Letter Types Distribution section -->
-            </div>
-          </div>
-
-          <!-- Users Section -->
-          <div id="usersSection" class="d-none">
-            <div class="header-section card-header bg-white">
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h1 class="h2 mb-1">Users</h1>
-                  <p class="mb-0 text-white-50">Manage system users</p>
-                </div>
-                <div>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#createUserModal"
-                  >
-                    <i class="bi bi-person-plus me-2"></i>Create New User
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="card mb-4">
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-hover" id="usersTable">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <!-- Users will be populated here -->
-                    </tbody>
-                  </table>
+              <!-- Add this after the Monthly Letters Graph card -->
+              <div class="col-md-6 mb-4">
+                <div class="card">
+                  <div class="card-body">
+                    <h6 class="card-title text-primary mb-3">Letter Type Distribution</h6>
+                    <div style="height: 300px;">
+                    <canvas id="letterTypeChart"></canvas>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
 
           <!-- History Section -->
           <div id="historySection" class="d-none">
@@ -446,6 +414,125 @@
                         Update Password
                       </button>
                     </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Add this new section below the existing profile cards -->
+            <div class="row">
+              <div class="col-lg-8 mb-4">
+                <!-- Account Creation Card -->
+                <div class="card mt-4">
+                  <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                      <h5 class="card-title mb-0">Create New Account</h5>
+                      <button class="btn btn-primary btn-sm" id="toggleAccountForm">
+                        <i class="bi bi-plus-circle me-1"></i>Add New Account
+                      </button>
+                    </div>
+                    
+                    <form id="createAccountForm" class="d-none">
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="newAccountEmail" class="form-label">Email Address</label>
+                          <div class="input-group">
+                            <span class="input-group-text">
+                              <i class="bi bi-envelope"></i>
+                            </span>
+                            <input type="email" class="form-control" id="newAccountEmail" required>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <label for="newAccountRole" class="form-label">Role</label>
+                          <div class="input-group">
+                            <span class="input-group-text">
+                              <i class="bi bi-person-badge"></i>
+                            </span>
+                            <select class="form-control" id="newAccountRole" required>
+                              <option value="">Select Role</option>
+                              <option value="Administrator">Administrator</option>
+                              <option value="Staff">Staff</option>
+                              <option value="Manager">Manager</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="newAccountPassword" class="form-label">Password</label>
+                          <div class="input-group">
+                            <span class="input-group-text">
+                              <i class="bi bi-key"></i>
+                            </span>
+                            <input type="password" class="form-control" id="newAccountPassword" required>
+                          </div>
+                          <div class="form-text">Password must be at least 6 characters long</div>
+                        </div>
+                        <div class="col-md-6">
+                          <label for="confirmNewAccountPassword" class="form-label">Confirm Password</label>
+                          <div class="input-group">
+                            <span class="input-group-text">
+                              <i class="bi bi-key-fill"></i>
+                            </span>
+                            <input type="password" class="form-control" id="confirmNewAccountPassword" required>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label for="newAccountDepartment" class="form-label">Department</label>
+                          <div class="input-group">
+                            <span class="input-group-text">
+                              <i class="bi bi-building"></i>
+                            </span>
+                            <select class="form-control" id="newAccountDepartment" required>
+                              <option value="">Select Department</option>
+                              <option value="Administrative Division">Administrative Division</option>
+                              <option value="Records Division">Records Division</option>
+                              <option value="Receiving Division">Receiving Division</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <label for="newAccountStatus" class="form-label">Status</label>
+                          <div class="input-group">
+                            <span class="input-group-text">
+                              <i class="bi bi-toggle-on"></i>
+                            </span>
+                            <select class="form-control" id="newAccountStatus" required>
+                              <option value="active">Active</option>
+                              <option value="inactive">Inactive</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-secondary" id="cancelAccountCreate">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Account</button>
+                      </div>
+                    </form>
+
+                    <div class="table-responsive mt-4">
+                      <table class="table table-hover" id="accountsTable">
+                        <thead>
+                          <tr>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Accounts will be populated here -->
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1075,7 +1162,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
@@ -2347,9 +2433,6 @@
           case "documentsSection":
             loadDocuments();
             break;
-          case "usersSection":
-            loadUsers();
-            break;
           case "archivesSection":
             loadArchivedEntries();
             break;
@@ -2358,6 +2441,7 @@
             break;
           case "profileSection":
             loadProfile();
+            loadAccounts(); // Only load accounts table in profile section
             break;
           default:
             loadEntries();
@@ -2377,13 +2461,6 @@
         .addEventListener("click", function (e) {
           e.preventDefault();
           handleNavigation("documentsSection");
-        });
-
-      document
-        .getElementById("usersLink")
-        .addEventListener("click", function (e) {
-          e.preventDefault();
-          handleNavigation("usersSection");
         });
 
       document
@@ -2553,6 +2630,109 @@
                 },
               },
             },
+          });
+
+          // Create letter type distribution chart (pie chart)
+          const letterTypeCtx = document.getElementById("letterTypeChart").getContext("2d");
+          new Chart(letterTypeCtx, {
+            type: "pie",
+            data: {
+              labels: ["Complaints", "Requests", "Proposals", "Invitations"],
+              datasets: [{
+                data: [
+                  yearlyStats.complaints,
+                  yearlyStats.requests,
+                  yearlyStats.proposals,
+                  yearlyStats.invitations
+                ],
+                backgroundColor: [
+                  "rgba(255, 99, 132, 0.7)",    // Red for Complaints
+                  "rgba(75, 192, 192, 0.7)",    // Green for Requests
+                  "rgba(255, 206, 86, 0.7)",    // Yellow for Proposals
+                  "rgba(54, 162, 235, 0.7)",    // Blue for Invitations
+                ],
+                borderColor: [
+                  "rgba(255, 99, 132, 1)",      // Red border
+                  "rgba(75, 192, 192, 1)",      // Green border
+                  "rgba(255, 206, 86, 1)",      // Yellow border
+                  "rgba(54, 162, 235, 1)",      // Blue border
+                ],
+                borderWidth: 2,                 // Increased border width
+                borderAlign: 'inner',           // Inner border alignment
+                hoverBorderWidth: 3,            // Larger border on hover
+                hoverBorderColor: [             // Darker border colors on hover
+                  "rgba(205, 49, 82, 1)",
+                  "rgba(25, 142, 142, 1)",
+                  "rgba(205, 156, 36, 1)",
+                  "rgba(4, 112, 185, 1)",
+                ],
+                hoverOffset: 10                 // Segments spread out on hover
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: true,
+              aspectRatio: 2,
+              plugins: {
+                legend: {
+                  position: "right",
+                  labels: {
+                    generateLabels: function(chart) {
+                      const data = chart.data;
+                      if (data.labels.length && data.datasets.length) {
+                        return data.labels.map((label, i) => {
+                          const value = data.datasets[0].data[i];
+                          const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                          const percentage = ((value / total) * 100).toFixed(1);
+                          return {
+                            text: `${label}: ${value} (${percentage}%)`,
+                            fillStyle: data.datasets[0].backgroundColor[i],
+                            strokeStyle: data.datasets[0].borderColor[i],
+                            lineWidth: 2,
+                            index: i
+                          };
+                        });
+                      }
+                      return [];
+                    },
+                    font: {
+                      size: 12,
+                      weight: 'bold'
+                    },
+                    padding: 20,
+                    usePointStyle: true,
+                    pointStyle: 'circle'
+                  }
+                },
+                title: {
+                  display: true,
+                  text: `Total Letters by Type (${currentYear})`,
+                  color: "#333",
+                  font: {
+                    size: 16,
+                    weight: 'bold'
+                  },
+                  padding: {
+                    top: 10,
+                    bottom: 30
+                  }
+                }
+              },
+              layout: {
+                padding: {
+                  left: 20,
+                  right: 20,
+                  top: 20,
+                  bottom: 20
+                }
+              },
+              elements: {
+                arc: {
+                  borderWidth: 2,
+                  borderRadius: 5
+                }
+              }
+            }
           });
         });
       }
@@ -2755,30 +2935,46 @@
         database.ref('users/' + user.uid).once('value').then((snapshot) => {
           const userData = snapshot.val();
           if (userData) {
-            // Update profile information
-            document.getElementById("profileName").textContent = `${userData.firstName} ${userData.lastName}`;
-            document.getElementById("profileRole").textContent = userData.role;
+            // Safely update UI elements
+            const updateElement = (id, value) => {
+              const element = document.getElementById(id);
+              if (element) {
+                element.textContent = value;
+              }
+            };
+
+            const updateInputValue = (id, value) => {
+              const element = document.getElementById(id);
+              if (element) {
+                element.value = value || '';
+              }
+            };
+
+            // Update profile information if elements exist
+            updateElement("profileName", `${userData.firstName || ''} ${userData.lastName || ''}`);
+            updateElement("profileRole", userData.role || '');
+            updateElement("currentUserName", `${userData.firstName || ''} ${userData.lastName || ''}`);
+            updateElement("currentUserRole", userData.role || '');
+            updateInputValue("email", userData.email || user.email);
             
-            // Update form fields
-            document.getElementById("firstName").value = userData.firstName;
-            document.getElementById("lastName").value = userData.lastName;
-            document.getElementById("email").value = userData.email || "admin@centralcomm.com";
-            document.getElementById("phone").value = userData.phone || "";
-            document.getElementById("department").value = userData.department || "";
-            document.getElementById("position").value = userData.position || "";
+            // Update form fields if they exist
+            updateInputValue("firstName", userData.firstName);
+            updateInputValue("lastName", userData.lastName);
+            updateInputValue("phone", userData.phone);
+            updateInputValue("department", userData.department);
+            updateInputValue("position", userData.position);
             
             // Set role and disable it if it exists
             const roleSelect = document.getElementById("role");
-            if (userData.role) {
-              roleSelect.value = userData.role;
-              roleSelect.disabled = true;
-            } else {
-              roleSelect.disabled = false;
+            if (roleSelect) {
+              roleSelect.value = userData.role || '';
+              roleSelect.disabled = !!userData.role;
             }
 
             // Update profile image if available
-            if (user.photoURL) {
-              document.getElementById("profileImage").src = user.photoURL;
+            const profileImage = document.getElementById("profileImage");
+            if (profileImage && user.photoURL) {
+              profileImage.src = user.photoURL;
             }
           }
           Swal.close();
@@ -2836,114 +3032,137 @@
           // If no user is signed in and we're on the admin page, redirect to admin login
           window.location.href = "../pages/selection.html";
         } else if (user) {
+          // Safely update UI elements
+          const updateElement = (id, value) => {
+            const element = document.getElementById(id);
+            if (element) {
+              element.textContent = value;
+            }
+          };
+
           // Set the current user's email
-          document.getElementById("email").value = user.email || "";
-          document.getElementById("currentUserEmail").textContent = user.email || "";
+          updateElement("email", user.email || "");
+          updateElement("currentUserEmail", user.email || "");
           
           // Fetch user details from database
           database.ref('users/' + user.uid).once('value').then((snapshot) => {
             const userData = snapshot.val();
             if (userData) {
-              // Check if profile is complete (has first name, last name, and role)
+              // Check if profile is complete
               const isProfileComplete = userData.firstName && userData.lastName && userData.role;
               
               if (!isProfileComplete) {
                 // Show profile completion modal
-                Swal.fire({
-                  title: 'Complete Your Profile',
-                  html: `
-                    <form id="initialProfileForm">
-                      <div class="mb-3">
-                        <label for="initialFirstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="initialFirstName" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="initialLastName" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="initialLastName" required>
-                      </div>
-                      <div class="mb-3">
-                        <label for="initialRole" class="form-label">Role</label>
-                        <select class="form-select" id="initialRole" required>
-                          <option value="">Select Role</option>
-                          <option value="Administrator">Administrator</option>
-                          <option value="Staff">Staff</option>
-                        </select>
-                      </div>
-                    </form>
-                  `,
-                  showCancelButton: false,
-                  confirmButtonText: 'Save Profile',
-                  confirmButtonColor: '#2e7d32',
-                  allowOutsideClick: false,
-                  preConfirm: () => {
-                    const firstName = document.getElementById('initialFirstName').value;
-                    const lastName = document.getElementById('initialLastName').value;
-                    const role = document.getElementById('initialRole').value;
-                    
-                    if (!firstName || !lastName || !role) {
-                      Swal.showValidationMessage('Please fill in all fields');
-                      return false;
-                    }
-                    
-                    return { firstName, lastName, role };
-                  }
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    const { firstName, lastName, role } = result.value;
-                    
-                    // Update user data in database
-                    const updates = {
-                      firstName: firstName,
-                      lastName: lastName,
-                      role: role,
-                      updatedAt: firebase.database.ServerValue.TIMESTAMP
-                    };
-                    
-                    database.ref('users/' + user.uid).update(updates)
-                      .then(() => {
-                        // Update user's display name in Firebase Auth
-                        return user.updateProfile({
-                          displayName: `${firstName} ${lastName}`
-                        });
-                      })
-                      .then(() => {
-                        // Update UI with new user info
-                        document.getElementById("currentUserName").textContent = `${firstName} ${lastName}`;
-                        document.getElementById("currentUserRole").textContent = role;
-                        
-                        // Show success message
-                        Swal.fire({
-                          title: 'Success!',
-                          text: 'Profile completed successfully!',
-                          icon: 'success',
-                          confirmButtonColor: '#2e7d32'
-                        });
-                      })
-                      .catch((error) => {
-                        console.error("Error updating profile:", error);
-                        showErrorAlert("Error updating profile. Please try again.");
-                      });
-                  }
-                });
+                showProfileCompletionModal(user);
               } else {
-                // Profile is complete, update UI normally
-                document.getElementById("currentUserName").textContent = `${userData.firstName} ${userData.lastName}`;
-                document.getElementById("currentUserRole").textContent = userData.role;
+                // Update UI with user info
+                updateElement("currentUserName", `${userData.firstName} ${userData.lastName}`);
+                updateElement("currentUserRole", userData.role);
                 
                 // Update user avatar if available
-                if (user.photoURL) {
-                  document.getElementById("userAvatar").src = user.photoURL;
+                const userAvatar = document.getElementById("userAvatar");
+                if (userAvatar && user.photoURL) {
+                  userAvatar.src = user.photoURL;
                 }
               }
             }
           }).catch((error) => {
             console.error("Error fetching user data:", error);
             // Fallback to basic user info
-            document.getElementById("currentUserName").textContent = user.displayName || user.email;
-            document.getElementById("currentUserRole").textContent = "User";
+            updateElement("currentUserName", user.displayName || user.email);
+            updateElement("currentUserRole", "User");
           });
         }
       });
+
+      // Function to show profile completion modal
+      function showProfileCompletionModal(user) {
+        Swal.fire({
+          title: 'Complete Your Profile',
+          html: `
+            <form id="initialProfileForm">
+              <div class="mb-3">
+                <label for="initialFirstName" class="form-label">First Name</label>
+                <input type="text" class="form-control" id="initialFirstName" required>
+              </div>
+              <div class="mb-3">
+                <label for="initialLastName" class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="initialLastName" required>
+              </div>
+              <div class="mb-3">
+                <label for="initialRole" class="form-label">Role</label>
+                <select class="form-select" id="initialRole" required>
+                  <option value="">Select Role</option>
+                  <option value="Administrator">Administrator</option>
+                  <option value="Staff">Staff</option>
+                </select>
+              </div>
+            </form>
+          `,
+          showCancelButton: false,
+          confirmButtonText: 'Save Profile',
+          confirmButtonColor: '#2e7d32',
+          allowOutsideClick: false,
+          preConfirm: () => {
+            const firstName = document.getElementById('initialFirstName').value;
+            const lastName = document.getElementById('initialLastName').value;
+            const role = document.getElementById('initialRole').value;
+            
+            if (!firstName || !lastName || !role) {
+              Swal.showValidationMessage('Please fill in all fields');
+              return false;
+            }
+            
+            return { firstName, lastName, role };
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            handleProfileCompletion(user, result.value);
+          }
+        });
+      }
+
+      // Function to handle profile completion
+      function handleProfileCompletion(user, profileData) {
+        const updates = {
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+          role: profileData.role,
+          updatedAt: firebase.database.ServerValue.TIMESTAMP
+        };
+        
+        database.ref('users/' + user.uid).update(updates)
+          .then(() => {
+            // Update user's display name in Firebase Auth
+            return user.updateProfile({
+              displayName: `${profileData.firstName} ${profileData.lastName}`
+            });
+          })
+          .then(() => {
+            // Safely update UI elements
+            const updateElement = (id, value) => {
+              const element = document.getElementById(id);
+              if (element) {
+                element.textContent = value;
+              }
+            };
+
+            updateElement("currentUserName", `${profileData.firstName} ${profileData.lastName}`);
+            updateElement("currentUserRole", profileData.role);
+            
+            // Show success message
+            Swal.fire({
+              title: 'Success!',
+              text: 'Profile completed successfully!',
+              icon: 'success',
+              confirmButtonColor: '#2e7d32'
+            });
+          })
+          .catch((error) => {
+            console.error("Error updating profile:", error);
+            showErrorAlert("Error updating profile. Please try again.");
+          });
+      }
 
       // Function to create new user
       document.getElementById("saveUser").addEventListener("click", function () {
@@ -3532,6 +3751,311 @@
           });
         });
       }
+
+      // Add this to your existing JavaScript code
+
+      // Toggle account creation form
+      document.getElementById('toggleAccountForm').addEventListener('click', function() {
+        const form = document.getElementById('createAccountForm');
+        form.classList.toggle('d-none');
+        this.innerHTML = form.classList.contains('d-none') 
+          ? '<i class="bi bi-plus-circle me-1"></i>Add New Account'
+          : '<i class="bi bi-dash-circle me-1"></i>Cancel';
+      });
+
+      // Cancel button handler
+      document.getElementById('cancelAccountCreate').addEventListener('click', function() {
+        document.getElementById('createAccountForm').classList.add('d-none');
+        document.getElementById('toggleAccountForm').innerHTML = '<i class="bi bi-plus-circle me-1"></i>Add New Account';
+        document.getElementById('createAccountForm').reset();
+      });
+
+      // Handle account creation form submission
+      document.getElementById('createAccountForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('newAccountEmail').value;
+        const password = document.getElementById('newAccountPassword').value;
+        const confirmPassword = document.getElementById('confirmNewAccountPassword').value;
+        const role = document.getElementById('newAccountRole').value;
+        const department = document.getElementById('newAccountDepartment').value;
+        const status = document.getElementById('newAccountStatus').value;
+
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          showErrorAlert('Passwords do not match!');
+          return;
+        }
+
+        // Validate password length
+        if (password.length < 6) {
+          showErrorAlert('Password must be at least 6 characters long!');
+          return;
+        }
+
+        // Show loading state
+        Swal.fire({
+          title: 'Creating Account',
+          text: 'Please wait while we create the account...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        // Create user in Firebase Auth
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+            
+            // Create user data object
+            const userData = {
+              email: email,
+              role: role,
+              department: department,
+              status: status,
+              createdAt: firebase.database.ServerValue.TIMESTAMP,
+              createdBy: firebase.auth().currentUser.email
+            };
+
+            // Save user data to database
+            return database.ref('users/' + user.uid).set(userData);
+          })
+          .then(() => {
+            // Show success message
+            Swal.fire({
+              title: 'Success!',
+              text: 'Account created successfully!',
+              icon: 'success',
+              confirmButtonColor: '#2e7d32'
+            });
+
+            // Reset form and hide it
+            this.reset();
+            this.classList.add('d-none');
+            document.getElementById('toggleAccountForm').innerHTML = 
+              '<i class="bi bi-plus-circle me-1"></i>Add New Account';
+
+            // Log activity
+            logActivity('account_create', `Created new account for ${email}`, null);
+
+            // Reload accounts table
+            loadAccounts();
+          })
+          .catch((error) => {
+            console.error('Error creating account:', error);
+            Swal.fire({
+              title: 'Error!',
+              text: error.message,
+              icon: 'error',
+              confirmButtonColor: '#dc3545'
+            });
+          });
+      });
+
+      // Function to load accounts
+      function loadAccounts() {
+        const accountsTable = document.getElementById('accountsTable').getElementsByTagName('tbody')[0];
+        accountsTable.innerHTML = '<tr><td colspan="6" class="text-center">Loading accounts...</td></tr>';
+
+        database.ref('users').once('value')
+          .then((snapshot) => {
+            const accounts = snapshot.val();
+            accountsTable.innerHTML = '';
+
+            if (accounts) {
+              Object.entries(accounts).forEach(([uid, account]) => {
+                const row = accountsTable.insertRow();
+                row.innerHTML = `
+                  <td>${account.email}</td>
+                  <td><span class="badge bg-primary">${account.role}</td>
+                  <td>${account.department}</td>
+                  <td><span class="badge bg-${account.status === 'active' ? 'success' : 'danger'}">${account.status}</span></td>
+                  <td>${formatDate(account.createdAt)}</td>
+                  <td>
+                    <button class="btn btn-sm btn-warning" onclick="resetPassword('${uid}')">
+                      <i class="bi bi-key"></i>
+                    </button>
+                    <button class="btn btn-sm btn-${account.status === 'active' ? 'danger' : 'success'}" 
+                            onclick="toggleAccountStatus('${uid}', '${account.status}')">
+                      <i class="bi bi-toggle-${account.status === 'active' ? 'off' : 'on'}"></i>
+                    </button>
+                  </td>
+                `;
+              });
+            } else {
+              accountsTable.innerHTML = '<tr><td colspan="6" class="text-center">No accounts found</td></tr>';
+            }
+          })
+          .catch((error) => {
+            console.error('Error loading accounts:', error);
+            accountsTable.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading accounts</td></tr>';
+          });
+      }
+
+      // Function to reset password
+      function resetPassword(uid) {
+        Swal.fire({
+          title: 'Reset Password',
+          text: 'Are you sure you want to reset this account\'s password?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#2e7d32',
+          cancelButtonColor: '#dc3545',
+          confirmButtonText: 'Yes, reset it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Generate temporary password
+            const tempPassword = Math.random().toString(36).slice(-8);
+            
+            // Get user email first
+            database.ref(`users/${uid}`).once('value')
+              .then((snapshot) => {
+                const userData = snapshot.val();
+                if (!userData || !userData.email) {
+                  throw new Error('User email not found');
+                }
+
+                // Create custom auth token
+                return firebase.auth().sendPasswordResetEmail(userData.email);
+              })
+              .then(() => {
+                // Show success message
+                Swal.fire({
+                  title: 'Password Reset Email Sent!',
+                  html: `A password reset email has been sent to the user's email address.`,
+                  icon: 'success',
+                  confirmButtonColor: '#2e7d32'
+                });
+
+                // Log activity
+                logActivity('password_reset_request', `Initiated password reset for user ${uid}`, null);
+              })
+              .catch((error) => {
+                console.error('Error resetting password:', error);
+                Swal.fire({
+                  title: 'Error!',
+                  text: 'Error resetting password. ' + error.message,
+                  icon: 'error',
+                  confirmButtonColor: '#dc3545'
+                });
+              });
+          }
+        });
+      }
+
+      // Function to toggle account status
+      function toggleAccountStatus(uid, currentStatus) {
+        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+        
+        Swal.fire({
+          title: 'Change Account Status',
+          text: `Are you sure you want to ${newStatus === 'active' ? 'activate' : 'deactivate'} this account?`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#2e7d32',
+          cancelButtonColor: '#dc3545',
+          confirmButtonText: 'Yes, change it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            database.ref(`users/${uid}/status`).set(newStatus)
+              .then(() => {
+                showSuccessAlert(`Account ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully!`);
+                loadAccounts();
+                logActivity('status_change', `Changed account status to ${newStatus} for user ${uid}`, null);
+              })
+              .catch((error) => {
+                console.error('Error changing account status:', error);
+                showErrorAlert('Error changing account status. Please try again.');
+              });
+          }
+        });
+      }
+
+      // Load accounts when profile section is shown
+      document.getElementById('profileLink').addEventListener('click', function() {
+        setTimeout(loadAccounts, 500); // Delay to ensure DOM is ready
+      });
+
+      // Add this function to handle updating own password in profile section
+      function updateOwnPassword() {
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!currentPassword || !newPassword || !confirmPassword) {
+          showErrorAlert('Please fill in all password fields');
+          return;
+        }
+
+        if (newPassword !== confirmPassword) {
+          showErrorAlert('New passwords do not match');
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          showErrorAlert('New password must be at least 6 characters long');
+          return;
+        }
+
+        const user = firebase.auth().currentUser;
+        if (!user) {
+          showErrorAlert('You must be logged in to change your password');
+          return;
+        }
+
+        // Show loading state
+        Swal.fire({
+          title: 'Updating Password',
+          text: 'Please wait...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        // Reauthenticate with current password
+        const credential = firebase.auth.EmailAuthProvider.credential(
+          user.email,
+          currentPassword
+        );
+
+        user.reauthenticateWithCredential(credential)
+          .then(() => {
+            // Update password
+            return user.updatePassword(newPassword);
+          })
+          .then(() => {
+            // Clear form
+            document.getElementById('passwordForm').reset();
+
+            // Show success message
+            Swal.fire({
+              title: 'Success!',
+              text: 'Your password has been updated successfully',
+              icon: 'success',
+              confirmButtonColor: '#2e7d32'
+            });
+
+            // Log activity
+            logActivity('password_change', 'Changed own password', null);
+          })
+          .catch((error) => {
+            console.error('Error updating password:', error);
+            Swal.fire({
+              title: 'Error!',
+              text: 'Error updating password: ' + error.message,
+              icon: 'error',
+              confirmButtonColor: '#dc3545'
+            });
+          });
+      }
+
+      // Update the password form submission handler
+      document.getElementById('passwordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        updateOwnPassword();
+      });
     </script>
   </body>
 </html>
