@@ -3,10 +3,13 @@
   
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>CentralComm</title>
     <link rel="shortcut icon" href="../assets/images/logo.png" type="image/x-icon" />
-    <link>
+
+    <!--Chatbot script-->
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+
     <!-- Bootstrap 5 CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
@@ -26,18 +29,19 @@
     <!-- Custom CSS -->
     <style>
       :root {
-        --primary-color: #1572B9; /* Darker navy blue */
-        --text-color: #0f1b22;
-        --light-bg: #cde9ff; /* Light blue background */
+        --primary-color: #253B81;
+        --secondary-color: #212932;
+        --text-color: #2F2F2F;
+        --light-bg: #E5F3FE;
         --dark-blue-color: #04111b;
-        --hover-shadow: #54ADD6;
-        --gradient-start: #217DC0; 
-        --gradient-end: #4da9ef;
+        --hover-shadow: #658be6;
+        --gradient-start: #253B81;
+        --gradient-end: #3f5cbc;
+        --sec-gradient-end: #213575;
         --box-shadow: 0 5px 15px rgba(46, 53, 125, 0.3);
         --card-shadow: 0 4px 6px rgba(63, 95, 199, 0.1);
 
-        --secondary-color: #1C1F26; /* Slate gray */
-        --accent-color: #4c6aaf; /* Bright blue */
+        --accent-color: #658be6; /* Bright blue */
         --light-blue: rgb(212, 212, 243);
         
         --secondary-hover-shadow: #74C0FC;
@@ -71,7 +75,7 @@
       /* Improved Base Styles */
       body {
         font-family: "Poppins", sans-serif;
-        background-color: var(--light-bg);
+        background-color: white;
         line-height: 1.6;
       }
 
@@ -98,7 +102,6 @@
         display: flex;
         align-items: center;
         font-weight: 900;
-        color: var(--primary-color);
         transition: all 0.3s ease;
         font-size: 1.3rem;
       }
@@ -106,6 +109,14 @@
       .navbar-brand:hover {
         transform: translateX(5px);
         color: whitesmoke;
+      }
+
+      .central-brand {
+        color: var(--primary-color);
+      }
+
+      .comm-brand {
+        color: var(--secondary-color);
       }
 
       .navbar-brand img {
@@ -163,153 +174,13 @@
         );
         color: white;
         padding: 0.6rem 1.8rem;
-        border-radius: 25px;
         transition: all 0.3s ease;
-        border: none;
+        border-radius: 0 25px;
         font-weight: 500;
         position: relative;
         overflow: hidden;
       }
 
-      .chatbot-container {
-      position: fixed;
-      bottom: 80px;
-      right: 30px;
-      width: 320px;
-      max-height: 600px;
-      background: #f1f1f1;
-      border-radius: 10px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
-      overflow: hidden;
-      display: none;
-      flex-direction: column;
-      z-index: 1000;
-    }
-
-    .chatbot-header {
-      background: #007bff;
-      color: white;
-      padding: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .chatbot-header h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-
-    #close-chat {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    .chatbot-messages {
-      padding: 12px;
-      flex: 1;
-      overflow-y: auto;
-      background: #fff;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .bot-message,
-    .user-message {
-      margin-bottom: 10px;
-      padding: 8px 10px;
-      border-radius: 6px;
-      max-width: 80%;
-      word-wrap: break-word;
-    }
-
-    .bot-message {
-      background-color: #e1e1e1;
-      align-self: flex-start;
-    }
-
-    .user-message {
-      background-color: #cce5ff;
-      align-self: flex-end;
-      text-align: right;
-    }
-
-    .typing-indicator {
-      display: none;
-      margin: 5px;
-      display: flex;
-      gap: 3px;
-    }
-
-    .typing-indicator span {
-      width: 6px;
-      height: 6px;
-      background: #555;
-      border-radius: 50%;
-      animation: blink 1s infinite alternate;
-    }
-
-    .typing-indicator span:nth-child(2) {
-      animation-delay: 0.2s;
-    }
-
-    .typing-indicator span:nth-child(3) {
-      animation-delay: 0.4s;
-    }
-
-    @keyframes blink {
-      0% { opacity: 0.2; }
-      100% { opacity: 1; }
-    }
-
-    .chatbot-input-section {
-      display: flex;
-      border-top: 1px solid #ccc;
-      padding: 10px;
-      background: #fff;
-    }
-
-    #chatbot-input {
-      flex: 1;
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid #ccc;
-    }
-
-    #send-chatbot {
-      margin-left: 10px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .chatbot-footer {
-      padding: 8px;
-      background-color: #f8f8f8;
-      font-size: 12px;
-      text-align: center;
-    }
-
-    .chat-toggle {
-      position: fixed;
-      bottom: 20px;
-      right: 30px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      font-size: 20px;
-      cursor: pointer;
-      z-index: 1001;
-    } 
       .login-btn::before {
         content: "";
         position: absolute;
@@ -333,7 +204,8 @@
       .login-btn:hover {
         transform: translateY(-2px);
         box-shadow: var(--box-shadow);
-        background: var(--secondary-hover-shadow);
+        background: var(--hover-shadow);
+        color: white;
       }
 
       .navbar-toggler {
@@ -553,47 +425,43 @@
       /* Enhanced Landing Page Styles */
       .hero-section {
         position: relative;
-        min-height: 100vh;
+        height: 100vh;
+        display: flex;
+        overflow: hidden;
+        align-items: center;
+        justify-content: center;
+        padding: 8rem 0 6rem;
+        text-align: left;
+        background: url(./assets/images/bg-landing-page.png) no-repeat center center;
+        background-size: cover;
+      }
+
+
+      .search-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
-        padding: 8rem 0 6rem;
+        animation: fadeIn 2s ease;
+        margin-left: -10rem;
+        margin-top: 2.5rem;
       }
 
-      .bg-hero {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 0;
+      .search-image {
+        width: 400px;
+        height: auto;
+        object-fit: contain;
+        transition: transform 0.3s ease-in-out;
+        z-index: 2;
+        margin-right: -3rem;
       }
 
-      .hero-content {
-        position: relative;
-        z-index: 1;
-        animation: fadeInUp 1s ease-out;
-      } 
-
-      .hero-content h1 {
-        font-size: 3.5rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        color: var(--primary-color);
-        line-height: 1.2;
+      .search-container {
+        max-width: 700px;
+        transition: all 0.3s ease-in-out;
       }
 
-      .hero-content p {
-        font-size: 1.2rem;
-        color: var(--text-color);
-        margin-bottom: 2rem;
-        max-width: 600px;
-        font-weight: 500;
-      }
-
-      .hero-image {
-        animation: float 6s ease-in-out infinite;
+      .search-image:hover {
+        transform: scale(1.05); 
       }
 
       /* Enhanced Feature Boxes */
@@ -701,40 +569,29 @@
       }
 
       .btn-primary {
-        background: var(--primary-color);
         color: white;
-        border: 2px solid var(--primary-color);
-        border-radius: 12px;
-        border-bottom: 8px solid var(--primary-color);
+        border-radius: 0px 25px;
         transition: all 0.2s ease;
+        border: none;
+        background: linear-gradient(
+          180deg,
+          var(--gradient-start),
+          var(--gradient-end)
+        );
       }
 
 
       /* Enhanced Footer Styles */
       .footer {
         background: linear-gradient(
-          135deg,
-          var(--secondary-color),
-          var(--primary-color)
+          90deg,
+          var(--gradient-start),
+          var(--sec-gradient-end)
         );
         color: white;
         padding: 4rem 0 2rem;
         position: relative;
         margin-top: 4rem;
-      }
-
-      .footer::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(
-          90deg,
-          var(--accent-color),
-          var(--primary-color)
-        );
       }
 
       .footer-content {
@@ -849,317 +706,23 @@
       }
 
       /* Enhanced Chatbot Styles */
-      .chatbot-container {
+      df-messenger {
+      --df-messenger-bot-message: rgb(234, 228, 228);
+      --df-messenger-button-titlebar-color: var(--gradient-end);
+      --df-messenger-chat-background-color: rgb(250, 246, 246);
+      --df-messenger-minimized-chat-close-icon-color: var(--hover-shadow);
+      --df-messenger-user-message: #8eceff;
+      --df-messenger-font-color: black;
+        transform: scale(0.9);
+        transform-origin: bottom right;
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 350px;
-        height: 500px;
-        background: white;
-        border-radius: 20px;
-        box-shadow: var(--box-shadow);
-        display: none;
-        flex-direction: column;
-        z-index: 1000;
-        transform: translateY(100%);
-        opacity: 0;
-        transition: all 0.3s ease;
-        overflow: hidden;
-        border: 1px solid rgba(46, 125, 50, 0.1);
-      }
-
-      .chatbot-container.active {
-        transform: translateY(0);
-        opacity: 1;
-      }
-
-      .chatbot-header {
-        background: linear-gradient(
-          135deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
-        color: white;
-        padding: 1.2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: var(--box-shadow);
-        position: relative;
-      }
-
-      .chatbot-header::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: rgba(255, 255, 255, 0.2);
-      }
-
-      .chatbot-header h3 {
-        margin: 0;
-        font-size: 1.3rem;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-      }
-
-      .chatbot-header h3 i {
-        font-size: 1.2rem;
-      }
-
-      #close-chat {
-        background: rgba(255, 255, 255, 0.2);
-        border: none;
-        color: white;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        font-size: 1.2rem;
-        cursor: pointer;
-        padding: 0;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      #close-chat:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: rotate(90deg);
-      }
-
-      .chatbot-messages {
-        flex: 1;
-        padding: 1.2rem;
-        overflow-y: auto;
-        background: var(--light-bg);
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-
-      .chatbot-questions {
-        padding: 1rem;
-        display: grid;
-        gap: 0.8rem;
-        background: white;
-        border-top: 1px solid rgba(46, 125, 50, 0.1);
-        max-height: 100px;
-        overflow-y: auto;
-      }
-
-      .chatbot-footer {
-        padding: 1rem;
-        text-align: center;
-        font-size: 0.9rem;
-        color: #666;
-        background: white;
-        border-top: 1px solid rgba(46, 125, 50, 0.1);
-      }
-
-      .chat-toggle {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: linear-gradient(
-          135deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
-        color: white;
-        border: none;
-        box-shadow: var(--box-shadow);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 999;
-        transition: all 0.3s ease;
-      }
-
-      .chat-toggle:hover {
-        transform: scale(1.1);
-        box-shadow: var(--box-shadow);
-      }
-
-      .chat-toggle i {
-        font-size: 1.5rem;
-      }
-
-      .typing-indicator {
-        display: none;
-        align-items: center;
-        padding: 0.8rem 1.2rem;
-        background: white;
-        border-radius: 15px;
-        width: fit-content;
-        margin: 0.5rem 0;
-        box-shadow: var(--box-shadow);
-        position: relative;
-        animation: fadeIn 0.3s ease-out;
-      }
-
-      .typing-indicator::before {
-        content: "";
-        position: absolute;
-        left: -8px;
-        bottom: 0;
-        width: 0;
-        height: 0;
-        border: 8px solid transparent;
-        border-right-color: white;
-        border-bottom-color: white;
-      }
-
-      .typing-indicator span {
-        width: 8px;
-        height: 8px;
-        background: var(--primary-color);
-        border-radius: 50%;
-        display: inline-block;
-        margin: 0 2px;
-        animation: typing 1.4s infinite ease-in-out;
-      }
-
-      .typing-indicator span:nth-child(1) {
-        animation-delay: 0s;
-      }
-
-      .typing-indicator span:nth-child(2) {
-        animation-delay: 0.2s;
-      }
-
-      .typing-indicator span:nth-child(3) {
-        animation-delay: 0.4s;
-      }
-
-      @keyframes typing {
-        0%, 100% {
-          transform: translateY(0);
-          opacity: 0.4;
-        }
-        50% {
-          transform: translateY(-5px);
-          opacity: 1;
-        }
-      }
-
-      .bot-message {
-        background: white;
-        border-radius: 15px;
-        padding: 1rem 1.2rem;
-        margin-bottom: 0.5rem;
-        max-width: 85%;
-        box-shadow: var(--box-shadow);
-        position: relative;
-        animation: fadeIn 0.3s ease-out;
-        line-height: 1.5;
-      }
-
-      .bot-message::before {
-        content: "";
-        position: absolute;
-        left: -8px;
-        bottom: 0;
-        width: 0;
-        height: 0;
-        border: 8px solid transparent;
-        border-right-color: white;
-        border-bottom-color: white;
-      }
-
-      .user-message {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-        color: white;
-        margin-left: auto;
-        border-radius: 15px 15px 0 15px;
-        box-shadow: var(--box-shadow);
-        position: relative;
-        animation: fadeIn 0.3s ease-out;
-      }
-
-      .user-message::before {
-        content: "";
-        position: absolute;
-        right: -8px;
-        bottom: 0;
-        width: 0;
-        height: 0;
-        border: 8px solid transparent;
-        border-left-color: var(--primary-color);
-        border-bottom-color: var(--primary-color);
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .faq-question {
-        background: var(--light-bg);
-        border: none;
-        border-radius: 12px;
-        padding: 1rem 1.2rem;
-        text-align: left;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        font-size: 0.95rem;
-        color: var(--text-color);
-        box-shadow: var(--box-shadow);
-      }
-
-      .faq-question:hover {
-        background: rgba(46, 125, 50, 0.1);
-        transform: translateX(5px);
-        box-shadow: var(--box-shadow);
-      }
-
-      .faq-question i {
-        font-size: 1.2rem;
-        color: var(--primary-color);
-        width: 24px;
-        text-align: center;
-      }
-
-      /* Custom scrollbar for chatbot */
-      .chatbot-messages::-webkit-scrollbar,
-      .chatbot-questions::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      .chatbot-messages::-webkit-scrollbar-track,
-      .chatbot-questions::-webkit-scrollbar-track {
-        background: var(--light-bg);
-      }
-
-      .chatbot-messages::-webkit-scrollbar-thumb,
-      .chatbot-questions::-webkit-scrollbar-thumb {
-        background: rgba(46, 125, 50, 0.2);
-        border-radius: 3px;
-      }
-
-      .chatbot-messages::-webkit-scrollbar-thumb:hover,
-      .chatbot-questions::-webkit-scrollbar-thumb:hover {
-        background: rgba(46, 125, 50, 0.3);
+        bottom: 10px;
+        right: 10px;
+        z-index: 1000; 
       }
 
       /* Add new styles for professional landing page */
+
       .search-container {
         background: white;
         border-radius: 20px;
@@ -1171,20 +734,24 @@
         
       }
 
+      .search-wrapper {
+        align-items: flex-start; 
+      }
+
       .search-title {
         text-align: center;
         margin-bottom: 2rem;
       }
 
       .search-title h2 {
-        color: var(--primary-color);
+        color: var(--secondary-color);
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 1rem;
       }
 
       .search-title p {
-        color: #666;
+        color: #242424;
         font-size: 1.1rem;
       }
 
@@ -1197,7 +764,7 @@
       .search-input {
         flex: 1;
         padding: 1rem 1.5rem;
-        border: 2px solid rgba(46, 125, 50, 0.1);
+        border: 2px solid rgba(10, 9, 25, 0.589);
         border-radius: 12px;
         font-size: 1.1rem;
         transition: all 0.3s ease;
@@ -1213,8 +780,8 @@
         padding: 0.8rem 1.5rem;
         background: linear-gradient(
           135deg,
-          var(--primary-color),
-          var(--secondary-color)
+          var(--gradient-start),
+          var(--gradient-end)
         );
         color: white;
         border: none;
@@ -1251,6 +818,11 @@
       .result-card:hover {
         transform: translateY(-5px);
         box-shadow: var(--box-shadow);
+      }
+
+      .custom-thead th {
+        background-color: var(--primary-color);
+        color: white;
       }
 
       .result-header {
@@ -1394,8 +966,8 @@
         height: 4px;
         background: linear-gradient(
           90deg,
-          var(--primary-color),
-          var(--accent-color)
+          var(--gradient-start),
+          var(--gradient-end)
         );
         transform: scaleX(0);
         transform-origin: left;
@@ -1427,8 +999,8 @@
         transform: scale(1.1);
         background: linear-gradient(
           135deg,
-          var(--primary-color),
-          var(--secondary-color)
+          var(--gradient-start),
+          var(--sec-gradient-end)
         );
       }
 
@@ -1658,11 +1230,12 @@
 
   <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light py-2">
       <div class="container">
         <a class="navbar-brand" href="#">
           <img src="assets/images/logo.png" alt="CentralComm Logo" />
-          CentralComm
+          <span class="central-brand">Central</span>
+          <span class="comm-brand">Comm</span>
         </a>  
         <button
           class="navbar-toggler"
@@ -1681,7 +1254,7 @@
               <a class="nav-link" href="#home">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#features">Features</a>
+              <a class="nav-link" href="#demo">Demo</a>
             </li>
             <li class="nav-item">
               <a class="nav-link login-btn" href="pages/selection.html">
@@ -1695,59 +1268,35 @@
 
     <!-- Hero Section -->
     <section class="hero-section" id="home">
-      <div class="bg-hero"></div>
       <div class="container">
-        <!--<div class="city-brand">
-          <img src="assets/images/logo-city.png" alt="City logo" class="city-logo"/>
-          <p class>
-            <strong>City of Baguio</strong><br>
-            <span class="mayor-name">Mayor Benjamin B. Magalong</span>
-          </p>
-        </div>-->
-        <div class="row align-items-center">
-          <div class="col-lg-6">
-            <div class="hero-content">
-              <h1>Streamline Your Document Management</h1>
-              <p>
-                Simplify your workflow with our comprehensive document tracking
-                system. Get real-time updates, secure tracking, and efficient
-                processing for all your documents.
-              </p>
-              <div class="d-flex gap-3">
-                <a href="#search" class="btn btn-primary" onclick="focusSearchInput()">
-                  <i class="fas fa-search me-2"></i> Track Document
-                </a>
+        <div class="search-wrapper">
+          <img src="./assets/images/img-landing-page.png" alt="Graphic" class="search-image" />
+          <div class="search-container">
+            <div class="search-title">
+              <h2>Baguio City Hall Document Tracking</h2>
+            </div>
+            <div class="search-form">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="search-input"
+                  id="controlNumberInput"
+                  placeholder="Enter control number"
+                  pattern="[0-9]{4}-[0-9]{6}"
+                />
+                <button class="search-button" onclick="searchDocument()">
+                  <i class="fas fa-search"></i> Search
+                </button>
               </div>
             </div>
-          </div>
-          <div class="col-lg-6">
-            <div class="search-container">
-              <div class="search-title">
-                <h2>Track Your Document</h2>
-                <p>Enter your control number to check the current status of your document</p>
-              </div>
-              <div class="search-form">
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class="search-input"
-                    id="controlNumberInput"
-                    placeholder="Enter control number"
-                    pattern="[0-9]{4}-[0-9]{6}"
-                  />
-                  <button class="search-button" onclick="searchDocument()">
-                    <i class="fas fa-search"></i> Search
-                  </button>
-                </div>
-              </div>
-              <div id="search-results" class="search-results">
-                <!-- Results will be displayed here -->
-              </div>
+            <div id="search-results" class="search-results">
+              <!-- Results will be displayed here -->
             </div>
           </div>
         </div>
       </div>
     </section>
+
 
     <!-- Features Section -->
     <section class="features-section" id="features">
@@ -1882,7 +1431,7 @@
               </li>
               <li>
                 <a href="auth/login.html"
-                  ><i></i> Login</a
+                  ><i class="fas fa-chevron-right"></i> Login</a
                 >
               </li>
             </ul>
@@ -1920,187 +1469,16 @@
       </div>
     </footer>
 
-    <!-- chatbot container -->
- <div class="chatbot-container" id="chatbot-container">
-    <div class="chatbot-header">
-      <h3><i class="fas fa-robot"></i> City Hall Assistant</h3>
-      <button id="close-chat" aria-label="Close chat">×</button>
-    </div>
-    <div class="chatbot-messages" id="chatbot-messages">
-      <div class="bot-message">
-        👋 Welcome to Baguio City Hall's Virtual Assistant! How may I help you today?
-      </div>
-      <div class="typing-indicator" id="typing-indicator">
-        <span></span><span></span><span></span>
-      </div>
-    </div>
-   
-    <div class="chatbot-input-section">
-      <input type="text" id="chatbot-input" placeholder="Type your message..." />
-      <button id="send-chatbot" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
-    </div>
-    <div class="chatbot-footer">
-      Need additional assistance?<br />
-      Email us at <a href="mailto:cmobaguio2600@gmail.com">cmobaguio2600@gmail.com</a>
-    </div>
-  </div>
+    <!-- chatbot -->
+    <df-messenger
+      intent="WELCOME"
+      chat-title="QuickAssist"
+      agent-id="2456a774-bd97-4c73-975d-9517bb7640ca"
+      language-code="en"
+      chat-icon="https://png.pngtree.com/png-clipart/20230401/original/pngtree-smart-chatbot-cartoon-clipart-png-image_9015126.png"
+    ></df-messenger>
 
-  <!-- Chatbot Toggle Button -->
-  <button class="chat-toggle" id="chat-toggle" aria-label="Open chat">
-    <i class="fas fa-comments"></i>
-  </button>
-
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-  const chatbotContainer = document.getElementById('chatbot-container');
-  const chatToggle = document.getElementById('chat-toggle');
-  const closeChat = document.getElementById('close-chat');
-  const chatbotMessages = document.getElementById('chatbot-messages');
-  const typingIndicator = document.getElementById('typing-indicator');
-  const faqQuestions = document.querySelectorAll('.faq-question');
-  const inputField = document.getElementById('chatbot-input');
-  const sendButton = document.getElementById('send-chatbot');
-
-  const responses = {
-    1: {
-      title: "Letter Submission Requirements",
-      content: "To submit a letter to Baguio City Hall, you need:\n1. Original letter\n2. Valid ID\n3. Supporting documents\n4. Contact info. Submit at Receiving Section (Mon-Fri, 8AM-5PM)."
-    },
-    2: {
-      title: "Office Location & Hours",
-      content: "📍 City Hall Drive, Baguio City, Benguet\n🕗 Mon-Fri: 8AM - 5PM\n❌ Closed on weekends & holidays."
-    },
-    3: {
-      title: "Contact Information",
-      content: "📞 (074) 442-3939\n📧 cmobaguio2600@gmail.com\n📍 City Hall Drive, Baguio City"
-    },
-    4: {
-      title: "Processing Timeline",
-      content: "📄 Regular: 3–5 days\n⚡ Urgent: 1–2 days\n⭐ Special Requests: Subject to approval"
-    },
-    5: {
-      title: "Status Updates & Support",
-      content: "📌 Track via website centralcomm.vercel.app with your given control number \n📞 Call hotline:  (074) 442-3939 \n🏢 or Visit Receiving Section at Baguio City Hall"
-    }
-  };
-
-  const keywordResponses = [
-    {
-      keywords: ['hi', 'hello', 'good morning', 'good afternoon'],
-      response: "👋 Hello! How can I assist you today with your letter or CentralComm inquiries?"
-    },
-    {
-      keywords: ['track', 'status', 'check my letter'],
-      response: "📦 You can track your letter using the control number provided. Let me know if you need help locating it."
-    },
-    {
-      keywords: ['centralcomm', 'central comm', 'central communication'],
-      response: "📘 *CentralComm* is a document and letter tracking system used within Baguio City Hall. It allows departments to monitor, archive, and manage letter statuses, delivery, and history efficiently."
-    },
-    {
-      keywords: ['archive', 'history', 'record'],
-      response: "🗄️ CentralComm stores your letter records. You can view your letter history and archived submissions anytime within the system."
-    },
-    {
-      keywords: ['requirement', 'submit', 'submission'],
-      response: responses[1].content
-    },
-    {
-      keywords: ['location', 'where', 'office hours', 'open'],
-      response: responses[2].content
-    },
-    {
-      keywords: ['contact', 'phone', 'email'],
-      response: responses[3].content
-    },
-    {
-      keywords: ['processing', 'how long'],
-      response: responses[4].content
-    },
-    {
-      keywords: ['support', 'help'],
-      response: responses[5].content
-    }
-  ];
-
-  function getKeywordResponse(input) {
-    const lowerInput = input.toLowerCase();
-    for (const entry of keywordResponses) {
-      if (entry.keywords.some(keyword => lowerInput.includes(keyword))) {
-        return entry.response;
-      }
-    }
-    return "❗ I'm sorry, I can only answer questions related to City Hall services and CentralComm. Please contact support for other inquiries.";
-  }
-
-  function respondWithTyping(message) {
-    typingIndicator.style.display = 'flex';
-    setTimeout(() => {
-      typingIndicator.style.display = 'none';
-      const botMessage = document.createElement('div');
-      botMessage.className = 'bot-message';
-      botMessage.textContent = message;
-      chatbotMessages.appendChild(botMessage);
-      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-    }, 1200);
-  }
-
-  function addUserMessage(message) {
-    const userMsg = document.createElement('div');
-    userMsg.className = 'user-message';
-    userMsg.textContent = message;
-    chatbotMessages.appendChild(userMsg);
-    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-  }
-
-  // Handle typed input
-  sendButton.addEventListener('click', function () {
-    const userInput = inputField.value.trim();
-    if (userInput) {
-      addUserMessage(userInput);
-      const botReply = getKeywordResponse(userInput);
-      inputField.value = '';
-      respondWithTyping(botReply);
-    }
-  });
-
-  // Also allow pressing Enter to send
-  inputField.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') sendButton.click();
-  });
-
-  // FAQ button handlers
-  faqQuestions.forEach(button => {
-    button.addEventListener('click', function () {
-      const questionId = this.dataset.question;
-      const response = responses[questionId];
-      if (response) {
-        respondWithTyping(`${response.title}\n\n${response.content}`);
-      }
-    });
-  });
-
-  // Chat open/close
-  chatToggle.addEventListener('click', function () {
-    chatbotContainer.style.display = 'flex';
-    setTimeout(() => chatbotContainer.classList.add('active'), 100);
-  });
-
-  closeChat.addEventListener('click', function () {
-    chatbotContainer.classList.remove('active');
-    setTimeout(() => chatbotContainer.style.display = 'none', 300);
-  });
-});
-
-    </script>
-    <!-- <script src="assets/js/script.js"></script> -->
-
     <script>
       // Search Input
       function focusSearchInput() {
@@ -2139,6 +1517,11 @@
         searchResults.innerHTML = '';
         searchResults.style.display = 'none';
         
+        if (!controlNumber) {
+          showError('Please enter a control number to search.');
+          return; // Stop here if input is empty
+        }
+
         // Show loading state
         searchResults.style.display = 'block';
         searchResults.innerHTML = `
@@ -2152,7 +1535,7 @@
           </div>
         `;
 
-        // Search in entries node (main database)
+        // Proceed with Firebase search
         database.ref('entries')
           .orderByChild('controlNumber')
           .equalTo(controlNumber)
@@ -2173,6 +1556,7 @@
           });
       }
 
+
       function showError(message) {
         const searchResults = document.getElementById('search-results');
         searchResults.innerHTML = `
@@ -2189,51 +1573,23 @@
         const searchResults = document.getElementById("search-results");
         searchResults.innerHTML = `
           <div class="result-card">
-            <div class="result-header">
-              <h3 class="result-title">Document Status</h3>
-              <span class="result-status ${getStatusClass(data.status)}">${data.status}</span>
-            </div>
-            <div class="result-details">
-              <div class="detail-item">
-                <div class="row">
-                  <div class="col-md-6">
-                    <strong>Control Number:</strong> ${data.controlNumber}
-                  </div>
-                  <div class="col-md-6" hidden>
-                    <strong>Type:</strong> ${data.type}
-                  </div>
-                </div>
-              </div>
-              <div class="detail-item" hidden>
-                <div class="row">
-                  <div class="col-md-6">
-                    <strong>Date Received:</strong> ${formatDate(data.dateReceived)}
-                  </div>
-                  <div class="col-md-6">
-                    <strong>Time Received:</strong> ${data.timeReceived}
-                  </div>
-                </div>
-              </div>
-              <div class="detail-item" hidden>
-                <div class="row">
-                  <div class="col-md-6">
-                    <strong>From:</strong> ${data.from}
-                  </div>
-                  <div class="col-md-6">
-                    <strong>Office:</strong> ${data.office}
-                  </div>
-                </div>
-              </div>
-              <div class="detail-item" hidden>
-                <strong>Subject:</strong> ${data.subject}
-              </div>
-              <div class="detail-item">
-                <strong>Endorsed To:</strong> ${data.endorsedTo || 'Not yet endorsed'}
-              </div>
-              <div class="detail-item" hidden>
-                <strong>Remarks:</strong> ${data.remarks || 'No remarks'}
-              </div>
-            </div>
+            <h3 class="result-title mb-3">Document Status</h3>
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr class="custom-thead">
+                  <th>Control Number</th>
+                  <th>Date Received</th>
+                  <th>Status (Last Event)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${data.controlNumber}</td>
+                  <td>${formatDate(data.dateReceived)}</td>
+                  <td><span class="badge ${getStatusClass(data.status)}">${data.status}</span></td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         `;
         searchResults.style.display = 'block';
