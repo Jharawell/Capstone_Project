@@ -2839,9 +2839,21 @@
 
             if (logs) {
               Object.entries(logs).forEach(([key, log]) => {
+                // Format timestamp
+                const date = new Date(log.timestamp);
+                const formattedTimestamp = date.toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: true
+                });
+
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                <td>${formatDate(log.timestamp)}</td>
+                <td>${formattedTimestamp}</td>
                 <td>${log.user}</td>
                 <td>${log.action}</td>
                 <td>${log.details}</td>
@@ -2868,11 +2880,11 @@
                 search: "Search history:",
               },
               columnDefs: [
-                { width: "20%", targets: 0 },
-                { width: "15%", targets: 1 },
-                { width: "15%", targets: 2 },
-                { width: "35%", targets: 3 },
-                { width: "15%", targets: 4 }
+                { width: "20%", targets: 0 }, // Timestamp
+                { width: "15%", targets: 1 }, // User
+                { width: "10%", targets: 2 }, // Action
+                { width: "40%", targets: 3 }, // Details
+                { width: "15%", targets: 4 }  // Control Number
               ],
             });
 
