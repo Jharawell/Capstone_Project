@@ -275,7 +275,7 @@
                     <h6 class="card-title text-primary mb-3">
                       Monthly Letters Received
                     </h6>
-                    <canvas id="monthlyLettersChart" height="100"></canvas>
+                    <canvas id="monthlyLettersChart" height="150"></canvas>
                   </div>
                 </div>
               </div>
@@ -3197,7 +3197,7 @@
               title: 'Success!',
               text: 'Profile completed successfully!',
               icon: 'success',
-              confirmButtonColor: '#2e7d32'
+              confirmButtonColor: '#002C75'
             });
           })
           .catch((error) => {
@@ -3278,7 +3278,7 @@
               title: "Success!",
               text: "User created successfully!",
               icon: "success",
-              confirmButtonColor: "#2e7d32",
+              confirmButtonColor: "#002C75",
             }).then(() => {
               // Close modal
               const modal = bootstrap.Modal.getInstance(
@@ -3868,7 +3868,7 @@
               title: 'Success!',
               text: 'Account created successfully!',
               icon: 'success',
-              confirmButtonColor: '#2e7d32'
+              confirmButtonColor: '#002C75'
             });
 
             // Reset form and hide it
@@ -3941,7 +3941,7 @@
           text: 'Are you sure you want to reset this account\'s password?',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#2e7d32',
+          confirmButtonColor: '#002C75',
           cancelButtonColor: '#dc3545',
           confirmButtonText: 'Yes, reset it!'
         }).then((result) => {
@@ -3966,7 +3966,7 @@
                   title: 'Password Reset Email Sent!',
                   html: `A password reset email has been sent to the user's email address.`,
                   icon: 'success',
-                  confirmButtonColor: '#2e7d32'
+                  confirmButtonColor: '#002C75'
                 });
 
                 // Log activity
@@ -3994,7 +3994,7 @@
           text: `Are you sure you want to ${newStatus === 'active' ? 'activate' : 'deactivate'} this account?`,
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#2e7d32',
+          confirmButtonColor: '#002C75',
           cancelButtonColor: '#dc3545',
           confirmButtonText: 'Yes, change it!'
         }).then((result) => {
@@ -4075,7 +4075,7 @@
               title: 'Success!',
               text: 'Your password has been updated successfully',
               icon: 'success',
-              confirmButtonColor: '#2e7d32'
+              confirmButtonColor: '#002C75'
             });
 
             // Log activity
