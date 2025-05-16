@@ -30,7 +30,26 @@
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <style>
+    
       /* Add custom styling for DataTables buttons */
+     
+      .btnCreate{
+        background: #04b9b9;
+        border: none;
+        padding: 14px;
+        border-radius: 9px;
+
+      }
+
+      .bi{
+        font-weight: 700;
+        
+      }
+
+      .header-section{
+        background: #0D98BA;
+      }
+
       .dt-buttons .btn {
         margin-right: 8px;
       }
@@ -126,7 +145,7 @@
         <div class="col-md-9 col-lg-10 main-content">
           <!-- Dashboard Section -->
           <div id="dashboardSection">
-            <div class="header-section card-header bg-white">
+            <div class="header-section card-header" style="color: black;">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <h1 class="h2 mb-1">Receiving Section - Mayor's Office Dashboard</h1>
@@ -136,11 +155,11 @@
                   <!-- Create New Button -->
                   <button
                     type="button"
-                    class="btn btn-primary"
+                    class="btnCreate"
                     data-bs-toggle="modal"
                     data-bs-target="#createEntryModal"
                   >
-                    <i class="bi bi-plus-circle me-2"></i>Create New
+                    <i class=" bi bi-plus-circle me-2" ></i>Create New
                   </button>
 
                   <!-- Archive All Button -->
@@ -159,7 +178,7 @@
             <!-- Monthly Statistics -->
             <div class="card mb-4">
               <div class="card-header bg-white">
-                <h5 class="card-title mb-0">Monthly Statistics</h5>
+                <h5 class="card-title mb-0">Yearly Statistics</h5>
               </div>
               <div class="card-body p-0">
                 <div class="accordion" id="monthlyStatsAccordion">
@@ -276,13 +295,14 @@
               </div>
 
               <!-- Monthly Letters Graph -->
-              <div class="col-12 mb-4">
+              <div class="col-md-6 mb-3">
                 <div class="card">
                   <div class="card-body">
                     <h6 class="card-title text-primary mb-3">
                       Monthly Letters Received
                     </h6>
-                    <canvas id="monthlyLettersChart" height="90"></canvas>
+                    <div style= "width: 100%;"></div>
+                    <canvas id="monthlyLettersChart" height= "90"></canvas>
                   </div>
                 </div>
               </div>
@@ -461,7 +481,7 @@
                           required
                         />
                       </div>
-                      <button type="submit" class="btn btn-primary">
+                      <button type="submit" class="btn btn-success">
                         Update Password
                       </button>
                     </form>
@@ -1012,7 +1032,7 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="btn btn-success"
               data-bs-dismiss="modal"
             >
               Close
@@ -2128,9 +2148,9 @@
                 dom: "Bfrtip",
                 buttons: [
                   { extend: 'copy', className: 'btn btn-sm' },
-                  { extend: 'csv', className: 'btn btn-sm' },
-                  { extend: 'excel', className: 'btn btn-sm' },
-                  { extend: 'pdf', className: 'btn btn-sm',
+                  { extend: 'csv', className: 'btn btn-success' },
+                  { extend: 'excel', className: 'btn btn-success' },
+                  { extend: 'pdf', className: 'btn btn-danger',
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
                     customize: function (doc) {
@@ -2141,7 +2161,7 @@
                       doc.content[1].table.widths = Array(colCount).fill('*');
                     }
                   },
-                  { extend: 'print', className: 'btn btn-sm' }
+                  { extend: 'print', className: 'btn btn-primary' }
                 ],
                 pageLength: 10,
                 order: [[3, "desc"]],
@@ -2628,9 +2648,9 @@
               dom: "Bfrtip",
               buttons: [
                 { extend: 'copy', className: 'btn btn-sm' },
-                { extend: 'csv', className: 'btn btn-sm' },
-                { extend: 'excel', className: 'btn btn-sm' },
-                { extend: 'pdf', className: 'btn btn-sm',
+                { extend: 'csv', className: 'btn btn-success' },
+                { extend: 'excel', className: 'btn btn-success' },
+                { extend: 'pdf', className: 'btn btn-danger',
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
                     customize: function (doc) {
@@ -2641,7 +2661,7 @@
                       doc.content[1].table.widths = Array(colCount).fill('*');
                     }
                   },
-                { extend: 'print', className: 'btn btn-sm' }
+                { extend: 'print', className: 'btn btn-primary' }
               ],
               pageLength: 10,
               order: [[0, "asc"]],
@@ -2716,9 +2736,9 @@
               dom: "Bfrtip",
               buttons: [
                 { extend: 'copy', className: 'btn btn-sm' },
-                { extend: 'csv', className: 'btn btn-sm' },
-                { extend: 'excel', className: 'btn btn-sm' },
-                { extend: 'pdf', className: 'btn btn-sm',
+                { extend: 'csv', className: 'btn btn-success' },
+                { extend: 'excel', className: 'btn btn-success' },
+                { extend: 'pdf', className: 'btn btn-danger',
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
                     customize: function (doc) {
@@ -2729,7 +2749,7 @@
                       doc.content[1].table.widths = Array(colCount).fill('*');
                     }
                   },
-                { extend: 'print', className: 'btn btn-sm' }
+                { extend: 'print', className: 'btn btn-primary' }
               ],
               pageLength: 10,
               order: [[0, "desc"]],
@@ -3220,10 +3240,10 @@
               dom: "Bfrtip",
               buttons: [
                 { extend: 'copy', className: 'btn btn-sm' },
-                { extend: 'csv', className: 'btn btn-sm' },
-                { extend: 'excel', className: 'btn btn-sm' },
-                { extend: 'pdf', className: 'btn btn-sm' },
-                { extend: 'print', className: 'btn btn-sm' }
+                { extend: 'csv', className: 'btn btn-success' },
+                { extend: 'excel', className: 'btn btn-success' },
+                { extend: 'pdf', className: 'btn btn-danger' },
+                { extend: 'print', className: 'btn btn-primary' }
               ],
               pageLength: 10,
               order: [[4, "desc"]], // Sort by Date Received by default
