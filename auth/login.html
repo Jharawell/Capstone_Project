@@ -19,46 +19,62 @@
     />
     <style>
       :root {
-        --primary-green: #002C75;
-        --secondary-green: #1C1F26;
-        --light-green: #4c6aaf;
-        --dark-green: #1a237e;
-        --gradient-start: #002C75;
-        --gradient-end: #4c6aaf;
-        --bg-light: #f8f9fa;
-        --text-muted: #6c757d;
+        --primary-color: #253B81;
+        --secondary-color: #212932;
+        --text-color: #2F2F2F;
+        --light-bg: #E5F3FE;
+        --light-blue: #6aa1ff;
+        --dark-blue-color: #04111b;
+        --hover-shadow: #658be6;
+        --gradient-start: #253B81;
+        --gradient-end: #3f5cbc;
+        --sec-gradient-end: #213575;
+        --box-shadow: 0 5px 15px rgba(46, 53, 125, 0.3);
+        --card-shadow: 0 4px 6px rgba(63, 95, 199, 0.1);
       }
 
       body {
-        font-family: "Poppins", sans-serif;
-        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-        min-height: 100vh;
+        display: flex;
+        height: 100vh;
+        margin: 0;
+        background: url(../assets/images/bg-login-page.png) no-repeat center center;
+        background-size: cover;
+      }
+
+      .side-image {
+        flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 1rem;
+        overflow: hidden;
+      }
+
+      .side-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
       }
 
       .login-container {
-        max-width: 320px;
-        width: 100%;
-        position: relative;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
       }
 
       .login-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 450px;
         overflow: hidden;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        left: -120px;
       }
 
       .login-header {
-        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
         padding: 1.5rem;
         text-align: center;
-        color: white;
+        color: black;
       }
 
       .login-header img {
@@ -68,14 +84,23 @@
       }
 
       .login-header h2 {
-        font-size: 1.25rem;
+        font-size: 2.5rem;
         margin-bottom: 0.25rem;
+        font-weight: 700;
       }
 
       .login-header p {
-        font-size: 0.8rem;
+        font-size: 1rem;
         opacity: 0.9;
         margin: 0;
+      }
+
+      .text-central {
+        color: black;
+      }
+
+      .text-comm {
+        color: var(--primary-color);
       }
 
       .login-body {
@@ -151,11 +176,14 @@
   </head>
 
   <body>
+    <div class="side-image">
+      <img src="../assets/images/img-receiving-login.png" alt="Side Illustration" />
+    </div>
     <div class="login-container">
       <div class="login-card">
         <div class="login-header">
-          <img src="../assets/images/logo.svg" alt="CentralComm Logo" />
-          <h2>CentralComm</h2>
+          <img src="../assets/images/logo.png" alt="CentralComm Logo" />
+          <h2><span class = "text-central">CENTRAL</span><span class="text-comm">COMM</span></h2>
           <p>Administrator Login</p>
         </div>
         <div class="login-body">

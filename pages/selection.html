@@ -6,7 +6,7 @@
     <title>CentralComm - Login Selection</title>
     <link rel="shortcut icon" href="../assets/images/logo.svg" type="image/x-icon" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <link
@@ -33,7 +33,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: url(../assets/images/bg-select-page.jpg);
+        background: url(../assets/images/bg-selection-page.png);
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -41,18 +41,13 @@
       }
 
       .login-container {
-        background: linear-gradient(
-          90deg,
-          var(--primary-color),
-          var(--secondary-color)
-        );
+        background: white;
         border-radius: 12px;
         padding: 2rem;
-        max-width: 500px;
+        max-width: 600px;
         width: 90%;
-        color: white;
+        color: black;
         box-shadow: var(--box-shadow);
-
       }
 
       .logo {
@@ -72,7 +67,7 @@
         color: inherit;
       }
       .login-option:hover {
-        border-color: #FFD43B;
+        border-color: var(--primary-color);
         transform: translateY(-2px);
         text-decoration: none;
         color: inherit;
@@ -83,23 +78,31 @@
       .login-option i {
         font-size: 2rem;
         margin-bottom: 1rem;
-        color: #FFD43B;
+        color: var(--primary-color);
       }
+      .login-container h1 {
+        font-weight: 700;
+      }
+      
       .login-option h3 {
         font-size: 1.25rem;
         margin-bottom: 0.5rem;
-        color: white;
+        color: black;
       }
       .login-option p {
-        color: white;
+        color: black;
         margin-bottom: 0;
+      }
+
+      .text-central{
+        color: var(--primary-color);
       }
     </style>
   </head>
   <body>
     <div class="login-container text-center">
-      <img src="../assets/images/logo.svg" alt="CentralComm Logo" class="logo" />
-      <h1 class="mb-4">Welcome to CentralComm</h1>
+      <img src="../assets/images/logo.png" alt="CentralComm Logo" class="logo" />
+      <h1 class="mb-4">Welcome to <span class = "text-central">CENTRALCOMM</span></h1>
       <p class="mb-4">Please select your login type</p>
 
       <div class="row">

@@ -14,20 +14,18 @@
 @import 'sections/_profile.css';
 
 :root {
-    --primary-color: #002C75; /* Darker navy blue */
-    --secondary-color: #1C1F26; /* Slate gray */
-    --btn-primary-color: #FFD43B; /* Yellow */
-    --btn-hover-color: #FAB005; /* Deep yellow */
-    --accent-color: #4c6aaf; /* Bright blue */
-    --text-color: #1a237e; /* Deep blue for text */
-    --light-bg: #e9edf8; /* Light blue background */
-    --light-blue: rgb(143, 151, 238);
-    --gradient-start: #002C75;
-    --gradient-end: #004bf9;
-    --card-shadow: 0 4px 6px rgba(63, 95, 199, 0.1);
-    --hover-shadow: 0 8px 15px rgba(46, 68, 125, 0.33);
-    --secondary-hover-shadow: #74C0FC;
+    --primary-color: #002C75;
+    --secondary-color: #212932;
+    --text-color: #2F2F2F;
+    --light-bg: #E5F3FE;
+    --light-blue: #6aa1ff;
+    --dark-blue-color: #04111b;
+    --hover-shadow: #658be6;
+    --gradient-start: #253B81;
+    --gradient-end: #3f5cbc;
+    --sec-gradient-end: #213575;
     --box-shadow: 0 5px 15px rgba(46, 53, 125, 0.3);
+    --card-shadow: 0 4px 6px rgba(63, 95, 199, 0.1);
   }
 
 /* Enhanced Animations */
@@ -58,7 +56,7 @@ body {
 
 /* Sidebar Styles */
 .sidebar {
-    background: linear-gradient(135deg, var(--gradient-start), var(--primary-color)) !important;
+    background: var(--primary-color) !important;
     min-height: 100vh !important;
     position: fixed !important;
     top: 0 !important;
