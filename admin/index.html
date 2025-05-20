@@ -428,7 +428,7 @@
                   <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                       <h5 class="card-title mb-0">Create New Account</h5>
-                      <button class="btn btn-primary btn-sm" id="toggleAccountForm">
+                      <button class="btn btn-primary btn-sm" id="toggleAccountForm1">
                         <i class="bi bi-plus-circle me-1"></i>Add New Account
                       </button>
                     </div>
@@ -512,7 +512,7 @@
                       </div>
 
                       <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary" id="cancelAccountCreate">Cancel</button>
+                        <button type="button" class="btn btn-danger" id="cancelAccountCreate">Cancel</button>
                         <button type="submit" class="btn btn-primary">Create Account</button>
                       </div>
                     </form>
@@ -3797,18 +3797,18 @@
       // Add this to your existing JavaScript code
 
       // Toggle account creation form
-      document.getElementById('toggleAccountForm').addEventListener('click', function() {
+      document.getElementById('toggleAccountForm1').addEventListener('click', function() {
         const form = document.getElementById('createAccountForm');
         form.classList.toggle('d-none');
         this.innerHTML = form.classList.contains('d-none') 
           ? '<i class="bi bi-plus-circle me-1"></i>Add New Account'
-          : '<i class="bi bi-dash-circle me-1"></i>Cancel';
+          : '';
       });
 
       // Cancel button handler
       document.getElementById('cancelAccountCreate').addEventListener('click', function() {
         document.getElementById('createAccountForm').classList.add('d-none');
-        document.getElementById('toggleAccountForm').innerHTML = '<i class="bi bi-plus-circle me-1"></i>Add New Account';
+        document.getElementById('toggleAccountForm1').innerHTML = '"></i>Add New Account';
         document.getElementById('createAccountForm').reset();
       });
 
@@ -3875,7 +3875,7 @@
             // Reset form and hide it
             this.reset();
             this.classList.add('d-none');
-            document.getElementById('toggleAccountForm').innerHTML = 
+            document.getElementById('toggleAccountForm1').innerHTML = 
               '<i class="bi bi-plus-circle me-1"></i>Add New Account';
 
             // Log activity
