@@ -1234,12 +1234,15 @@
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
           ];
+          const now = new Date();
+          const currentMonthIdx = now.getMonth();
+          const reorderedMonths = months.slice(currentMonthIdx).concat(months.slice(0, currentMonthIdx));
 
           // Clear existing content
           accordionContainer.innerHTML = "";
 
           // Create empty accordion items for all months first
-          months.forEach((month) => {
+          reorderedMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -1273,7 +1276,7 @@
           });
 
           // Then populate each month's data as it arrives
-          months.forEach((month) => {
+          reorderedMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const tableId = `monthly-stats-table-${monthKey}`;
 
@@ -1320,6 +1323,16 @@
                   }
                 });
 
+                // Calculate percentage for each type based on total
+                function getTypePercent(count, total) {
+                  if (total === 0) return 0;
+                  return Math.round((count / total) * 100);
+                }
+                const complaintsPercent = getTypePercent(stats.complaints, stats.total);
+                const proposalsPercent = getTypePercent(stats.proposals, stats.total);
+                const invitationsPercent = getTypePercent(stats.invitations, stats.total);
+                const requestsPercent = getTypePercent(stats.requests, stats.total);
+
                 // Sort entries by date
                 monthEntries.sort((a, b) => {
                   return new Date(b.dateReceived) - new Date(a.dateReceived);
@@ -1340,7 +1353,7 @@
                           <h2 class="card-text">${stats.complaints}</h2>
                           <div class="d-flex align-items-center">
                             <span class="trend-indicator trend-up text-primary">
-                              <i class="bi bi-arrow-up me-1"></i>0%
+                              <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
                             </span>
                           </div>
                         </div>
@@ -1353,7 +1366,7 @@
                           <h2 class="card-text">${stats.proposals}</h2>
                           <div class="d-flex align-items-center">
                             <span class="trend-indicator trend-up text-warning">
-                              <i class="bi bi-arrow-up me-1"></i>0%
+                              <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
                             </span>
                           </div>
                         </div>
@@ -1366,7 +1379,7 @@
                           <h2 class="card-text">${stats.invitations}</h2>
                           <div class="d-flex align-items-center">
                             <span class="trend-indicator trend-up text-info">
-                              <i class="bi bi-arrow-up me-1"></i>0%
+                              <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
                             </span>
                           </div>
                         </div>
@@ -1379,7 +1392,7 @@
                           <h2 class="card-text">${stats.requests}</h2>
                           <div class="d-flex align-items-center">
                             <span class="trend-indicator trend-up text-success">
-                              <i class="bi bi-arrow-up me-1"></i>0%
+                              <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
                             </span>
                           </div>
                         </div>
@@ -3383,12 +3396,15 @@
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
           ];
+          const now = new Date();
+          const currentMonthIdx = now.getMonth();
+          const reorderedMonths = months.slice(currentMonthIdx).concat(months.slice(0, currentMonthIdx));
 
           // Clear existing content
           accordionContainer.innerHTML = "";
 
           // Create empty accordion items for all months first
-          months.forEach((month) => {
+          reorderedMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -3422,7 +3438,7 @@
           });
 
           // Then populate each month's data as it arrives
-          months.forEach((month) => {
+          reorderedMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const tableId = `monthly-stats-table-${monthKey}`;
 
@@ -3469,6 +3485,21 @@
                   }
                 });
 
+                // Calculate percentage for each type based on total
+                function getTypePercent(count, total) {
+                  if (total === 0) return 0;
+                  return Math.round((count / total) * 100);
+                }
+                const complaintsPercent = getTypePercent(stats.complaints, stats.total);
+                const proposalsPercent = getTypePercent(stats.proposals, stats.total);
+                const invitationsPercent = getTypePercent(stats.invitations, stats.total);
+                const requestsPercent = getTypePercent(stats.requests, stats.total);
+
+                // Sort entries by date
+                monthEntries.sort((a, b) => {
+                  return new Date(b.dateReceived) - new Date(a.dateReceived);
+                });
+
                 // Update the accordion item with the data
                 const accordionBody = document.querySelector(
                   `#${monthKey} .accordion-body`
@@ -3484,7 +3515,7 @@
                             <h2 class="card-text">${stats.complaints}</h2>
                             <div class="d-flex align-items-center">
                               <span class="trend-indicator trend-up text-primary">
-                                <i class="bi bi-arrow-up me-1"></i>0%
+                                <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
                               </span>
                             </div>
                           </div>
@@ -3497,7 +3528,7 @@
                             <h2 class="card-text">${stats.proposals}</h2>
                             <div class="d-flex align-items-center">
                               <span class="trend-indicator trend-up text-warning">
-                                <i class="bi bi-arrow-up me-1"></i>0%
+                                <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
                               </span>
                             </div>
                           </div>
@@ -3510,7 +3541,7 @@
                             <h2 class="card-text">${stats.invitations}</h2>
                             <div class="d-flex align-items-center">
                               <span class="trend-indicator trend-up text-info">
-                                <i class="bi bi-arrow-up me-1"></i>0%
+                                <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
                               </span>
                             </div>
                           </div>
@@ -3523,7 +3554,7 @@
                             <h2 class="card-text">${stats.requests}</h2>
                             <div class="d-flex align-items-center">
                               <span class="trend-indicator trend-up text-success">
-                                <i class="bi bi-arrow-up me-1"></i>0%
+                                <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
                               </span>
                             </div>
                           </div>

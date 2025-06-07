@@ -1321,23 +1321,27 @@
       // Function to load entries into the table
       function loadEntries() {
         const currentYear = getCurrentYear();
+        const now = new Date();
+        const months = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+        const currentMonthIndex = now.getMonth();
+        const reorderedMonths = [
+          ...months.slice(currentMonthIndex),
+          ...months.slice(0, currentMonthIndex)
+        ];
         entriesRef.on("value", (snapshot) => {
           const entries = snapshot.val();
           const accordionContainer = document.getElementById(
             "monthlyStatsAccordion"
           );
 
-          // Create months array
-          const months = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-          ];
-
           // Clear existing content
           accordionContainer.innerHTML = "";
 
           // Create empty accordion items for all months first
-          months.forEach((month) => {
+          reorderedMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -1371,8 +1375,9 @@
           });
 
           // Then populate each month's data as it arrives
-          months.forEach((month) => {
+          reorderedMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
+            const tableId = `monthly-stats-table-${monthKey}`;
 
             // Get monthly data
             database
@@ -1417,6 +1422,16 @@
                   }
                 });
 
+                // Calculate percentage for each type based on total
+                function getTypePercent(count, total) {
+                  if (total === 0) return 0;
+                  return Math.round((count / total) * 100);
+                }
+                const complaintsPercent = getTypePercent(stats.complaints, stats.total);
+                const proposalsPercent = getTypePercent(stats.proposals, stats.total);
+                const invitationsPercent = getTypePercent(stats.invitations, stats.total);
+                const requestsPercent = getTypePercent(stats.requests, stats.total);
+
                 // Sort entries by date
                 monthEntries.sort((a, b) => {
                   return new Date(b.dateReceived) - new Date(a.dateReceived);
@@ -1428,153 +1443,101 @@
                 );
                 if (accordionBody) {
                   accordionBody.innerHTML = `
-                  <!-- ${month} Statistics -->
-                  <div class="row mb-4">
-                    <div class="col-md-3">
-                      <div class="card bg-primary bg-opacity-10">
-                        <div class="card-body">
-                          <h6 class="card-title text-primary">Complaints</h6>
-                          <h2 class="card-text">${stats.complaints}</h2>
-                          <div class="d-flex align-items-center">
-                            <span class="trend-indicator trend-up text-primary">
-                              <i class="bi bi-arrow-up me-1"></i>0%
-                            </span>
+                    <!-- ${month} Statistics -->
+                    <div class="row mb-4">
+                      <div class="col-md-3">
+                        <div class="card bg-primary bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-primary">Complaints</h6>
+                            <h2 class="card-text">${stats.complaints}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-primary">
+                                <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-warning bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-warning">Proposals</h6>
+                            <h2 class="card-text">${stats.proposals}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-warning">
+                                <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-info bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-info">Invitations</h6>
+                            <h2 class="card-text">${stats.invitations}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-info">
+                                <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-warning bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-success">Requests</h6>
+                            <h2 class="card-text">${stats.requests}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-success">
+                                <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3">
-                      <div class="card bg-warning bg-opacity-10">
-                        <div class="card-body">
-                          <h6 class="card-title text-warning">Proposals</h6>
-                          <h2 class="card-text">${stats.proposals}</h2>
-                          <div class="d-flex align-items-center">
-                            <span class="trend-indicator trend-up text-warning">
-                              <i class="bi bi-arrow-up me-1"></i>0%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="card bg-info bg-opacity-10">
-                        <div class="card-body">
-                          <h6 class="card-title text-info">Invitations</h6>
-                          <h2 class="card-text">${stats.invitations}</h2>
-                          <div class="d-flex align-items-center">
-                            <span class="trend-indicator trend-up text-info">
-                              <i class="bi bi-arrow-up me-1"></i>0%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="card bg-warning bg-opacity-10">
-                        <div class="card-body">
-                          <h6 class="card-title text-success">Requests</h6>
-                          <h2 class="card-text">${stats.requests}</h2>
-                          <div class="d-flex align-items-center">
-                            <span class="trend-indicator trend-up text-success">
-                              <i class="bi bi-arrow-up me-1"></i>0%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="table-responsive">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                      <div class="input-group" style="width: 300px;">
-                        <span class="input-group-text">
-                          <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" class="form-control" id="search${monthKey}" placeholder="Search entries...">
-                      </div>
-                    </div>
-                    <table class="table table-hover monthly-stats-table" id="monthly-stats-table-${monthKey}">
-                      <thead>
-                        <tr>
-                          <th>#</th>
-                          <th>Control Number</th>
-                          <th>Letter Type</th>
-                          <th>Time Received</th>
-                          <th>Date Received</th>
-                          <th>From</th>
-                          <th>Office</th>
-                          <th>Subject</th>
-                          <th>Time Received (Admin)</th>
-                          <th>Date Received (Admin)</th>
-                          <th>Endorsed To</th>
-                          <th>Remarks</th>
-                          <th>File Code</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        ${
-                          monthEntries.length > 0
-                            ? monthEntries
-                                .map(
-                                  (entry, index) => `
+                    <div class="table-responsive">
+                      <table class="table table-hover monthly-stats-table" id="${tableId}">
+                        <thead>
                           <tr>
-                            <td>${index + 1}</td>
-                            <td>
-                              <div class="d-flex flex-column">
-                                <span class="fw-bold">${entry.controlNumber || '-'}</span>
-                                <small class="text-muted">${entry.fileCode || 'No file code'}</small>
-                              </div>
-                            </td>
-                            <td>${entry.type || '-'}</td>
-                            <td>${entry.timeReceived || '-'}</td>
-                            <td>${formatDate(entry.dateReceived) || '-'}</td>
-                            <td>${entry.from || '-'}</td>
-                            <td>${entry.office || '-'}</td>
-                            <td>${entry.subject || '-'}</td>
-                            <td>${entry.adminTimeReceived || '-'}</td>
-                            <td>${formatDate(entry.adminDateReceived) || '-'}</td>
-                            <td>${entry.endorsedTo || '-'}</td>
-                            <td>${entry.remarks || '-'}</td>
-                            <td>
-                              <span class="badge bg-info">${entry.fileCode || 'No file code'}</span>
-                            </td>
-                            <td><span class="badge bg-${getStatusColor(
-                              entry.status
-                            )}">${entry.status || 'Pending'}</span></td>
-                            <td>
-                              <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editEntryModal" onclick="editEntry('${
-                                entry.key
-                              }')">
-                                <i class="bi bi-pencil"></i>
-                              </button>
-                              <button class="btn btn-sm btn-danger" onclick="deleteEntry('${
-                                entry.key
-                              }')">
-                                <i class="bi bi-trash"></i>
-                              </button>
-                            </td>
+                            <th>#</th>
+                            <th>Control Number</th>
+                            <th>Letter Type</th>
+                            <th>Time Received</th>
+                            <th>Date Received</th>
+                            <th>From</th>
+                            <th>Office</th>
+                            <th>Subject</th>
+                            <th>Time Received (Admin)</th>
+                            <th>Date Received (Admin)</th>
+                            <th>Endorsed To</th>
+                            <th>Remarks</th>
+                            <th>File Code</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                           </tr>
-                        `
-                                )
-                                .join("")
-                            : `
-                          <tr>
-                            <td colspan="15" class="text-center text-muted">No active entries for ${month}</td>
-                          </tr>
-                        `
-                        }
-                      </tbody>
-                    </table>
-                  </div>
-                `;
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                  `;
+
+                  // Initialize DataTable with the data
+                  setTimeout(() => {
+                    try {
+                      console.log(`Initializing table for ${month} with data:`, monthEntries);
+                      initializeDataTable(monthKey, tableId, monthEntries);
+                    } catch (error) {
+                      console.error(`Error initializing DataTable for ${month}:`, error);
+                    }
+                  }, 100);
                 }
               });
           });
         });
-
-        // Initialize search functionality after tables are loaded
-        setTimeout(initializeSearch, 500);
       }
 
       // Function to get status color
@@ -3457,12 +3420,18 @@
       // Function to handle search in accordion tables
       function initializeSearch() {
         const currentYear = getCurrentYear();
+        const now = new Date();
         const months = [
           "January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December"
         ];
+        const currentMonthIndex = now.getMonth();
+        const reorderedMonths = [
+          ...months.slice(currentMonthIndex),
+          ...months.slice(0, currentMonthIndex)
+        ];
 
-        months.forEach(month => {
+        reorderedMonths.forEach(month => {
           const monthKey = `${month.toLowerCase()}${currentYear}`;
           const searchInput = document.getElementById(`search${monthKey}`);
           const tableId = `monthly-stats-table-${monthKey}`;
@@ -3592,209 +3561,6 @@
 
         return table;
       }
-
-      // Update the loadEntries function to use the new initialization
-      function loadEntries() {
-        const currentYear = getCurrentYear();
-        entriesRef.on("value", (snapshot) => {
-          const entries = snapshot.val();
-          const accordionContainer = document.getElementById("monthlyStatsAccordion");
-
-          // Create months array
-          const months = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-          ];
-
-          // Clear existing content
-          accordionContainer.innerHTML = "";
-
-          // Create empty accordion items for all months first
-          months.forEach((month) => {
-            const monthKey = `${month.toLowerCase()}${currentYear}`;
-            const accordionItem = document.createElement("div");
-            accordionItem.className = "accordion-item border-0 mb-2";
-            accordionItem.id = `accordion-${monthKey}`;
-            accordionItem.innerHTML = `
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${monthKey}">
-                  <div class="d-flex justify-content-between align-items-center w-100">
-                    <div>
-                      <span class="fw-bold">${month} ${currentYear}</span>
-                    </div>
-                    <div class="text-muted small">
-                      <i class="bi bi-arrow-down-circle me-1"></i>
-                      Click to view details
-                    </div>
-                  </div>
-                </button>
-              </h2>
-              <div id="${monthKey}" class="accordion-collapse collapse" data-bs-parent="#monthlyStatsAccordion">
-                <div class="accordion-body">
-                  <div class="text-center">
-                    <div class="spinner-border text-primary" role="status">
-                      <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2">Loading data for ${month} ${currentYear}...</p>
-                  </div>
-                </div>
-              </div>
-            `;
-            accordionContainer.appendChild(accordionItem);
-          });
-
-          // Then populate each month's data as it arrives
-          months.forEach((month) => {
-            const monthKey = `${month.toLowerCase()}${currentYear}`;
-            const tableId = `monthly-stats-table-${monthKey}`;
-
-            // Get monthly data
-            database
-              .ref(`monthlyData/${monthKey}`)
-              .once("value", (monthlySnapshot) => {
-                const monthlyData = monthlySnapshot.val() || {
-                  total: 0,
-                  complaints: 0,
-                  proposals: 0,
-                  invitations: 0,
-                  requests: 0,
-                  entries: [],
-                };
-
-                // Get entries for this month
-                const monthEntries = monthlyData.entries
-                  .map((key) => {
-                    const entry = entries[key];
-                    return entry ? { key, ...entry } : null;
-                  })
-                  .filter((entry) => entry && entry.status !== "Archived");
-
-                // Calculate statistics including archived entries
-                const stats = {
-                  complaints: 0,
-                  proposals: 0,
-                  invitations: 0,
-                  requests: 0,
-                  total: 0
-                };
-
-                // Count only non-archived entries
-                monthlyData.entries.forEach(key => {
-                  const entry = entries[key];
-                  if (entry && entry.status !== "Archived") {
-                    stats.total++;
-                    const type = entry.type.toLowerCase();
-                    if (type === 'complaint') stats.complaints++;
-                    else if (type === 'proposal') stats.proposals++;
-                    else if (type === 'invitation') stats.invitations++;
-                    else if (type === 'request') stats.requests++;
-                  }
-                });
-
-                // Update the accordion item with the data
-                const accordionBody = document.querySelector(
-                  `#${monthKey} .accordion-body`
-                );
-                if (accordionBody) {
-                  accordionBody.innerHTML = `
-                    <!-- ${month} Statistics -->
-                    <div class="row mb-4">
-                      <div class="col-md-3">
-                        <div class="card bg-primary bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-primary">Complaints</h6>
-                            <h2 class="card-text">${stats.complaints}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-primary">
-                                <i class="bi bi-arrow-up me-1"></i>0%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-warning bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-warning">Proposals</h6>
-                            <h2 class="card-text">${stats.proposals}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-warning">
-                                <i class="bi bi-arrow-up me-1"></i>0%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-info bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-info">Invitations</h6>
-                            <h2 class="card-text">${stats.invitations}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-info">
-                                <i class="bi bi-arrow-up me-1"></i>0%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-warning bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-success">Requests</h6>
-                            <h2 class="card-text">${stats.requests}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-success">
-                                <i class="bi bi-arrow-up me-1"></i>0%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="table-responsive">
-                      <table class="table table-hover monthly-stats-table" id="${tableId}">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Control Number</th>
-                            <th>Letter Type</th>
-                            <th>Time Received</th>
-                            <th>Date Received</th>
-                            <th>From</th>
-                            <th>Office</th>
-                            <th>Subject</th>
-                            <th>Time Received (Admin)</th>
-                            <th>Date Received (Admin)</th>
-                            <th>Endorsed To</th>
-                            <th>Remarks</th>
-                            <th>File Code</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
-                  `;
-
-                  // Initialize DataTable with the data
-                  setTimeout(() => {
-                    try {
-                      console.log(`Initializing table for ${month} with data:`, monthEntries);
-                      initializeDataTable(monthKey, tableId, monthEntries);
-                    } catch (error) {
-                      console.error(`Error initializing DataTable for ${month}:`, error);
-                    }
-                  }, 100);
-                }
-              });
-          });
-        });
-      }
-
-      // Add this to your existing JavaScript code
 
       // Toggle account creation form
       document.getElementById('toggleAccountForm1').addEventListener('click', function() {
@@ -4098,6 +3864,19 @@
         e.preventDefault();
         updateOwnPassword();
       });
+
+      const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+      const now = new Date();
+      const currentMonthIndex = now.getMonth(); // 0-based index
+
+      // Reorder months so current month is first
+      const reorderedMonths = [
+        ...months.slice(currentMonthIndex),
+        ...months.slice(0, currentMonthIndex)
+      ];
     </script>
   </body>
 </html>
