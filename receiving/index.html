@@ -1045,6 +1045,90 @@
       </div>
     </div>
 
+    <!-- Sort/Filter Modal -->
+    <div class="modal fade" id="sortFilterModal" tabindex="-1" aria-labelledby="sortFilterModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="sortFilterModalLabel">Sort & Filter Archived Entries</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="sortFilterForm">
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold">Months</label>
+                  <div class="d-flex flex-wrap gap-2">
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="January" id="monthJan" name="months"><label class="form-check-label" for="monthJan">January</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="February" id="monthFeb" name="months"><label class="form-check-label" for="monthFeb">February</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="March" id="monthMar" name="months"><label class="form-check-label" for="monthMar">March</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="April" id="monthApr" name="months"><label class="form-check-label" for="monthApr">April</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="May" id="monthMay" name="months"><label class="form-check-label" for="monthMay">May</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="June" id="monthJun" name="months"><label class="form-check-label" for="monthJun">June</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="July" id="monthJul" name="months"><label class="form-check-label" for="monthJul">July</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="August" id="monthAug" name="months"><label class="form-check-label" for="monthAug">August</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="September" id="monthSep" name="months"><label class="form-check-label" for="monthSep">September</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="October" id="monthOct" name="months"><label class="form-check-label" for="monthOct">October</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="November" id="monthNov" name="months"><label class="form-check-label" for="monthNov">November</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="December" id="monthDec" name="months"><label class="form-check-label" for="monthDec">December</label></div>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold">Letter Types</label>
+                  <div class="d-flex flex-wrap gap-2">
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="Complaint" id="typeComplaint" name="letterTypes"><label class="form-check-label" for="typeComplaint">Complaint</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="Request" id="typeRequest" name="letterTypes"><label class="form-check-label" for="typeRequest">Request</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="Proposal" id="typeProposal" name="letterTypes"><label class="form-check-label" for="typeProposal">Proposal</label></div>
+                    <div class="form-check"><input class="form-check-input" type="checkbox" value="Invitation" id="typeInvitation" name="letterTypes"><label class="form-check-label" for="typeInvitation">Invitation</label></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-4 mb-3">
+                  <label class="form-label fw-bold" for="filterDateReceived">Date Received</label>
+                  <input type="date" class="form-control" id="filterDateReceived" name="dateReceived">
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label fw-bold" for="filterFrom">From</label>
+                  <select class="form-select" id="filterFrom" name="from">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                  <label class="form-label fw-bold" for="filterOffice">Office</label>
+                  <select class="form-select" id="filterOffice" name="office">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold" for="filterEndorsedTo">Endorsed To</label>
+                  <select class="form-select" id="filterEndorsedTo" name="endorsedTo">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label class="form-label fw-bold" for="filterStatus">Status</label>
+                  <select class="form-select" id="filterStatus" name="status">
+                    <option value="">All</option>
+                    <!-- Options will be populated dynamically -->
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="resetSortFilter">Reset</button>
+            <button type="button" class="btn btn-primary" id="applySortFilter">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -2086,11 +2170,14 @@
             const yearSelector = document.createElement("div");
             yearSelector.className = "mb-3";
             yearSelector.innerHTML = `
-              <div class="d-flex align-items-center">
+              <div class="d-flex align-items-center mb-3">
                 <label for="archiveYearSelect" class="form-label me-2 mb-0">Select Year:</label>
-                <select class="form-select w-auto" id="archiveYearSelect">
+                <select class="form-select w-auto me-2" id="archiveYearSelect">
                   ${years.map(year => `<option value="${year}">${year}</option>`).join('')}
                 </select>
+                <button class="btn btn-outline-primary btn-sm" id="openSortFilterModal" type="button" data-bs-toggle="modal" data-bs-target="#sortFilterModal">
+                  <i class="bi bi-funnel"></i> Sort/Filter
+                </button>
               </div>
             `;
             archivedYearsContainer.appendChild(yearSelector);
@@ -3599,6 +3686,118 @@
           });
         });
       }
+
+      // === ARCHIVES FILTER LOGIC ===
+
+      // Helper: Get unique values from array of objects
+      function getUniqueValues(entries, key) {
+        const set = new Set();
+        entries.forEach(e => {
+          if (e[key]) set.add(e[key]);
+        });
+        return Array.from(set).sort();
+      }
+
+      // Populate filter modal dropdowns when modal is shown
+      $(document).on('show.bs.modal', '#sortFilterModal', function () {
+        // Get selected year
+        const year = document.getElementById('archiveYearSelect')?.value;
+        if (!year) return;
+        // Find entries for this year
+        const yearTable = document.getElementById(`archivedTable${year}`);
+        if (!yearTable) return;
+        const rows = yearTable.querySelectorAll('tbody tr');
+        const entries = Array.from(rows).map(row => {
+          const cells = row.querySelectorAll('td');
+          return {
+            controlNumber: cells[0]?.textContent.trim(),
+            type: cells[1]?.textContent.trim(),
+            timeReceived: cells[2]?.textContent.trim(),
+            dateReceived: cells[3]?.textContent.trim(),
+            from: cells[4]?.textContent.trim(),
+            office: cells[5]?.textContent.trim(),
+            subject: cells[6]?.textContent.trim(),
+            endorsedTo: cells[7]?.textContent.trim(),
+            remarks: cells[8]?.textContent.trim(),
+            status: cells[9]?.textContent.trim(),
+          };
+        });
+        // Populate dropdowns
+        function fillSelect(id, values) {
+          const sel = document.getElementById(id);
+          if (!sel) return;
+          sel.innerHTML = '<option value="">All</option>' + values.map(v => `<option value="${v}">${v}</option>`).join('');
+        }
+        fillSelect('filterFrom', getUniqueValues(entries, 'from'));
+        fillSelect('filterOffice', getUniqueValues(entries, 'office'));
+        fillSelect('filterEndorsedTo', getUniqueValues(entries, 'endorsedTo'));
+        fillSelect('filterStatus', getUniqueValues(entries, 'status'));
+      });
+
+      // Filter logic for Apply button
+      $('#applySortFilter').on('click', function () {
+        const year = document.getElementById('archiveYearSelect')?.value;
+        if (!year) return;
+        const table = $(`#archivedTable${year}`).DataTable();
+        // Gather filter values
+        const months = Array.from(document.querySelectorAll('input[name="months"]:checked')).map(cb => cb.value);
+        const types = Array.from(document.querySelectorAll('input[name="letterTypes"]:checked')).map(cb => cb.value);
+        const dateReceived = document.getElementById('filterDateReceived').value;
+        const from = document.getElementById('filterFrom').value;
+        const office = document.getElementById('filterOffice').value;
+        const endorsedTo = document.getElementById('filterEndorsedTo').value;
+        const status = document.getElementById('filterStatus').value;
+        // Custom filter function
+        $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
+          // Only filter the correct table
+          if (settings.nTable.id !== `archivedTable${year}`) return true;
+          // Data columns: 0=Control #, 1=Type, 2=Time, 3=Date, 4=From, 5=Office, 6=Subject, 7=Endorsed To, 8=Remarks, 9=Status
+          const rowType = data[1];
+          const rowDate = data[3];
+          const rowFrom = data[4];
+          const rowOffice = data[5];
+          const rowEndorsedTo = data[7];
+          const rowStatus = $(data[9]).text() || data[9];
+          // Months
+          if (months.length > 0) {
+            const monthName = rowDate.split(' ')[0];
+            if (!months.includes(monthName)) return false;
+          }
+          // Letter Types
+          if (types.length > 0 && !types.includes(rowType)) return false;
+          // Date Received
+          if (dateReceived) {
+            // Try to match YYYY-MM-DD or formatted date
+            const rowDateVal = new Date(rowDate);
+            const filterDateVal = new Date(dateReceived);
+            if (rowDateVal.toISOString().slice(0,10) !== dateReceived) return false;
+          }
+          // From
+          if (from && rowFrom !== from) return false;
+          // Office
+          if (office && rowOffice !== office) return false;
+          // Endorsed To
+          if (endorsedTo && rowEndorsedTo !== endorsedTo) return false;
+          // Status
+          if (status && rowStatus !== status) return false;
+          return true;
+        });
+        table.draw();
+        // Remove filter after draw to avoid affecting other tables
+        $.fn.dataTable.ext.search.pop();
+        // Close modal
+        $('#sortFilterModal').modal('hide');
+      });
+
+      // Reset button logic
+      $('#resetSortFilter').on('click', function () {
+        document.getElementById('sortFilterForm').reset();
+        const year = document.getElementById('archiveYearSelect')?.value;
+        if (!year) return;
+        const table = $(`#archivedTable${year}`).DataTable();
+        table.search('').columns().search('').draw();
+      });
+      // === END ARCHIVES FILTER LOGIC ===
     </script>
   </body>
 </html>
