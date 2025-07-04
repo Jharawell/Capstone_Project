@@ -1425,7 +1425,15 @@
           accordionContainer.innerHTML = "";
 
           // Create empty accordion items for all months first
-          reorderedMonths.forEach((month) => {
+          // Only show months up to and including the current month, in descending order
+          const now = new Date();
+          const currentMonthIndex = now.getMonth();
+          // Build an array of months from current down to January
+          const descendingMonths = [];
+          for (let i = currentMonthIndex; i >= 0; i--) {
+            descendingMonths.push(months[i]);
+          }
+          descendingMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -3626,9 +3634,7 @@
             left: 1,
             right: 1
           },
-          dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-               "<'row'<'col-sm-12'tr>>" +
-               "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+          dom: "Bfrtip", // <-- Add this line
           buttons: [
             { extend: 'copy', className: 'btn btn-sm' },
             { extend: 'csv', className: 'btn btn-success' },
@@ -3645,6 +3651,9 @@
             table.search(this.value).draw();
           });
         }
+
+        // After DataTable initialization
+        $(`#${tableId}_wrapper .dt-buttons`).addClass('btn-group flex-wrap mb-2');
 
         return table;
       }
