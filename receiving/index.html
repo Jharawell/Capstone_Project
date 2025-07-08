@@ -1350,8 +1350,8 @@
           // Clear existing content
           accordionContainer.innerHTML = "";
 
-          // Create empty accordion items for all months first
-          reorderedMonths.forEach((month) => {
+           // Create empty accordion items for visible months in descending order
+          visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -1385,7 +1385,7 @@
           });
 
           // Then populate each month's data as it arrives
-          reorderedMonths.forEach((month) => {
+          visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const tableId = `monthly-stats-table-${monthKey}`;
 
@@ -3445,7 +3445,7 @@
           $(`#${tableId}`).DataTable().destroy();
         }
 
-        // Initialize new DataTable with basic configuration
+        // Initialize new DataTable with export buttons at the top (like archives)
         const table = $(`#${tableId}`).DataTable({
           data: data,
           columns: [
@@ -3482,15 +3482,12 @@
           ],
           pageLength: 10,
           order: [[4, "desc"]],
-          dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
-               "<'row'<'col-sm-12'tr>>" +
-               "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+          dom: "Bfrtip", // Place buttons at the top like archives
           buttons: [
-            { extend: 'copy', className: 'btn btn-sm' },
-            { extend: 'csv', className: 'btn btn-sm' },
-            { extend: 'excel', className: 'btn btn-sm' },
-            { extend: 'pdf', className: 'btn btn-sm' },
-            { extend: 'print', className: 'btn btn-sm' }
+            { extend: 'csv', className: 'btn btn-success' },
+            { extend: 'excel', className: 'btn btn-success' },
+            { extend: 'pdf', className: 'btn btn-danger' },
+            { extend: 'print', className: 'btn btn-primary' }
           ],
           language: {
             search: "Search entries:",
@@ -3538,13 +3535,14 @@
           ];
           const now = new Date();
           const currentMonthIdx = now.getMonth();
-          const reorderedMonths = months.slice(currentMonthIdx).concat(months.slice(0, currentMonthIdx));
+         // Only include months up to and including the current month, in descending order
+          const visibleMonths = months.slice(0, currentMonthIdx + 1).reverse();
 
           // Clear existing content
           accordionContainer.innerHTML = "";
 
-          // Create empty accordion items for all months first
-          reorderedMonths.forEach((month) => {
+          // Create empty accordion items for visible months in descending order
+            visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -3578,7 +3576,7 @@
           });
 
           // Then populate each month's data as it arrives
-          reorderedMonths.forEach((month) => {
+            visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const tableId = `monthly-stats-table-${monthKey}`;
 
