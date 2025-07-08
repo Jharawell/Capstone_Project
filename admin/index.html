@@ -111,7 +111,13 @@
                   Sign out
                 </a>
               </li>
-              
+              <li>
+                <a href="#" class="nav-link" id="notificationsLink">
+                  <i class="bi bi-bell"></i>
+                  All Notifications
+                  <span id="allNotifBadge" class="badge rounded-pill bg-danger ms-2" style="display:none;">0</span>
+                </a>
+              </li>
             </ul>
             <hr class="border-light opacity-50" />
           </div>
@@ -511,6 +517,19 @@
                         </div>
                       </div>
 
+                      <div class="mb-3">
+                        <label for="clientEmail" class="form-label">Client Email</label>
+                        <input type="email" class="form-control" id="clientEmail" required />
+                      </div>
+
+                      <!-- Add Google Drive File URL field to Create Entry Form -->
+                      <div class="mb-3">
+                        <label for="fileUrl" class="form-label">Google Drive File URL</label>
+                        <input type="url" class="form-control" id="fileUrl" placeholder="Paste Google Drive shareable link here" />
+                        <div class="form-text">Upload your file to Google Drive, set sharing to 'Anyone with the link', and paste the link here.</div>
+                        <div id="fileUrlPreview" class="mt-2"></div>
+                      </div>
+
                       <div class="d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-danger" id="cancelAccountCreate">Cancel</button>
                         <button type="submit" class="btn btn-primary">Create Account</button>
@@ -706,6 +725,11 @@
                   <option value="Archived">Archived</option>
                 </select>
               </div>
+              <!-- Add Client Email field to Create Entry Form -->
+              <div class="mb-3">
+                <label for="clientEmail" class="form-label">Client Email</label>
+                <input type="email" class="form-control" id="clientEmail" required />
+              </div>
             </form>
           </div>
           <div class="modal-footer">
@@ -748,7 +772,7 @@
               <div class="row mb-3">
                 <div class="col-md-6">
                   <label for="editType" class="form-label">Type</label>
-                  <select class="form-select" id="editType" required>
+                  <select class="form-select" id="editType" required disabled>
                     <option value="">Select Type</option>
                     <option value="Complaint">Complaint</option>
                     <option value="Request">Request</option>
@@ -777,6 +801,7 @@
                     class="form-control"
                     id="editDateReceived"
                     required
+                    disabled
                   />
                 </div>
                 <div class="col-md-6">
@@ -786,6 +811,7 @@
                     class="form-control"
                     id="editTimeReceived"
                     required
+                    disabled
                   />
                 </div>
               </div>
@@ -917,6 +943,29 @@
                   <option value="Under Investigation">Under Investigation (Ongoing)</option>
                   <option value="Inspection">Inspection, Acted Upon (Done)</option>
                 </select>
+              </div>
+              <!-- Add Status Remarks field for status explanations -->
+              <div class="mb-3">
+                <label for="editStatusRemarks" class="form-label">Status Remarks/Explanation</label>
+                <textarea
+                  class="form-control"
+                  id="editStatusRemarks"
+                  rows="3"
+                  placeholder="Please provide explanation or reasons for the status change..."
+                  required
+                ></textarea>
+                <div class="form-text">This explanation will be included in the email notification to the client.</div>
+              </div>
+              <div class="mb-3">
+                <label for="editClientEmail" class="form-label">Client Email</label>
+                <input type="email" class="form-control" id="editClientEmail" required />
+              </div>
+              <!-- Add Google Drive File URL field to Edit Entry Form -->
+              <div class="mb-3">
+                <label for="editFileUrl" class="form-label">Google Drive File URL</label>
+                <input type="url" class="form-control" id="editFileUrl" placeholder="Paste Google Drive shareable link here" />
+                <div class="form-text">Upload your file to Google Drive, set sharing to 'Anyone with the link', and paste the link here.</div>
+                <div id="editFileUrlPreview" class="mt-2"></div>
               </div>
             </form>
           </div>
@@ -1244,6 +1293,60 @@
       </div>
     </div>
 
+    <div id="notificationsSection" class="d-none">
+      <div class="header-section card-header bg-white">
+        <h1 class="h2 mb-1">All Notifications</h1>
+        <p class="mb-0 text-muted">View all new entry notifications</p>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover" id="notificationsTable">
+              <thead>
+                <tr>
+                  <th>Control Number</th>
+                  <th>Subject</th>
+                  <th>Date Created</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Notifications will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Notifications Modal -->
+    <div class="modal fade" id="allNotificationsModal" tabindex="-1" aria-labelledby="allNotificationsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="allNotificationsModalLabel">All Notifications</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table table-hover" id="allNotificationsTable">
+                <thead>
+                  <tr>
+                    <th>Control Number</th>
+                    <th>Subject</th>
+                    <th>Date Created</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Notifications will be populated here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -1267,6 +1370,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Add Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
     <script>
       // Initialize Firebase
@@ -1425,15 +1529,7 @@
           accordionContainer.innerHTML = "";
 
           // Create empty accordion items for all months first
-          // Only show months up to and including the current month, in descending order
-          const now = new Date();
-          const currentMonthIndex = now.getMonth();
-          // Build an array of months from current down to January
-          const descendingMonths = [];
-          for (let i = currentMonthIndex; i >= 0; i--) {
-            descendingMonths.push(months[i]);
-          }
-          descendingMonths.forEach((month) => {
+          reorderedMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -1721,48 +1817,55 @@
         });
       }
 
-      // Update delete entry function
+      // Update delete entry function - now moves to archive instead of permanent deletion
       function deleteEntry(key) {
         showConfirmDialog(
-          "Are you sure?",
-          "You won't be able to revert this!",
-          "Yes, delete it!"
+          "Archive Entry",
+          "This will move the entry to archives. You can restore it later if needed.",
+          "Yes, archive it!"
         ).then((result) => {
           if (result.isConfirmed) {
             entriesRef.child(key).once("value", (snapshot) => {
               const entry = snapshot.val();
-              entriesRef
-                .child(key)
-                .remove()
-                .then(() => {
-                  // Log the deletion in history
-                  const logData = {
-                    timestamp: firebase.database.ServerValue.TIMESTAMP,
-                    user: "Admin", // Replace with actual user when authentication is implemented
-                    action: "delete",
-                    details: `Deleted entry: ${entry.subject}`,
-                    controlNumber: entry.controlNumber,
-                    ipAddress: "127.0.0.1", // Replace with actual IP when available
-                    userAgent: navigator.userAgent,
-                  };
+              if (entry) {
+                entriesRef
+                  .child(key)
+                  .update({
+                    status: "Archived",
+                    archivedAt: firebase.database.ServerValue.TIMESTAMP,
+                  })
+                  .then(() => {
+                    // Log the archiving in history
+                    const logData = {
+                      timestamp: firebase.database.ServerValue.TIMESTAMP,
+                      user: "Admin", // Replace with actual user when authentication is implemented
+                      action: "archive",
+                      details: `Archived entry: ${entry.subject}`,
+                      controlNumber: entry.controlNumber,
+                      ipAddress: "127.0.0.1", // Replace with actual IP when available
+                      userAgent: navigator.userAgent,
+                    };
 
-                  database
-                    .ref("logs")
-                    .push(logData)
-                    .then(() => {
-                      showSuccessAlert("Entry deleted successfully!");
-                    })
-                    .catch((error) => {
-                      console.error("Error logging deletion:", error);
-                      showErrorAlert(
-                        "Entry deleted but failed to log the action."
-                      );
-                    });
-                })
-                .catch((error) => {
-                  console.error("Error deleting entry:", error);
-                  showErrorAlert("Error deleting entry. Please try again.");
-                });
+                    database
+                      .ref("logs")
+                      .push(logData)
+                      .then(() => {
+                        showSuccessAlert("Entry archived successfully!");
+                        // Reload entries to update the table
+                        loadEntries();
+                      })
+                      .catch((error) => {
+                        console.error("Error logging archiving:", error);
+                        showErrorAlert(
+                          "Entry archived but failed to log the action."
+                        );
+                      });
+                  })
+                  .catch((error) => {
+                    console.error("Error archiving entry:", error);
+                    showErrorAlert("Error archiving entry. Please try again.");
+                  });
+              }
             });
           }
         });
@@ -1944,7 +2047,9 @@
             endorsedTo: document.getElementById("endorsedTo").value,
             remarks: document.getElementById("remarks").value,
             status: document.getElementById("status").value,
+            fromEmail: document.getElementById("clientEmail").value, // Save client email
             createdAt: firebase.database.ServerValue.TIMESTAMP,
+            fileUrl: document.getElementById("fileUrl").value,
           };
 
           // Generate control number first
@@ -2008,6 +2113,9 @@
                       // Show success message
                       showSuccessAlert("Entry created successfully!");
 
+                      // Send email notification to client immediately after creation
+                      sendStatusUpdateEmail(formData);
+
                       // Close modal
                       const modal = bootstrap.Modal.getInstance(
                         document.getElementById("createEntryModal")
@@ -2059,14 +2167,17 @@
           endorsedTo: document.getElementById("editEndorsedTo").value,
           remarks: document.getElementById("editRemarks").value,
           status: document.getElementById("editStatus").value,
+          statusRemarks: document.getElementById("editStatusRemarks").value, // Save status remarks
+          fromEmail: document.getElementById("editClientEmail").value, // Save client email
           updatedAt: firebase.database.ServerValue.TIMESTAMP,
+          fileUrl: document.getElementById("editFileUrl").value,
         };
 
         // Validate required fields
         if (!formData.type || !formData.dateReceived || !formData.timeReceived || 
             !formData.adminDateReceived || !formData.adminTimeReceived ||
-            !formData.from || !formData.office || !formData.subject || !formData.status) {
-          showErrorAlert("Please fill in all required fields");
+            !formData.from || !formData.office || !formData.subject || !formData.status || !formData.statusRemarks) {
+          showErrorAlert("Please fill in all required fields, including status remarks/explanation.");
           return;
         }
 
@@ -2086,6 +2197,9 @@
             );
             modal.hide();
 
+            // Send email notification to client
+            sendStatusUpdateEmail(formData);
+
             const entryDate = new Date(formData.dateReceived);
             const monthKey =
               entryDate
@@ -2094,7 +2208,7 @@
             loadEntries();
             setTimeout(() => {
               const accordionButton = document.querySelector(
-                `button[data-bs-target="#${monthKey}"]`
+                `button[data-bs-target=\"#${monthKey}\"]`
               );
               if (accordionButton) {
                 accordionButton.click();
@@ -2184,32 +2298,49 @@
         entriesRef.child(key).once("value", (snapshot) => {
           const entry = snapshot.val();
           if (entry) {
-            // Set current date and time for admin office
-            const now = new Date();
-            const currentDate = now.toISOString().split("T")[0];
-            const currentTime = now.toTimeString().slice(0, 5);
-
             document.getElementById("editType").value = entry.type;
+            document.getElementById("editStatus").value = entry.status;
             document.getElementById("editControlNumber").value = entry.controlNumber;
             document.getElementById("editDateReceived").value = entry.dateReceived;
             document.getElementById("editTimeReceived").value = entry.timeReceived;
-            document.getElementById("editAdminDateReceived").value = entry.adminDateReceived || currentDate;
-            document.getElementById("editAdminTimeReceived").value = entry.adminTimeReceived || currentTime;
+            document.getElementById("editAdminDateReceived").value = entry.adminDateReceived;
+            document.getElementById("editAdminTimeReceived").value = entry.adminTimeReceived;
             document.getElementById("editFrom").value = entry.from;
             document.getElementById("editOffice").value = entry.office;
             document.getElementById("editSubject").value = entry.subject;
-            document.getElementById("editFileCode").value = entry.fileCode || '';
+            document.getElementById("editFileCode").value = entry.fileCode;
             document.getElementById("editEndorsedTo").value = entry.endorsedTo;
             document.getElementById("editRemarks").value = entry.remarks || "";
-            
-            // First update the status options based on the entry type
-            updateStatusOptions(entry.type);
-            
-            // Then set the current status value
-            document.getElementById("editStatus").value = entry.status || "Pending";
-
-            // Store the key for updating
+            // Set status remarks in edit form
+            document.getElementById("editStatusRemarks").value = entry.statusRemarks || "";
+            // Set client email in edit form
+            document.getElementById("editClientEmail").value = entry.fromEmail || "";
             document.getElementById("editEntryForm").dataset.key = key;
+            document.getElementById("editFileUrl").value = entry.fileUrl || "";
+            // Show preview for fileUrl in edit modal
+            const previewDiv = document.getElementById("editFileUrlPreview");
+            if (entry.fileUrl) {
+              let embedUrl = entry.fileUrl;
+              if (embedUrl.includes("view?usp=sharing")) {
+                embedUrl = embedUrl.replace("view?usp=sharing", "preview");
+              }
+              previewDiv.innerHTML = `<a href="${entry.fileUrl}" target="_blank" class="btn btn-outline-primary btn-sm mb-2">View File in Google Drive</a><br><iframe src="${embedUrl}" width="100%" height="400" style="border:1px solid #ccc;"></iframe>`;
+            } else {
+              previewDiv.innerHTML = "<span class='text-muted'>No file link provided.</span>";
+            }
+            // Also update preview when the admin changes the file URL in the edit modal
+            document.getElementById("editFileUrl").addEventListener("input", function() {
+              const url = this.value;
+              if (url) {
+                let embedUrl = url;
+                if (embedUrl.includes("view?usp=sharing")) {
+                  embedUrl = embedUrl.replace("view?usp=sharing", "preview");
+                }
+                previewDiv.innerHTML = `<a href="${url}" target="_blank" class="btn btn-outline-primary btn-sm mb-2">View File in Google Drive</a><br><iframe src="${embedUrl}" width="100%" height="400" style="border:1px solid #ccc;"></iframe>`;
+              } else {
+                previewDiv.innerHTML = "<span class='text-muted'>No file link provided.</span>";
+              }
+            });
           }
         });
       }
@@ -3619,8 +3750,8 @@
                   <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editEntryModal" onclick="editEntry('${row.key}')">
                     <i class="bi bi-pencil"></i>
                   </button>
-                  <button class="btn btn-sm btn-danger" onclick="deleteEntry('${row.key}')">
-                    <i class="bi bi-trash"></i>
+                  <button class="btn btn-sm btn-warning" onclick="deleteEntry('${row.key}')" title="Archive Entry">
+                    <i class="bi bi-archive"></i>
                   </button>
                 `;
               }
@@ -3634,7 +3765,9 @@
             left: 1,
             right: 1
           },
-          dom: "Bfrtip", // <-- Add this line
+          dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+               "<'row'<'col-sm-12'tr>>" +
+               "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
           buttons: [
             { extend: 'copy', className: 'btn btn-sm' },
             { extend: 'csv', className: 'btn btn-success' },
@@ -3651,9 +3784,6 @@
             table.search(this.value).draw();
           });
         }
-
-        // After DataTable initialization
-        $(`#${tableId}_wrapper .dt-buttons`).addClass('btn-group flex-wrap mb-2');
 
         return table;
       }
@@ -4085,6 +4215,152 @@
         table.search('').columns().search('').draw();
       });
       // === END ARCHIVES FILTER LOGIC ===
+
+      // === EMAILJS INTEGRATION ===
+      // Initialize EmailJS (replace 'Tp4tK-Kp7Vr1m3Kv6' with your actual EmailJS user ID if different)
+      emailjs.init('Tp4tK-Kp7Vr1m3Kv6');
+
+      // Function to send email notification on status update
+      function sendStatusUpdateEmail(entry) {
+        // Use the client email from the entry
+        const clientEmail = entry.fromEmail || "test@gmail.com";
+        emailjs.send('service_07b62xr', 'template_v65zya9', {
+          to_email: clientEmail,
+          title: "Document Status Update",
+          controlNumber: entry.controlNumber,
+          subject: entry.subject,
+          status: entry.status,
+          statusRemarks: entry.statusRemarks || "No additional remarks provided.",
+          fileUrl: entry.fileUrl || "",
+          email: clientEmail // for Reply To
+        })
+        .then(function(response) {
+          console.log('Email sent!', response.status, response.text);
+        }, function(error) {
+          console.error('Failed to send email:', error);
+        });
+      }
+      // ... existing code ...
+
+      // Show preview for fileUrl in create modal
+      document.getElementById("fileUrl").addEventListener("input", function() {
+        const url = this.value;
+        const previewDiv = document.getElementById("fileUrlPreview");
+        if (url) {
+          let embedUrl = url;
+          if (embedUrl.includes("view?usp=sharing")) {
+            embedUrl = embedUrl.replace("view?usp=sharing", "preview");
+          }
+          previewDiv.innerHTML = `<a href="${url}" target="_blank" class="btn btn-outline-primary btn-sm mb-2">View File in Google Drive</a><br><iframe src="${embedUrl}" width="100%" height="400" style="border:1px solid #ccc;"></iframe>`;
+        } else {
+          previewDiv.innerHTML = "<span class='text-muted'>No file link provided.</span>";
+        }
+      });
+
+      // Notification logic
+      const notifBadge = document.getElementById('notifBadge');
+      const notifDropdown = document.getElementById('notifDropdown');
+      let unreadCount = 0;
+      let notifications = [];
+
+      // Listen for new entries (created in the last 5 minutes)
+      entriesRef.orderByChild('createdAt').limitToLast(10).on('child_added', (snapshot) => {
+        const entry = snapshot.val();
+        if (!entry || !entry.createdAt) return;
+        const now = Date.now();
+        if (now - entry.createdAt < 5 * 60 * 1000) { // 5 minutes
+          notifications.unshift({
+            controlNumber: entry.controlNumber,
+            subject: entry.subject,
+            createdAt: entry.createdAt
+          });
+          unreadCount++;
+          updateNotifUI();
+        }
+      });
+
+      function updateNotifUI() {
+        const allNotifBadge = document.getElementById('allNotifBadge');
+        allNotifBadge.textContent = unreadCount;
+        allNotifBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
+      }
+
+      document.getElementById("notificationsLink").addEventListener("click", function(e) {
+        e.preventDefault();
+        unreadCount = 0;
+        const allNotifBadge = document.getElementById('allNotifBadge');
+        allNotifBadge.style.display = 'none';
+        const modal = new bootstrap.Modal(document.getElementById("allNotificationsModal"));
+        modal.show();
+        loadAllNotificationsModal();
+      });
+
+      function loadAllNotificationsModal() {
+        entriesRef.orderByChild('createdAt').once("value", (snapshot) => {
+          const entries = snapshot.val();
+          const tbody = document.querySelector("#allNotificationsTable tbody");
+          tbody.innerHTML = "";
+          const now = Date.now();
+          if (entries) {
+            Object.entries(entries)
+              .sort((a, b) => b[1].createdAt - a[1].createdAt)
+              .forEach(([key, entry]) => {
+                // Mark as new if within last 5 minutes
+                const isNew = now - entry.createdAt < 5 * 60 * 1000;
+                const newBadge = isNew ? '<span class="badge bg-success ms-2">New</span>' : '';
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                  <td>${entry.controlNumber} ${newBadge}</td>
+                  <td>${entry.subject}</td>
+                  <td>${new Date(entry.createdAt).toLocaleString()}</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary view-entry-btn" data-key="${key}">
+                      <i class="bi bi-eye"></i> View
+                    </button>
+                  </td>
+                `;
+                tbody.appendChild(row);
+              });
+          }
+          // Always (re)initialize DataTables after updating the table
+          if ($.fn.DataTable.isDataTable('#allNotificationsTable')) {
+            $('#allNotificationsTable').DataTable().destroy();
+          }
+          $('#allNotificationsTable').DataTable({
+            pageLength: 10,
+            order: [[2, 'desc']],
+            language: {
+              search: 'Search notifications:',
+              emptyTable: 'No notifications found.'
+            }
+          });
+        });
+      }
+
+      // Initialize DataTables on the notifications modal table when modal is shown
+      $('#allNotificationsModal').on('shown.bs.modal', function () {
+        if ($.fn.DataTable.isDataTable('#allNotificationsTable')) {
+          $('#allNotificationsTable').DataTable().destroy();
+        }
+        $('#allNotificationsTable').DataTable({
+          pageLength: 10,
+          order: [[2, 'desc']],
+          language: {
+            search: 'Search notifications:',
+            emptyTable: 'No notifications found.'
+          }
+        });
+      });
+
+      // Delegate click event for view buttons in notifications modal
+      $('#allNotificationsTable').off('click', '.view-entry-btn').on('click', '.view-entry-btn', function() {
+        const key = $(this).data('key');
+        $('#allNotificationsModal').modal('hide');
+        setTimeout(() => {
+          editEntry(key);
+          $('#editEntryModal').modal('show');
+        }, 300);
+      });
     </script>
   </body>
 </html>

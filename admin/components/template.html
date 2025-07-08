@@ -1552,8 +1552,8 @@
                               <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editEntryModal" onclick="editEntry('${entry.key}')">
                                 <i class="bi bi-pencil"></i>
                               </button>
-                              <button class="btn btn-sm btn-danger" onclick="deleteEntry('${entry.key}')">
-                                <i class="bi bi-trash"></i>
+                              <button class="btn btn-sm btn-warning" onclick="deleteEntry('${entry.key}')" title="Archive Entry">
+                                <i class="bi bi-archive"></i>
                               </button>
                             </td>
                           </tr>
@@ -1654,22 +1654,28 @@
         });
       }
 
-      // Update delete entry function
+      // Update delete entry function - now moves to archive instead of permanent deletion
       function deleteEntry(key) {
-        showConfirmDialog('Are you sure?', 'You won\'t be able to revert this!', 'Yes, delete it!')
+        showConfirmDialog('Archive Entry', 'This will move the entry to archives. You can restore it later if needed.', 'Yes, archive it!')
           .then((result) => {
             if (result.isConfirmed) {
               entriesRef.child(key).once('value', (snapshot) => {
                 const entry = snapshot.val();
-                entriesRef.child(key).remove()
+                if (entry) {
+                  entriesRef.child(key).update({
+                    status: 'Archived',
+                    archivedAt: firebase.database.ServerValue.TIMESTAMP
+                  })
                   .then(() => {
-                    logActivity('delete', `Deleted entry: ${entry.subject}`, entry.controlNumber);
-                    showSuccessAlert('Entry deleted successfully!');
+                    logActivity('archive', `Archived entry: ${entry.subject}`, entry.controlNumber);
+                    showSuccessAlert('Entry archived successfully!');
+                    loadEntries();
                   })
                   .catch((error) => {
-                    console.error('Error deleting entry:', error);
-                    showErrorAlert('Error deleting entry. Please try again.');
+                    console.error('Error archiving entry:', error);
+                    showErrorAlert('Error archiving entry. Please try again.');
                   });
+                }
               });
             }
           });
