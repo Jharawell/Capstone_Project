@@ -845,6 +845,7 @@
                     class="form-control"
                     id="editFrom"
                     required
+                    disabled
                   />
                 </div>
                 <div class="col-md-6">
@@ -854,6 +855,7 @@
                     class="form-control"
                     id="editOffice"
                     required
+                    disabled
                   />
                 </div>
               </div>
@@ -865,6 +867,7 @@
                   class="form-control"
                   id="editSubject"
                   required
+                  disabled
                 />
               </div>
 
@@ -946,7 +949,7 @@
               </div>
               <!-- Add Status Remarks field for status explanations -->
               <div class="mb-3">
-                <label for="editStatusRemarks" class="form-label">Status Remarks/Explanation</label>
+                <label for="editStatusRemarks" class="form-label">Status Explanation</label>
                 <textarea
                   class="form-control"
                   id="editStatusRemarks"
@@ -958,7 +961,7 @@
               </div>
               <div class="mb-3">
                 <label for="editClientEmail" class="form-label">Client Email</label>
-                <input type="email" class="form-control" id="editClientEmail" required />
+                <input type="email" class="form-control" id="editClientEmail" required disabled  />
               </div>
               <!-- Add Google Drive File URL field to Edit Entry Form -->
               <div class="mb-3">
@@ -2053,8 +2056,8 @@
             office: document.getElementById("office").value,
             subject: document.getElementById("subject").value,
             endorsedTo: document.getElementById("endorsedTo").value,
-            remarks: document.getElementById("remarks").value,
             status: document.getElementById("status").value,
+            statusRemarks: document.getElementById("editStatusRemarks").value, // Save status remarks   
             fromEmail: document.getElementById("clientEmail").value, // Save client email
             createdAt: firebase.database.ServerValue.TIMESTAMP,
             fileUrl: document.getElementById("fileUrl").value,
