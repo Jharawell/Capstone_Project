@@ -3612,11 +3612,40 @@
       $("#monthly-stats-table").DataTable({
         dom: "Bfrtip",
         buttons: [
-          { extend: 'copy', className: 'btn btn-sm' },
-          { extend: 'csv', className: 'btn btn-success' },
-          { extend: 'excel', className: 'btn btn-success' },
-          { extend: 'pdf', className: 'btn btn-danger' },
-          { extend: 'print', className: 'btn btn-primary' }
+          { 
+            extend: 'copy', 
+            className: 'btn btn-sm',
+            title: 'Administrative Division Dashboard'
+          },
+          { 
+            extend: 'csv', 
+            className: 'btn btn-success',
+            title: 'Administrative Division Dashboard'
+          },
+          { 
+            extend: 'excel', 
+            className: 'btn btn-success',
+            title: 'Administrative Division Dashboard'
+          },
+          { 
+            extend: 'pdf', 
+            className: 'btn btn-danger',
+            orientation: 'landscape',
+            pageSize: 'LEGAL',
+            title: 'Administrative Division Dashboard',
+            customize: function (doc) {
+              doc.defaultStyle.fontSize = 10;
+              doc.styles.tableHeader.fontSize = 11;
+              doc.styles.tableHeader.alignment = 'left';
+              const colCount = doc.content[1].table.body[0].length;
+              doc.content[1].table.widths = Array(colCount).fill('*');
+            }
+          },
+          { 
+            extend: 'print', 
+            className: 'btn btn-primary',
+            title: 'Administrative Division Dashboard'
+          }
         ],
         pageLength: 10,
         order: [[4, "desc"]], // Sort by Date Received by default
@@ -3674,15 +3703,47 @@
           const tableId = `monthly-stats-table-${monthKey}`;
           
           if (searchInput) {
+            // Create title for this month
+            const title = `${month} ${currentYear} - Administrative Division Dashboard`;
+            
             // Initialize DataTable for this month
             $(`#${tableId}`).DataTable({
               dom: "Bfrtip",
               buttons: [
-                { extend: 'copy', className: 'btn btn-sm' },
-                { extend: 'csv', className: 'btn btn-success' },
-                { extend: 'excel', className: 'btn btn-success' },
-                { extend: 'pdf', className: 'btn btn-danger' },
-                { extend: 'print', className: 'btn btn-primary' }
+                { 
+                  extend: 'copy', 
+                  className: 'btn btn-sm',
+                  title: title
+                },
+                { 
+                  extend: 'csv', 
+                  className: 'btn btn-success',
+                  title: title
+                },
+                { 
+                  extend: 'excel', 
+                  className: 'btn btn-success',
+                  title: title
+                },
+                { 
+                  extend: 'pdf', 
+                  className: 'btn btn-danger',
+                  orientation: 'landscape',
+                  pageSize: 'LEGAL',
+                  title: title,
+                  customize: function (doc) {
+                    doc.defaultStyle.fontSize = 10;
+                    doc.styles.tableHeader.fontSize = 11;
+                    doc.styles.tableHeader.alignment = 'left';
+                    const colCount = doc.content[1].table.body[0].length;
+                    doc.content[1].table.widths = Array(colCount).fill('*');
+                  }
+                },
+                { 
+                  extend: 'print', 
+                  className: 'btn btn-primary',
+                  title: title
+                }
               ],
               pageLength: 10,
               order: [[4, "desc"]], // Sort by Date Received by default
@@ -3731,6 +3792,11 @@
           $(`#${tableId}`).DataTable().destroy();
         }
 
+        // Extract month name from monthKey (e.g., "may2024" -> "May")
+        const monthName = monthKey.replace(/\d+/g, '').charAt(0).toUpperCase() + monthKey.replace(/\d+/g, '').slice(1);
+        const currentYear = new Date().getFullYear();
+        const title = `${monthName} ${currentYear} - Administrative Division Dashboard`;
+
         // Initialize new DataTable with basic configuration
         const table = $(`#${tableId}`).DataTable({
           data: data,
@@ -3776,14 +3842,46 @@
             left: 1,
             right: 1
           },
-          dom: "Bfrtip", // <-- Add this line
+          dom: "Bfrtip", // Buttons, filter, processing, table, pagination
           buttons: [
-            { extend: 'copy', className: 'btn btn-sm' },
-            { extend: 'csv', className: 'btn btn-success' },
-            { extend: 'excel', className: 'btn btn-success' },
-            { extend: 'pdf', className: 'btn btn-danger' },
-            { extend: 'print', className: 'btn btn-primary' }
-          ]
+            { 
+              extend: 'copy', 
+              className: 'btn btn-sm',
+              title: title
+            },
+            { 
+              extend: 'csv', 
+              className: 'btn btn-success',
+              title: title
+            },
+            { 
+              extend: 'excel', 
+              className: 'btn btn-success',
+              title: title
+            },
+            { 
+              extend: 'pdf', 
+              className: 'btn btn-danger',
+              orientation: 'landscape',
+              pageSize: 'LEGAL',
+              title: title,
+              customize: function (doc) {
+                doc.defaultStyle.fontSize = 10;
+                doc.styles.tableHeader.fontSize = 11;
+                doc.styles.tableHeader.alignment = 'left';
+                const colCount = doc.content[1].table.body[0].length;
+                doc.content[1].table.widths = Array(colCount).fill('*');
+              }
+            },
+            { 
+              extend: 'print', 
+              className: 'btn btn-primary',
+              title: title
+            }
+          ],
+          language: {
+            search: "Search entries:",
+          }
         });
 
         // Add search functionality
@@ -3794,7 +3892,7 @@
           });
         }
 
-         // After DataTable initialization
+        // After DataTable initialization, style the buttons
         $(`#${tableId}_wrapper .dt-buttons`).addClass('btn-group flex-wrap mb-2');
 
         return table;
