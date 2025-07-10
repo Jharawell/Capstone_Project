@@ -4230,13 +4230,13 @@
 
       // === EMAILJS INTEGRATION ===
       // Initialize EmailJS (replace 'Tp4tK-Kp7Vr1m3Kv6' with your actual EmailJS user ID if different)
-      emailjs.init('Tp4tK-Kp7Vr1m3Kv6');
+      emailjs.init('mr3lRz__Eu1dWmX1Z');
 
       // Function to send email notification on status update
       function sendStatusUpdateEmail(entry) {
         // Use the client email from the entry
-        const clientEmail = entry.fromEmail || "test@gmail.com";
-        emailjs.send('service_07b62xr', 'template_v65zya9', {
+        const clientEmail = entry.fromEmail || "mysagesierra@gmail.com";
+        emailjs.send("service_zfmf4zb","template_h3f31qv", {
           to_email: clientEmail,
           title: "Document Status Update",
           controlNumber: entry.controlNumber,
