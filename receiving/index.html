@@ -3504,7 +3504,20 @@
             { data: 'endorsedTo', defaultContent: '' },
             { data: 'remarks', defaultContent: '' },
 
-            { data: 'status' },
+            {
+              data: 'status',
+              render: function(data, type, row) {
+                switch (data) {
+                  case "Under Investigation": return '<span class="badge bg-primary">Under Investigation</span>';
+                  case "Processing": return '<span class="badge bg-info">Processing</span>';
+                  case "Completed": return '<span class="badge bg-success">Completed</span>';
+                  case "Calendar Pending": return '<span class="badge bg-warning">Calendar Pending</span>';
+                  case "For Review": return '<span class="badge bg-primary">For Review</span>';
+                  // ...add more as needed
+                  default: return `<span class="badge bg-secondary">${data}</span>`;
+                }
+              }
+            },
             {
               data: null,
               render: function(data, type, row) {

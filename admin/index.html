@@ -30,12 +30,33 @@
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <style>
-      /* Add custom styling for DataTables buttons */
+      
       .dt-buttons .btn {
         margin-right: 8px;
       }
       .dt-buttons .btn:last-child {
         margin-right: 0;
+      }
+      
+      th:nth-child(3), td:nth-child(3) {
+        white-space: nowrap;
+      }
+
+      th:nth-child(8), td:nth-child(8) {
+        min-width: 100px;
+      }
+      th:nth-child(10), td:nth-child(10) {
+        min-width: 100px;
+      }
+      th:nth-child(12), td:nth-child(12) {
+        min-width: 100px;
+      }
+      th:nth-child(13), td:nth-child(13) {
+        min-width: 100px;
+      }
+      /* Make Status column (14th) wider */
+      th:nth-child(14), td:nth-child(14) {
+        min-width: 130px;
       }
     </style>
   </head>
@@ -4509,6 +4530,18 @@
           $('#editEntryModal').modal('show');
         }, 300);
       });
+
+      function getStatusBadge(status) {
+        switch (status) {
+          case "Under Investigation": return '<span class="badge bg-primary">Under Investigation</span>';
+          case "Processing": return '<span class="badge bg-info">Processing</span>';
+          case "Completed": return '<span class="badge bg-success">Completed</span>';
+          case "Calendar Pending": return '<span class="badge bg-warning">Calendar Pending</span>';
+          case "For Review": return '<span class="badge bg-primary">For Review</span>';
+          // ...add more as needed
+          default: return `<span class="badge bg-secondary">${status}</span>`;
+        }
+      }
     </script>
   </body>
 </html>
