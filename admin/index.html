@@ -42,6 +42,9 @@
         white-space: nowrap;
       }
 
+      th:nth-child(4), td:nth-child(4) {
+        min-width: 100px;
+      }
       th:nth-child(8), td:nth-child(8) {
         min-width: 100px;
       }
@@ -1736,6 +1739,7 @@
                             <th>#</th>
                             <th>Control Number</th>
                             <th>Letter Type</th>
+                            <th>File</th>
                             <th>Time Received</th>
                             <th>Date Received</th>
                             <th>From</th>
@@ -3851,6 +3855,7 @@
               { data: null, render: (data, type, row, meta) => meta.row + 1 },
               { data: 'controlNumber' },
               { data: 'type' },
+              { data: 'fileUrl', render: function(data) { return data ? `<a href="${data}" target="_blank">View File</a>` : '' } },
               { data: 'timeReceived' },
               { data: 'dateReceived' },
               { data: 'from' },

@@ -1525,6 +1525,7 @@
                         <tr>
                           <th>Control #</th>
                           <th>Type</th>
+                          <th>File</th>
                           <th>Time Received</th>
                           <th>Date Received</th>
                           <th>From</th>
@@ -2256,6 +2257,7 @@
                           <tr>
                             <th>Control #</th>
                             <th>Type</th>
+                            <th>File</th>
                             <th>Time Received</th>
                             <th>Date Received</th>
                             <th>From</th>
@@ -2272,6 +2274,7 @@
                             <tr>
                               <td>${entry.controlNumber}</td>
                               <td>${entry.type}</td>
+                              <td>${entry.fileUrl ? `<a href="${entry.fileUrl}" target="_blank">View File</a>` : ''}</td>
                               <td>${entry.timeReceived}</td>
                               <td>${formatDate(entry.dateReceived)}</td>
                               <td>${entry.from}</td>
@@ -3496,6 +3499,7 @@
             },
             { data: 'controlNumber' },
             { data: 'type' },
+            { data: 'fileUrl', render: function(data) { return data ? `<a href="${data}" target="_blank">View File</a>` : '' } },
             { data: 'timeReceived' },
             { data: 'dateReceived' },
             { data: 'from' },
@@ -3791,6 +3795,7 @@
                             <th>#</th>
                             <th>Control Number</th>
                             <th>Type</th>
+                            <th>File</th>
                             <th>Time Received</th>
                             <th>Date Received</th>
                             <th>From</th>
