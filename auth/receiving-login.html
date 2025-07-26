@@ -341,8 +341,11 @@
                     text: "Login successful!",
                     icon: "success",
                     confirmButtonColor: "#002C75",
+                    confirmButtonText: "Yes",
+                    showConfirmButton: true,
+                    timer: 2000,
+                    timerProgressBar: true
                   }).then(() => {
-                    // Redirect to receiving dashboard
                     window.location.href = "../receiving/index.html";
                   });
                 } else {
@@ -395,16 +398,17 @@
 
       // Check authentication state
       auth.onAuthStateChanged((user) => {
-        if (user) {
-          // Check if user is from Receiving Section
-          firebase.database().ref('users/' + user.uid).once('value')
-            .then((snapshot) => {
-              const userData = snapshot.val();
-              if (userData && userData.department === 'Receiving Division' && user.email.endsWith('@receiving.com')) {
-                window.location.href = "../receiving/index.html";
-              }
-            });
-        }
+        // Do nothing! No redirect unless login is successful
+        // If you want to redirect if already logged in, uncomment below:
+        // if (user) {
+        //   firebase.database().ref('users/' + user.uid).once('value')
+        //     .then((snapshot) => {
+        //       const userData = snapshot.val();
+        //       if (userData && userData.department === 'Receiving Division' && user.email.endsWith('@receiving.com')) {
+        //         window.location.href = "../receiving/index.html";
+        //       }
+        //     });
+        // }
       });
 
       // Add show/hide password toggle
