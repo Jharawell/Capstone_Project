@@ -428,30 +428,45 @@
                     <form id="passwordForm">
                       <div class="mb-3">
                         <label for="currentPassword" class="form-label">Current Password</label>
-                        <input
-                          type="password"
-                          class="form-control"
-                          id="currentPassword"
-                          required
-                        />
+                        <div class="input-group">
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="currentPassword"
+                            required
+                          />
+                          <button class="btn btn-outline-secondary" type="button" id="toggleCurrentPassword" title="Show/hide password">
+                            <i class="bi bi-eye" id="currentPasswordIcon"></i>
+                          </button>
+                        </div>
                       </div>
                       <div class="mb-3">
                         <label for="newPassword" class="form-label">New Password</label>
-                        <input
-                          type="password"
-                          class="form-control"
-                          id="newPassword"
-                          required
-                        />
+                        <div class="input-group">
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="newPassword"
+                            required
+                          />
+                          <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword" title="Show/hide password">
+                            <i class="bi bi-eye" id="newPasswordIcon"></i>
+                          </button>
+                        </div>
                       </div>
                       <div class="mb-3">
                         <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                        <input
-                          type="password"
-                          class="form-control"
-                          id="confirmPassword"
-                          required
-                        />
+                        <div class="input-group">
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="confirmPassword"
+                            required
+                          />
+                          <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword" title="Show/hide password">
+                            <i class="bi bi-eye" id="confirmPasswordIcon"></i>
+                          </button>
+                        </div>
                       </div>
                       <button type="submit" class="btn btn-success" title="Update password">
                         Update Password
@@ -2347,6 +2362,52 @@
             showErrorAlert("Error changing password. Please try again.");
           });
         });
+
+      // Password toggle functionality
+      document.getElementById("toggleCurrentPassword").addEventListener("click", function() {
+        const passwordField = document.getElementById("currentPassword");
+        const icon = document.getElementById("currentPasswordIcon");
+        
+        if (passwordField.type === "password") {
+          passwordField.type = "text";
+          icon.classList.remove("bi-eye");
+          icon.classList.add("bi-eye-slash");
+        } else {
+          passwordField.type = "password";
+          icon.classList.remove("bi-eye-slash");
+          icon.classList.add("bi-eye");
+        }
+      });
+
+      document.getElementById("toggleNewPassword").addEventListener("click", function() {
+        const passwordField = document.getElementById("newPassword");
+        const icon = document.getElementById("newPasswordIcon");
+        
+        if (passwordField.type === "password") {
+          passwordField.type = "text";
+          icon.classList.remove("bi-eye");
+          icon.classList.add("bi-eye-slash");
+        } else {
+          passwordField.type = "password";
+          icon.classList.remove("bi-eye-slash");
+          icon.classList.add("bi-eye");
+        }
+      });
+
+      document.getElementById("toggleConfirmPassword").addEventListener("click", function() {
+        const passwordField = document.getElementById("confirmPassword");
+        const icon = document.getElementById("confirmPasswordIcon");
+        
+        if (passwordField.type === "password") {
+          passwordField.type = "text";
+          icon.classList.remove("bi-eye");
+          icon.classList.add("bi-eye-slash");
+        } else {
+          passwordField.type = "password";
+          icon.classList.remove("bi-eye-slash");
+          icon.classList.add("bi-eye");
+        }
+      });
 
 
       // Edit entry function
