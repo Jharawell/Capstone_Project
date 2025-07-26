@@ -3,9 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Permissions-Policy" content="unload=()" />
-    <title>Administrative Division Dashboard</title>
-     <link rel="shortcut icon" href="../assets/images/logo.png" type="image/x-icon" />
+    <title>Endorsement Section Dashboard</title>
+    <link rel="shortcut icon" href="../assets/images/logo.png" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -31,46 +30,53 @@
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
     <style>
-      
+    
+      /* Add custom styling for DataTables buttons */
+     
+      .btnCreate{
+        background: #04b9b9;
+        border: none;
+        padding: 14px;
+        border-radius: 9px;
+
+      }
+
+      .bi{
+        font-weight: 700;
+        
+      }
+
+      .header-section{
+        background: #0D98BA;
+      }
+
       .dt-buttons .btn {
         margin-right: 8px;
       }
       .dt-buttons .btn:last-child {
         margin-right: 0;
       }
-      
-      th:nth-child(3), td:nth-child(3) {
-        white-space: nowrap;
+
+      #currentUserEmailendorsement{
+        font-size: 14px;
       }
 
-      th:nth-child(4), td:nth-child(4) {
-        min-width: 100px;
+      /* Make all read-only or disabled fields in the edit modal have the same color as the disabled select (Type) */
+      #editEntryModal input[readonly],
+      #editEntryModal select[disabled],
+      #editEntryModal textarea[readonly] {
+        background-color: #e9ecef !important;
+        color: #6c757d !important;
+        cursor: not-allowed;
+        opacity: 1;
       }
-      th:nth-child(8), td:nth-child(8) {
-        min-width: 80px;
+      /* Keep the status field normal */
+      #editStatus:not([disabled]) {
+        background-color: #fff !important;
+        color: #212529 !important;
+        cursor: pointer;
       }
-      th:nth-child(9), td:nth-child(9) {
-        min-width: 100px;
-      }
-      th:nth-child(10), td:nth-child(10) {
-        min-width: 100px;
-      }
-      th:nth-child(11), td:nth-child(11) {
-        min-width: 100px;
-      }
-      th:nth-child(12), td:nth-child(12) {
-        min-width: 100px;
-      }
-      th:nth-child(13), td:nth-child(13) {
-        min-width: 100px;
-      }
-      /* Make Status column (14th) wider */
-      th:nth-child(14), td:nth-child(14) {
-        min-width: 100px;
-      }
-      th:nth-child(15), td:nth-child(15) {
-        min-width: 135px;
-      }
+
     </style>
   </head>
   <body>
@@ -93,11 +99,10 @@
                   src="../assets/images/logo-dashboard-page.png"
                   alt="CentralComm Logo"
                   class="mb-1"
-                  style="width: 100px; height: 100px"
+                  style="width: 50px; height: 50px"
                 />
                 <span class="fs-3 fw-bold mt-2">CentralComm</span>
-                <span id="currentUserEmailadmin">cmobaguio2600@gmail.com</span>
-                
+                <span id="currentUserEmailendorsement">endorsement@endorsement.com</span>
               </a>
             </div>
 
@@ -107,13 +112,6 @@
                 <a href="#" class="nav-link active" id="dashboardLink">
                   <i class="bi bi-house-door stat-icon"></i>
                   Dashboard
-                </a>
-              </li>
-               <li>
-                <a href="#" class="nav-link" id="notificationsLink">
-                  <i class="bi bi-bell"></i>
-                  All Notifications
-                  <span id="allNotifBadge" class="badge rounded-pill bg-danger ms-2" style="display:none;">0</span>
                 </a>
               </li>
               <li>
@@ -129,7 +127,7 @@
                 </a>
               </li>
               <li>
-                <a href="#" class="nav-link" id="archivesLink">
+                <a href="#" class="nav-link" id="archivesLink" >
                   <i class="bi bi-archive stat-icon"></i>
                   Archives
                 </a>
@@ -152,6 +150,7 @@
                   Sign out
                 </a>
               </li>
+              
             </ul>
             <hr class="border-light opacity-50" />
           </div>
@@ -161,28 +160,17 @@
         <div class="col-md-9 col-lg-10 main-content">
           <!-- Dashboard Section -->
           <div id="dashboardSection">
-            <div class="header-section card-header bg-white">
+            <div class="header-section card-header" style="color: black;">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h1 class="h2 mb-1">Administrative  Division - Mayor's Office Dashboard</h1>
-                  <p class="mb-0">Welcome back, Admin</p>
+                  <h1 class="h2 mb-1">Endorsement Office - Mayor's Office Dashboard</h1>
+                  <p class="mb-0">Welcome back, <span id="currentUserName">Permit and Licensing Division</span></p>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mb-2 mb-md-0">
-                  <!-- Create New Button -->
-                  <button
-                    type="button"
-                    class="btn btn-sm btn-outline-light"
-                    data-bs-toggle="modal"
-                    data-bs-target="#createEntryModal" hidden
-                    title="Create a new entry"
-                  >
-                    <i class="bi bi-plus-circle me-2"></i>Create New
-                  </button>
-
                   <!-- Archive All Button -->
                   <button
                     type="button"
-                    class="btn btn-sm btn-outline-light"
+                    class="btn btn-secondary"
                     id="archiveAllBtn"
                     title="Archive all current entries"
                   >
@@ -195,7 +183,7 @@
             <!-- Monthly Statistics -->
             <div class="card mb-4">
               <div class="card-header bg-white">
-                <h5 class="card-title mb-0">Monthly Statistics</h5>
+                <h5 class="card-title mb-0">Yearly Statistics</h5>
               </div>
               <div class="card-body p-0">
                 <div class="accordion" id="monthlyStatsAccordion">
@@ -318,24 +306,69 @@
                     <h6 class="card-title text-primary mb-3">
                       Monthly Letters Received
                     </h6>
-                    <canvas id="monthlyLettersChart" height="150"></canvas>
+                    <div style= "width: 100%;"></div>
+                    <canvas id="monthlyLettersChart"></canvas>
                   </div>
                 </div>
               </div>
 
               <!-- Add this after the Monthly Letters Graph card -->
               <div class="col-md-6 mb-4">
-                <div class="card">
+                <div class="card h-100">
                   <div class="card-body">
                     <h6 class="card-title text-primary mb-3">Letter Type Distribution</h6>
-                    <div style="height: 300px;">
-                    <canvas id="letterTypeChart"></canvas>
+                    <div style="height: 300px; width: 100%;">
+                      <canvas id="letterTypeChart"></canvas>
+                    </div>
                   </div>
+                </div>
+              </div>
+
+              <!-- Remove Letter Types Distribution section -->
+            </div>
+          </div>
+
+          <!-- Users Section -->
+          <div id="usersSection" class="d-none">
+            <div class="header-section card-header bg-white">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h1 class="h2 mb-1">Users</h1>
+                  <p class="mb-0 text-white-50">Manage system users</p>
+                </div>
+                <div>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#createUserModal"
+                  >
+                    <i class="bi bi-person-plus me-2"></i>Create New User
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="card mb-4">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover" id="usersTable">
+                    <thead>
+                      <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Users will be populated here -->
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
           <!-- History Section -->
           <div id="historySection" class="d-none">
@@ -397,7 +430,7 @@
                             type="email"
                             class="form-control with-icon"
                             id="email"
-                            value="cmobaguio2600@gmail.com"
+                            value="admin@centralcomm.com"
                             readonly
                           />
                         </div>
@@ -412,7 +445,7 @@
                             type="text"
                             class="form-control with-icon"
                             id="role"
-                            value="Administrative Division - Mayor's Office"
+                            value="Endorsement Section - Mayor's Office"
                             readonly
                           />
                         </div>
@@ -461,137 +494,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- Add this new section below the existing profile cards -->
-            <div class="row">
-              <div class="col-lg-8 mb-4">
-                <!-- Account Creation Card -->
-                <div class="card mt-4">
-                  <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                      <h5 class="card-title mb-0">Create New Account</h5>
-                      <button class="btn btn-primary btn-sm" id="toggleAccountForm1" title="Add a new user account">
-                        <i class="bi bi-plus-circle me-1"></i>Add New Account
-                      </button>
-                    </div>
-                    
-                    <form id="createAccountForm" class="d-none">
-                      <div class="row mb-3">
-                        <div class="col-md-6">
-                          <label for="newAccountEmail" class="form-label">Email Address</label>
-                          <div class="input-group">
-                            <span class="input-group-text">
-                              <i class="bi bi-envelope"></i>
-                            </span>
-                            <input type="email" class="form-control" id="newAccountEmail" required>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <label for="newAccountRole" class="form-label">Role</label>
-                          <div class="input-group">
-                            <span class="input-group-text">
-                              <i class="bi bi-person-badge"></i>
-                            </span>
-                            <select class="form-control" id="newAccountRole" required>
-                              <option value="">Select Role</option>
-                              <option value="Receiving">Receiving</option>
-                              <option value="Admin">Admin</option>
-                              <option value="Endorsement">Endorsement</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row mb-3">
-                        <div class="col-md-6">
-                          <label for="newAccountPassword" class="form-label">Password</label>
-                          <div class="input-group">
-                            <span class="input-group-text">
-                              <i class="bi bi-key"></i>
-                            </span>
-                            <input type="password" class="form-control" id="newAccountPassword" required>
-                          </div>
-                          <div class="form-text">Password must be at least 6 characters long</div>
-                        </div>
-                        <div class="col-md-6">
-                          <label for="confirmNewAccountPassword" class="form-label">Confirm Password</label>
-                          <div class="input-group">
-                            <span class="input-group-text">
-                              <i class="bi bi-key-fill"></i>
-                            </span>
-                            <input type="password" class="form-control" id="confirmNewAccountPassword" required>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="row mb-3">
-                        <div class="col-md-6">
-                          <label for="newAccountDepartment" class="form-label">Department</label>
-                          <div class="input-group">
-                            <span class="input-group-text">
-                              <i class="bi bi-building"></i>
-                            </span>
-                            <select class="form-control" id="newAccountDepartment" required>
-                              <option value="">Select Department</option>
-                              <option value="Administrative Division">Administrative Division</option>
-                              <option value="Records Division">Records Division</option>
-                              <option value="Receiving Division">Receiving Division</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <label for="newAccountStatus" class="form-label">Status</label>
-                          <div class="input-group">
-                            <span class="input-group-text">
-                              <i class="bi bi-toggle-on"></i>
-                            </span>
-                            <select class="form-control" id="newAccountStatus" required>
-                              <option value="active">Active</option>
-                              <option value="inactive">Inactive</option>
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-3 d-none">
-                        <label for="clientEmail" class="form-label">Client Email</label>
-                        <input type="email" class="form-control" id="clientEmail" required />
-                      </div>
-
-                      <div class="mb-3 d-none">
-                        <label for="fileUrl" class="form-label">Google Drive File URL</label>
-                        <input type="url" class="form-control" id="fileUrl" placeholder="Paste Google Drive shareable link here" />
-                        <div class="form-text">Upload your file to Google Drive, set sharing to 'Anyone with the link', and paste the link here.</div>
-                        <div id="fileUrlPreview" class="mt-2"></div>
-                      </div>
-
-                      <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-danger" id="cancelAccountCreate" title="Cancel account creation">Cancel</button>
-                        <button type="submit" class="btn btn-primary" title="Create the new account">Create Account</button>
-                      </div>
-                    </form>
-
-                    <div class="table-responsive mt-4">
-                      <table class="table table-hover" id="accountsTable">
-                        <thead>
-                          <tr>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Department</th>
-                            <th>Status</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <!-- Accounts will be populated here -->
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -604,6 +506,8 @@
       tabindex="-1"
       aria-labelledby="createEntryModalLabel"
       aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -616,7 +520,6 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              title="Close modal"
             ></button>
           </div>
           <div class="modal-body">
@@ -625,13 +528,13 @@
                 <div class="col-md-6">
                   <label for="letterType" class="form-label">Type</label>
                   <select class="form-select" id="letterType" required>
-                    <option value="">Select Type</option>
+                    <option value="" disabled selected>Select Type</option>
                     <option value="Complaint">Complaint</option>
                     <option value="Request">Request</option>
                     <option value="Proposal">Proposal</option>
                     <option value="Invitation">Invitation</option>
                     <option value="Other">Other</option>
-                  </select>
+                  </select> 
                 </div>
                 <div class="col-md-6">
                   <label for="controlNumber" class="form-label"
@@ -645,7 +548,12 @@
                   />
                 </div>
               </div>
-              <div class="row mb-3 d-none">
+              <!-- Add Client Email field to Create Entry Form -->
+              <div class="mb-3">
+                <label for="clientEmail" class="form-label">Client Email</label>
+                <input type="email" class="form-control" id="clientEmail" required />
+              </div>
+              <div class="row mb-3">
                 <div class="col-md-6">
                   <label for="dateReceived" class="form-label"
                     >Date Received</label
@@ -654,7 +562,7 @@
                     type="date"
                     class="form-control"
                     id="dateReceived"
-                    required
+                    required disabled
                   />
                 </div>
                 <div class="col-md-6">
@@ -665,7 +573,7 @@
                     type="time"
                     class="form-control"
                     id="timeReceived"
-                    required
+                    required disabled
                   />
                 </div>
               </div>
@@ -689,82 +597,25 @@
                 <input type="text" class="form-control" id="subject" required />
               </div>
               <div class="mb-3">
-                <label for="endorsedTo" class="form-label">Endorsed To</label>
-                <select class="form-select" id="endorsedTo" required>
-                  <option value="">Select Office</option>
-                  <option value="Vice Mayor's Office">
-                    Vice Mayor's Office
-                  </option>
-                  <option value="Sangguniang Panlungsod">
-                    Sangguniang Panlungsod
-                  </option>
-                  <option value="CAO">CAO</option>
-                  <option value="CASSO">CASSO</option>
-                  <option value="CADMO">CADMO</option>
-                  <option value="CBO">CBO</option>
-                  <option value="CEPMO">CEPMO</option>
-                  <option value="CHRMO">CHRMO</option>
-                  <option value="CLO">CLO</option>
-                  <option value="CPDSO">CPDSO</option>
-                  <option value="CTO">CTO</option>
-                  <option value="GSO">GSO</option>
-                  <option value="CBAO">CBAO</option>
-                  <option value="CEO">CEO</option>
-                  <option value="CSWDO">CSWDO</option>
-                  <option value="HSO">HSO</option>
-                  <option value="LCR">LCR</option>
-                  <option value="CVAO">CVAO</option>
-                  <option value="DepEd">DepEd</option>
-                  <option value="COA">COA</option>
-                  <option value="MTCC">MTCC</option>
-                  <option value="RTCC">RTCC</option>
-                  <option value="Prosecutor's Office">
-                    Prosecutor's Office
-                  </option>
-                  <option value="PESO">PESO</option>
-                  <option value="PIO">PIO</option>
-                  <option value="PLD">PLD</option>
-                  <option value="PLEB">PLEB</option>
-                  <option value="POSD">POSD</option>
-                  <option value="SSD">SSD</option>
-                  <option value="PDAO">PDAO</option>
-                  <option value="MITD">MITD</option>
-                  <option value="CCTV/EWSS">CCTV/EWSS</option>
-                  <option value="CDRRMO">CDRRMO</option>
-                  <option value="LIBRARY">LIBRARY</option>
-                  <option value="PERSONAL STAFF">PERSONAL STAFF</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="fileUpload" class="form-label">File Upload</label>
-                <input
-                  type="file"
-                  class="form-control"
-                  id="fileUpload"
-                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                />
-                <div class="form-text">
-                  Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG
-                </div>
-              </div>
-              <div class="mb-3">
-                <label for="remarks" class="form-label">Remarks</label>
-                <textarea class="form-control" id="remarks" rows="3"></textarea>
-              </div>
-              <div class="mb-3">
                 <label for="status" class="form-label">Status</label>
-                <select class="form-select" id="status" required>
-                  <option value="">Select Status</option>
-                  <option value="Pending">Pending</option>
+                <select class="form-select" id="status" required readonly disabled>
+                  <option value="Pending" selected>Pending</option>
                   <option value="Processing">Processing</option>
                   <option value="Completed">Completed</option>
                   <option value="Archived">Archived</option>
+                  <option value="Under Investigation">Under Investigation (Ongoing)</option>
+                  <option value="Inspection">Inspection, Acted Upon (Done)</option>
+                  <option value="For Review">For Review and Approval (Ongoing)</option>
+                  <option value="Request Granted">Request Granted (Done)</option>
+                  <option value="Request Denied">Request Denied</option>
                 </select>
               </div>
-              <!-- Add Client Email field to Create Entry Form -->
+              <!-- Add Google Drive File URL field to Create Entry Form -->
               <div class="mb-3">
-                <label for="clientEmail" class="form-label">Client Email</label>
-                <input type="email" class="form-control" id="clientEmail" required />
+                <label for="fileUrl" class="form-label">Google Drive File URL</label>
+                <input type="url" class="form-control" id="fileUrl" placeholder="Paste Google Drive shareable link here" />
+                <div class="form-text">Upload your file to Google Drive, set sharing to 'Anyone with the link', and paste the link here.</div>
+                <div id="fileUrlPreview" class="mt-2"></div>
               </div>
             </form>
           </div>
@@ -801,7 +652,6 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              title="Close modal"
             ></button>
           </div>
           <div class="modal-body">
@@ -819,65 +669,46 @@
                   </select>
                 </div>
                 <div class="col-md-6">
-                  <label for="editControlNumber" class="form-label">Control Number</label>
+                  <label for="editControlNumber" class="form-label"
+                    >Control Number</label
+                  >
                   <input
                     type="text"
                     class="form-control"
                     id="editControlNumber"
-                    required
-                    disabled
+                    required readonly
                   />
                 </div>
               </div>
-
-              <div class="row mb-3 d-none">
+              <!-- Add Client Email field to Edit Entry Form -->
+              <div class="mb-3">
+                <label for="editClientEmail" class="form-label">Client Email</label>
+                <input type="email" class="form-control" id="editClientEmail" required readonly />
+              </div>
+              <div class="row mb-3">
                 <div class="col-md-6">
-                  <label for="editDateReceived" class="form-label">Date Received (Receiving Office)</label>
+                  <label for="editDateReceived" class="form-label"
+                    >Date Received</label
+                  >
                   <input
                     type="date"
                     class="form-control"
                     id="editDateReceived"
-                    required
-                    disabled
+                    required readonly
                   />
                 </div>
                 <div class="col-md-6">
-                  <label for="editTimeReceived" class="form-label">Time Received (Receiving Office)</label>
+                  <label for="editTimeReceived" class="form-label"
+                    >Time Received</label
+                  >
                   <input
                     type="time"
                     class="form-control"
                     id="editTimeReceived"
-                    required
-                    disabled
+                    required readonly
                   />
                 </div>
               </div>
-
-              <div class="row mb-3">
-                <div class="col-md-6">
-                  <label for="editAdminDateReceived" class="form-label">Date Received (Admin Office)</label>
-                  <input
-                    type="date"
-                    class="form-control"
-                    id="editAdminDateReceived"
-                    required
-                    title="Admin office date received"
-                  />
-                  <div class="form-text">Auto-filled with current date if empty</div>
-                </div>
-                <div class="col-md-6">
-                  <label for="editAdminTimeReceived" class="form-label">Time Received (Admin Office)</label>
-                  <input
-                    type="time"
-                    class="form-control"
-                    id="editAdminTimeReceived"
-                    required
-                    title="Admin office time received"
-                  />
-                  <div class="form-text">Auto-filled with current time if empty</div>
-                </div>
-              </div>
-
               <div class="row mb-3">
                 <div class="col-md-6">
                   <label for="editFrom" class="form-label">From</label>
@@ -885,8 +716,7 @@
                     type="text"
                     class="form-control"
                     id="editFrom"
-                    required
-                    disabled
+                    required readonly
                   />
                 </div>
                 <div class="col-md-6">
@@ -895,36 +725,24 @@
                     type="text"
                     class="form-control"
                     id="editOffice"
-                    required
-                    disabled
+                    required readonly
                   />
                 </div>
               </div>
-
               <div class="mb-3">
                 <label for="editSubject" class="form-label">Subject</label>
                 <input
                   type="text"
                   class="form-control"
                   id="editSubject"
-                  required
-                  disabled
+                  required readonly
                 />
               </div>
-
-              <div class="mb-3">
-                <label for="editFileCode" class="form-label">File Code</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="editFileCode"
-                  placeholder="Enter file code"
-                />
-              </div>
-
-              <div class="mb-3">
-                <label for="editEndorsedTo" class="form-label">Endorsed To</label>
-                <select class="form-select" id="editEndorsedTo" required>
+              <div class="mb-3" hidden>
+                <label for="editEndorsedTo" class="form-label"
+                  >Endorsed To</label
+                >
+                <select class="form-select" id="editEndorsedTo" required disabled>
                   <option value="">Select Office</option>
                   <option value="Vice Mayor's Office">
                     Vice Mayor's Office
@@ -969,12 +787,27 @@
                   <option value="PERSONAL STAFF">PERSONAL STAFF</option>
                 </select>
               </div>
-              <div class="mb-3">
+              <div class="mb-3" hidden>
+                <label for="editFileUpload" class="form-label"
+                  >File Upload</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  id="editFileUpload"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                />
+                <div class="form-text">
+                  Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG
+                </div>
+              </div>
+              <div class="mb-3" hidden>
                 <label for="editRemarks" class="form-label">Remarks</label>
                 <textarea
                   class="form-control"
                   id="editRemarks"
                   rows="3"
+                  readonly
                 ></textarea>
               </div>
               <div class="mb-3">
@@ -986,28 +819,15 @@
                   <option value="Archived">Archived</option>
                   <option value="Under Investigation">Under Investigation (Ongoing)</option>
                   <option value="Inspection">Inspection, Acted Upon (Done)</option>
+                  <option value="For Review">For Review and Approval (Ongoing)</option>
+                  <option value="Request Granted">Request Granted (Done)</option>
+                  <option value="Request Denied">Request Denied</option>
                 </select>
-              </div>
-              <!-- Add Status Remarks field for status explanations -->
-              <div class="mb-3">
-                <label for="editStatusRemarks" class="form-label">Status Explanation</label>
-                <textarea
-                  class="form-control"
-                  id="editStatusRemarks"
-                  rows="3"
-                  placeholder="Please provide explanation or reasons for the status change..."
-                  required
-                ></textarea>
-                <div class="form-text">This explanation will be included in the email notification to the client.</div>
-              </div>
-              <div class="mb-3">
-                <label for="editClientEmail" class="form-label">Client Email</label>
-                <input type="email" class="form-control" id="editClientEmail" required disabled  />
               </div>
               <!-- Add Google Drive File URL field to Edit Entry Form -->
               <div class="mb-3">
                 <label for="editFileUrl" class="form-label">Google Drive File URL</label>
-                <input type="url" class="form-control" id="editFileUrl" placeholder="Paste Google Drive shareable link here" />
+                <input type="url" class="form-control" id="editFileUrl" placeholder="Paste Google Drive shareable link here" readonly />
                 <div class="form-text">Upload your file to Google Drive, set sharing to 'Anyone with the link', and paste the link here.</div>
                 <div id="editFileUrlPreview" class="mt-2"></div>
               </div>
@@ -1036,6 +856,8 @@
       tabindex="-1"
       aria-labelledby="viewArchivedModalLabel"
       aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1048,7 +870,6 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              title="Close modal"
             ></button>
           </div>
           <div class="modal-body">
@@ -1074,6 +895,8 @@
       tabindex="-1"
       aria-labelledby="viewAuditLogModalLabel"
       aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -1086,7 +909,6 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              title="Close modal"
             ></button>
           </div>
           <div class="modal-body">
@@ -1132,6 +954,8 @@
       tabindex="-1"
       aria-labelledby="createUserModalLabel"
       aria-hidden="true"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
     >
       <div class="modal-dialog">
         <div class="modal-content">
@@ -1142,7 +966,6 @@
               class="btn-close"
               data-bs-dismiss="modal"
               aria-label="Close"
-              title="Close modal"
             ></button>
           </div>
           <div class="modal-body">
@@ -1243,7 +1066,7 @@
           <div class="modal-footer">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="btn btn-success"
               data-bs-dismiss="modal"
             >
               Close
@@ -1340,63 +1163,10 @@
       </div>
     </div>
 
-    <div id="notificationsSection" class="d-none">
-      <div class="header-section card-header bg-white">
-        <h1 class="h2 mb-1">All Notifications</h1>
-        <p class="mb-0 text-muted">View all new entry notifications</p>
-      </div>
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-hover" id="notificationsTable">
-              <thead>
-                <tr>
-                  <th>Control Number</th>
-                  <th>Subject</th>
-                  <th>Date Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Notifications will be populated here -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- All Notifications Modal -->
-    <div class="modal fade" id="allNotificationsModal" tabindex="-1" aria-labelledby="allNotificationsModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="allNotificationsModalLabel">All Notifications</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" title="Close modal"></button>
-          </div>
-          <div class="modal-body">
-            <div class="table-responsive">
-              <table class="table table-hover" id="allNotificationsTable">
-                <thead>
-                  <tr>
-                    <th>Control Number</th>
-                    <th>Subject</th>
-                    <th>Date Created</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <!-- Notifications will be populated here -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
@@ -1418,6 +1188,9 @@
     <!-- Add Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <!-- Add Moment.js and DataTables datetime-moment plugin for correct date/time sorting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.13.7/sorting/datetime-moment.js"></script>
 
     <script>
       // Initialize Firebase
@@ -1448,13 +1221,27 @@
         // Get the last control number from the database
         return database.ref('lastControlNumber').once('value').then(snapshot => {
           let lastNumber = snapshot.val() || 0;
-          lastNumber++;
           
           // Update the last control number in the database
-          database.ref('lastControlNumber').set(lastNumber);
+          database.ref('lastControlNumber').set(lastNumber + 1);
           
-          // Format the number with leading zeros
-          const formattedNumber = String(lastNumber).padStart(6, '0');
+          // Format the number with 5 leading zeros
+          const formattedNumber = String(lastNumber + 1).padStart(5, '0');
+          return `${year}-${formattedNumber}`;
+        });
+      }
+
+      // Function to get the next control number without incrementing
+      function getNextControlNumber() {
+        // Get the current year
+        const year = new Date().getFullYear();
+        
+        // Get the last control number from the database
+        return database.ref('lastControlNumber').once('value').then(snapshot => {
+          let lastNumber = snapshot.val() || 0;
+          
+          // Format the number with 5 leading zeros
+          const formattedNumber = String(lastNumber + 1).padStart(5, '0');
           return `${year}-${formattedNumber}`;
         });
       }
@@ -1483,7 +1270,8 @@
               Object.entries(entries).forEach(([_, entry]) => {
                 const entryYear = new Date(entry.dateReceived).getFullYear();
                 if (
-                  currentYear > entryYear &&
+                  currentYear === 2025 &&
+                  entryYear < 2025 &&
                   entry.status !== "Archived"
                 ) {
                   totalToArchive++;
@@ -1505,7 +1293,8 @@
               Object.entries(entries).forEach(([key, entry]) => {
                 const entryYear = new Date(entry.dateReceived).getFullYear();
                 if (
-                  currentYear > entryYear &&
+                  currentYear === 2025 &&
+                  entryYear < 2025 &&
                   entry.status !== "Archived"
                 ) {
                   entriesRef
@@ -1556,35 +1345,26 @@
       // Function to load entries into the table
       function loadEntries() {
         const currentYear = getCurrentYear();
-        const now = new Date();
-        const months = [
-          "January", "February", "March", "April", "May", "June",
-          "July", "August", "September", "October", "November", "December"
-        ];
-        const currentMonthIndex = now.getMonth();
-        const reorderedMonths = [
-          ...months.slice(currentMonthIndex),
-          ...months.slice(0, currentMonthIndex)
-        ];
         entriesRef.on("value", (snapshot) => {
           const entries = snapshot.val();
           const accordionContainer = document.getElementById(
             "monthlyStatsAccordion"
           );
 
+          // Create months array
+          const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+          ];
+          const now = new Date();
+          const currentMonthIdx = now.getMonth();
+          const reorderedMonths = months.slice(currentMonthIdx).concat(months.slice(0, currentMonthIdx));
+
           // Clear existing content
           accordionContainer.innerHTML = "";
 
-          // Create empty accordion items for all months first
-         // Only show months up to and including the current month, in descending order
-          const now = new Date();
-          const currentMonthIndex = now.getMonth();
-          // Build an array of months from current down to January
-          const descendingMonths = [];
-          for (let i = currentMonthIndex; i >= 0; i--) {
-            descendingMonths.push(months[i]);
-          }
-          descendingMonths.forEach((month) => {
+           // Create empty accordion items for visible months in descending order
+          visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -1618,7 +1398,7 @@
           });
 
           // Then populate each month's data as it arrives
-          reorderedMonths.forEach((month) => {
+          visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const tableId = `monthly-stats-table-${monthKey}`;
 
@@ -1641,7 +1421,7 @@
                     const entry = entries[key];
                     return entry ? { key, ...entry } : null;
                   })
-                  .filter((entry) => entry && entry.status !== "Archived");
+                  .filter((entry) => entry && entry.status !== "Archived" && entry.endorsedTo === 'PLD');
 
                 // Calculate statistics including archived entries
                 const stats = {
@@ -1652,10 +1432,10 @@
                   total: 0
                 };
 
-                // Count only non-archived entries
+                // Count only non-archived entries and only those endorsed to PLD
                 monthlyData.entries.forEach(key => {
                   const entry = entries[key];
-                  if (entry && entry.status !== "Archived") {
+                  if (entry && entry.status !== "Archived" && entry.endorsedTo === 'PLD') {
                     stats.total++;
                     const type = entry.type.toLowerCase();
                     if (type === 'complaint') stats.complaints++;
@@ -1686,91 +1466,95 @@
                 );
                 if (accordionBody) {
                   accordionBody.innerHTML = `
-                    <!-- ${month} Statistics -->
-                    <div class="row mb-4">
-                      <div class="col-md-3">
-                        <div class="card bg-primary bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-primary">Complaints</h6>
-                            <h2 class="card-text">${stats.complaints}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-primary">
-                                <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-warning bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-warning">Proposals</h6>
-                            <h2 class="card-text">${stats.proposals}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-warning">
-                                <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-info bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-info">Invitations</h6>
-                            <h2 class="card-text">${stats.invitations}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-info">
-                                <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-warning bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-success">Requests</h6>
-                            <h2 class="card-text">${stats.requests}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-success">
-                                <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
-                              </span>
-                            </div>
+                  <!-- ${month} Statistics -->
+                  <div class="row mb-4">
+                    <div class="col-md-3">
+                      <div class="card bg-primary bg-opacity-10">
+                        <div class="card-body">
+                          <h6 class="card-title text-primary">Complaints</h6>
+                          <h2 class="card-text">${stats.complaints}</h2>
+                          <div class="d-flex align-items-center">
+                            <span class="trend-indicator trend-up text-primary">
+                              <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
+                            </span>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="table-responsive">
-                      <table class="table table-hover monthly-stats-table" id="${tableId}">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Control Number</th>
-                            <th>Letter Type</th>
-                            <th>File</th>
-                            <th>Time Received</th>
-                            <th>Date Received</th>
-                            <th>From</th>
-                            <th>Office</th>
-                            <th>Subject</th>
-                            <th>Time Received (Admin)</th>
-                            <th>Date Received (Admin)</th>
-                            <th>Endorsed To</th>
-                            <th>Remarks</th>
-                            <th>File Code</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
+                    <div class="col-md-3">
+                      <div class="card bg-warning bg-opacity-10">
+                        <div class="card-body">
+                          <h6 class="card-title text-warning">Proposals</h6>
+                          <h2 class="card-text">${stats.proposals}</h2>
+                          <div class="d-flex align-items-center">
+                            <span class="trend-indicator trend-up text-warning">
+                              <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  `;
+                    <div class="col-md-3">
+                      <div class="card bg-info bg-opacity-10">
+                        <div class="card-body">
+                          <h6 class="card-title text-info">Invitations</h6>
+                          <h2 class="card-text">${stats.invitations}</h2>
+                          <div class="d-flex align-items-center">
+                            <span class="trend-indicator trend-up text-info">
+                              <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3">
+                      <div class="card bg-warning bg-opacity-10">
+                        <div class="card-body">
+                          <h6 class="card-title text-success">Requests</h6>
+                          <h2 class="card-text">${stats.requests}</h2>
+                          <div class="d-flex align-items-center">
+                            <span class="trend-indicator trend-up text-success">
+                              <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="table-responsive">
+                     <div class="d-flex justify-content-between align-items-center mb-3">
+                      <div class="input-group" style="width: 300px;">
+                        <span class="input-group-text">
+                          <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" class="form-control" id="search${monthKey}" placeholder="Search entries...">
+                      </div>
+                    </div>
 
-                  // Initialize DataTable with the data
-                  setTimeout(() => {
+                    <table class="table table-hover monthly-stats-table" id="monthly-stats-table-${monthKey}">
+                      <thead>
+                        <tr>
+                          <th>Control #</th>
+                          <th>Type</th>
+                          <th>File</th>
+                          <th>Time Received</th>
+                          <th>Date Received</th>
+                          <th>From</th>
+                          <th>Office</th>
+                          <th>Subject</th>
+                          <th>Endorsed To</th>
+                          <th>Remarks</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                    </table>
+                  </div>
+                `;
+
+                setTimeout(() => {
                     try {
                       console.log(`Initializing table for ${month} with data:`, monthEntries);
                       initializeDataTable(monthKey, tableId, monthEntries);
@@ -1782,6 +1566,9 @@
               });
           });
         });
+
+        setTimeout(initializeSearch, 500);
+
       }
 
       // Function to get status color
@@ -1909,6 +1696,8 @@
                         showSuccessAlert("Entry archived successfully!");
                         // Reload entries to update the table
                         loadEntries();
+                        // Switch to archive section so user sees the archived entry
+                        handleNavigation("archivesSection");
                       })
                       .catch((error) => {
                         console.error("Error logging archiving:", error);
@@ -2078,6 +1867,8 @@
                     logActivity("restore", `Restored archived entry: ${entry.subject}`, entry.controlNumber);
                     showSuccessAlert("Entry restored successfully!");
                     loadArchivedEntries();
+                    // Switch to dashboard section so user sees the restored entry
+                    handleNavigation("dashboardSection");
                   })
                   .catch((error) => {
                     console.error("Error restoring entry:", error);
@@ -2089,122 +1880,112 @@
         });
       }
 
-      // Update create entry handler
-      document
-        .getElementById("saveEntry")
-        .addEventListener("click", function () {
-          const formData = {
-            type: document.getElementById("letterType").value,
-            dateReceived: document.getElementById("dateReceived").value,
-            timeReceived: document.getElementById("timeReceived").value,
-            from: document.getElementById("from").value,
-            office: document.getElementById("office").value,
-            subject: document.getElementById("subject").value,
-            endorsedTo: document.getElementById("endorsedTo").value,
-            status: document.getElementById("status").value,
-            statusRemarks: document.getElementById("editStatusRemarks").value, // Save status remarks   
-            fromEmail: document.getElementById("clientEmail").value, // Save client email
-            createdAt: firebase.database.ServerValue.TIMESTAMP,
-            fileUrl: document.getElementById("fileUrl").value,
-          };
+      // Save entry form submission
+      document.getElementById("saveEntry").addEventListener("click", function() {
+        const formData = {
+          type: document.getElementById("letterType").value,
+          dateReceived: document.getElementById("dateReceived").value,
+          timeReceived: document.getElementById("timeReceived").value,
+          from: document.getElementById("from").value,
+          office: document.getElementById("office").value,
+          subject: document.getElementById("subject").value,
+          status: document.getElementById("status").value, // Get the selected status
+          fromEmail: document.getElementById("clientEmail").value, // Save client email
+          createdAt: firebase.database.ServerValue.TIMESTAMP,
+          fileUrl: document.getElementById("fileUrl").value,
+        };
 
-          // Generate control number first
-          generateControlNumber().then(controlNumber => {
-            formData.controlNumber = controlNumber;
+        // Validate required fields
+        if (!formData.type || !formData.dateReceived || !formData.timeReceived || 
+            !formData.from || !formData.office || !formData.subject || !formData.status) {
+          showErrorAlert("Please fill in all required fields");
+          return;
+        }
 
-            // Get the month and year for monthly data
-            const entryDate = new Date(formData.dateReceived);
-            const month = entryDate
-              .toLocaleString("default", { month: "long" })
-              .toLowerCase();
-            const year = entryDate.getFullYear();
-            const monthKey = `${month}${year}`;
+        // Generate control number and save entry
+        generateControlNumber().then(controlNumber => {
+          formData.controlNumber = controlNumber;
 
-            // Save the entry
-            entriesRef
-              .push(formData)
-              .then((ref) => {
-                // Save monthly data
-                const monthlyRef = database.ref(`monthlyData/${monthKey}`);
-                monthlyRef.once("value", (snapshot) => {
-                  const monthlyData = snapshot.val() || {
-                    total: 0,
-                    complaints: 0,
-                    proposals: 0,
-                    invitations: 0,
-                    requests: 0,
-                    entries: [],
-                  };
+          // Get the month and year for monthly data
+          const entryDate = new Date(formData.dateReceived);
+          const month = entryDate.toLocaleString("default", { month: "long" }).toLowerCase();
+          const year = entryDate.getFullYear();
+          const monthKey = `${month}${year}`;
 
-                  // Update monthly statistics
-                  monthlyData.total++;
-                  monthlyData[formData.type.toLowerCase() + "s"]++;
-                  monthlyData.entries.push(ref.key);
+          // Save the entry
+          entriesRef.push(formData)
+            .then((ref) => {
+              // Save monthly data
+              const monthlyRef = database.ref(`monthlyData/${monthKey}`);
+              monthlyRef.once("value", (snapshot) => {
+                const monthlyData = snapshot.val() || {
+                  total: 0,
+                  complaints: 0,
+                  proposals: 0,
+                  invitations: 0,
+                  requests: 0,
+                  entries: [],
+                };
 
-                  // Save updated monthly data
-                  monthlyRef
-                    .set(monthlyData)
-                    .then(() => {
-                      logActivity(
-                        "create",
-                        `Created new entry: ${formData.subject}`,
-                        formData.controlNumber
+                // Update monthly statistics
+                monthlyData.total++;
+                monthlyData[formData.type.toLowerCase() + "s"]++;
+                monthlyData.entries.push(ref.key);
+
+                // Save updated monthly data
+                monthlyRef.set(monthlyData)
+                  .then(() => {
+                    logActivity(
+                      "create",
+                      `Created new entry: ${formData.subject}`,
+                      formData.controlNumber
+                    );
+
+                    // Reset form and update status options
+                    document.getElementById("createEntryForm").reset();
+                    updateStatusOptions(document.getElementById("letterType").value);
+
+                    // Set current date and time
+                    const now = new Date();
+                    const currentDate = now.toISOString().split("T")[0];
+                    const currentTime = now.toTimeString().slice(0, 5);
+                    document.getElementById("dateReceived").value = currentDate;
+                    document.getElementById("timeReceived").value = currentTime;
+
+                    // Show success message
+                    showSuccessAlert("Entry created successfully!");
+
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(
+                      document.getElementById("createEntryModal")
+                    );
+                    modal.hide();
+
+                    // Reload entries
+                    loadEntries();
+
+                    // Open the relevant month's accordion
+                    setTimeout(() => {
+                      const accordionButton = document.querySelector(
+                        `button[data-bs-target="#${monthKey}"]`
                       );
-
-                      // Reset form
-                      document.getElementById("createEntryForm").reset();
-
-                      // Set current date and time
-                      const now = new Date();
-                      const currentDate = now.toISOString().split("T")[0];
-                      const currentTime = now.toTimeString().slice(0, 5);
-                      document.getElementById("dateReceived").value = currentDate;
-                      document.getElementById("timeReceived").value = currentTime;
-
-                      // Generate new control number
-                      generateControlNumber().then(newControlNumber => {
-                        document.getElementById("controlNumber").value = newControlNumber;
-                      });
-
-                      // Show success message
-                      showSuccessAlert("Entry created successfully!");
-
-                      // Send email notification to client immediately after creation
-                      sendStatusUpdateEmail(formData);
-
-                      // Close modal
-                      const modal = bootstrap.Modal.getInstance(
-                        document.getElementById("createEntryModal")
-                      );
-                      modal.hide();
-
-                      // Reload entries
-                      loadEntries();
-
-                      // Open the relevant month's accordion
-                      setTimeout(() => {
-                        const accordionButton = document.querySelector(
-                          `button[data-bs-target="#${monthKey}"]`
-                        );
-                        if (accordionButton) {
-                          accordionButton.click();
-                        }
-                      }, 500);
-                    })
-                    .catch((error) => {
-                      console.error("Error saving monthly data:", error);
-                      showErrorAlert(
-                        "Error saving monthly data. Please try again."
-                      );
-                    });
-                });
-              })
-              .catch((error) => {
-                console.error("Error creating entry:", error);
-                showErrorAlert("Error creating entry. Please try again.");
+                      if (accordionButton) {
+                        accordionButton.click();
+                      }
+                    }, 500);
+                  })
+                  .catch((error) => {
+                    console.error("Error saving monthly data:", error);
+                    showErrorAlert("Error saving monthly data. Please try again.");
+                  });
               });
-          });
+            })
+            .catch((error) => {
+              console.error("Error creating entry:", error);
+              showErrorAlert("Error creating entry. Please try again.");
+            });
         });
+      });
 
       // Update edit entry handler
       document.getElementById("updateEntry").addEventListener("click", function() {
@@ -2214,16 +1995,12 @@
           controlNumber: document.getElementById("editControlNumber").value,
           dateReceived: document.getElementById("editDateReceived").value,
           timeReceived: document.getElementById("editTimeReceived").value,
-          adminDateReceived: document.getElementById("editAdminDateReceived").value,
-          adminTimeReceived: document.getElementById("editAdminTimeReceived").value,
           from: document.getElementById("editFrom").value,
           office: document.getElementById("editOffice").value,
           subject: document.getElementById("editSubject").value,
-          fileCode: document.getElementById("editFileCode").value,
           endorsedTo: document.getElementById("editEndorsedTo").value,
           remarks: document.getElementById("editRemarks").value,
           status: document.getElementById("editStatus").value,
-          statusRemarks: document.getElementById("editStatusRemarks").value, // Save status remarks
           fromEmail: document.getElementById("editClientEmail").value, // Save client email
           updatedAt: firebase.database.ServerValue.TIMESTAMP,
           fileUrl: document.getElementById("editFileUrl").value,
@@ -2231,14 +2008,12 @@
 
         // Validate required fields
         if (!formData.type || !formData.dateReceived || !formData.timeReceived || 
-            !formData.adminDateReceived || !formData.adminTimeReceived ||
-            !formData.from || !formData.office || !formData.subject || !formData.status || !formData.statusRemarks) {
-          showErrorAlert("Please fill in all required fields, including status remarks/explanation.");
+            !formData.from || !formData.office || !formData.subject || !formData.status) {
+          showErrorAlert("Please fill in all required fields");
           return;
         }
 
-        entriesRef
-          .child(key)
+        entriesRef.child(key)
           .update(formData)
           .then(() => {
             logActivity(
@@ -2257,14 +2032,11 @@
             sendStatusUpdateEmail(formData);
 
             const entryDate = new Date(formData.dateReceived);
-            const monthKey =
-              entryDate
-                .toLocaleString("default", { month: "long" })
-                .toLowerCase() + entryDate.getFullYear();
+            const monthKey = entryDate.toLocaleString("default", { month: "long" }).toLowerCase() + entryDate.getFullYear();
             loadEntries();
             setTimeout(() => {
               const accordionButton = document.querySelector(
-                `button[data-bs-target=\"#${monthKey}\"]`
+                `button[data-bs-target="#${monthKey}"]`
               );
               if (accordionButton) {
                 accordionButton.click();
@@ -2354,40 +2126,27 @@
         entriesRef.child(key).once("value", (snapshot) => {
           const entry = snapshot.val();
           if (entry) {
+            // Set the type first
             document.getElementById("editType").value = entry.type;
+            
+            // Update status options based on the type
+            updateStatusOptions(entry.type);
+            
+            // Then set the status
             document.getElementById("editStatus").value = entry.status;
+            
+            // Set other fields
             document.getElementById("editControlNumber").value = entry.controlNumber;
             document.getElementById("editDateReceived").value = entry.dateReceived;
             document.getElementById("editTimeReceived").value = entry.timeReceived;
-            document.getElementById("editAdminDateReceived").value = entry.adminDateReceived;
-            document.getElementById("editAdminTimeReceived").value = entry.adminTimeReceived;
             document.getElementById("editFrom").value = entry.from;
             document.getElementById("editOffice").value = entry.office;
             document.getElementById("editSubject").value = entry.subject;
-            document.getElementById("editFileCode").value = entry.fileCode;
             document.getElementById("editEndorsedTo").value = entry.endorsedTo;
             document.getElementById("editRemarks").value = entry.remarks || "";
-            // Set status remarks in edit form
-            document.getElementById("editStatusRemarks").value = entry.statusRemarks || "";
             // Set client email in edit form
             document.getElementById("editClientEmail").value = entry.fromEmail || "";
-            document.getElementById("editEntryForm").dataset.key = key;
             document.getElementById("editFileUrl").value = entry.fileUrl || "";
-            
-            // Auto-fill admin date and time with current system time if empty
-            const adminDateField = document.getElementById("editAdminDateReceived");
-            const adminTimeField = document.getElementById("editAdminTimeReceived");
-            
-            // If admin date/time are empty, auto-fill with current system time
-            if (!adminDateField.value) {
-              const now = new Date();
-              adminDateField.value = now.toISOString().split("T")[0];
-            }
-            if (!adminTimeField.value) {
-              const now = new Date();
-              adminTimeField.value = now.toTimeString().slice(0, 5);
-            }
-            
             // Show preview for fileUrl in edit modal
             const previewDiv = document.getElementById("editFileUrlPreview");
             if (entry.fileUrl) {
@@ -2399,19 +2158,9 @@
             } else {
               previewDiv.innerHTML = "<span class='text-muted'>No file link provided.</span>";
             }
-            // Also update preview when the admin changes the file URL in the edit modal
-            document.getElementById("editFileUrl").addEventListener("input", function() {
-              const url = this.value;
-              if (url) {
-                let embedUrl = url;
-                if (embedUrl.includes("view?usp=sharing")) {
-                  embedUrl = embedUrl.replace("view?usp=sharing", "preview");
-                }
-                previewDiv.innerHTML = `<a href="${url}" target="_blank" class="btn btn-outline-primary btn-sm mb-2">View File in Google Drive</a><br><iframe src="${embedUrl}" width="100%" height="400" style="border:1px solid #ccc;"></iframe>`;
-              } else {
-                previewDiv.innerHTML = "<span class='text-muted'>No file link provided.</span>";
-              }
-            });
+
+            // Store the key for updating
+            document.getElementById("editEntryForm").dataset.key = key;
           }
         });
       }
@@ -2443,8 +2192,8 @@
           document.getElementById("dateReceived").value = currentDate;
           document.getElementById("timeReceived").value = currentTime;
           
-          // Generate and display control number
-          generateControlNumber().then(controlNumber => {
+          // Show the next control number without incrementing
+          getNextControlNumber().then(controlNumber => {
             document.getElementById("controlNumber").value = controlNumber;
           });
         });
@@ -2476,7 +2225,7 @@
             // Group entries by year
             const entriesByYear = {};
             Object.entries(entries).forEach(([key, entry]) => {
-              if (entry.status === "Archived") {
+              if (entry.status === "Archived" && entry.endorsedTo === 'PLD') {
                 const year = new Date(entry.dateReceived).getFullYear();
                 if (!entriesByYear[year]) {
                   entriesByYear[year] = [];
@@ -2523,6 +2272,7 @@
                           <tr>
                             <th>Control #</th>
                             <th>Type</th>
+                            <th>File</th>
                             <th>Time Received</th>
                             <th>Date Received</th>
                             <th>From</th>
@@ -2539,6 +2289,7 @@
                             <tr>
                               <td>${entry.controlNumber}</td>
                               <td>${entry.type}</td>
+                              <td>${entry.fileUrl ? `<a href="${entry.fileUrl}" target="_blank">View File</a>` : ''}</td>
                               <td>${entry.timeReceived}</td>
                               <td>${formatDate(entry.dateReceived)}</td>
                               <td>${entry.from}</td>
@@ -2551,7 +2302,7 @@
                                 <button class="btn btn-sm btn-info" onclick="viewArchivedEntry('${entry.key}')" title="View archived entry details">
                                   <i class="bi bi-eye"></i>
                                 </button>
-                                <button class="btn btn-sm btn-warning" onclick="restoreEntry('${entry.key}')" title="Restore archived entry">
+                                <button class="btn btn-sm btn-warning" onclick="restoreEntry('${entry.key}')" title="Restore this archived entry">
                                   <i class="bi bi-arrow-counterclockwise"></i>
                                 </button>
                               </td>
@@ -2576,10 +2327,9 @@
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
                     customize: function (doc) {
-                      doc.defaultStyle.fontSize = 10;                    // ✅ Make content text bigger
-                      doc.styles.tableHeader.fontSize = 11;              // ✅ Make header text bigger
-                      doc.styles.tableHeader.alignment = 'left';
-                      // ✅ Auto-set column widths evenly
+                      doc.defaultStyle.fontSize = 10;              
+                      doc.styles.tableHeader.fontSize = 11;        
+                      doc.styles.tableHeader.alignment = 'left'
                       const colCount = doc.content[1].table.body[0].length;
                       doc.content[1].table.widths = Array(colCount).fill('*');
                     }
@@ -2655,26 +2405,28 @@
                 </div>
               </div>
               <div class="row mb-3">
-                <div class="col-md-6">
-                  <strong>From:</strong> ${entry.from}
-                </div>
-                <div class="col-md-6">
-                  <strong>Office:</strong> ${entry.office}
-                </div>
-                 <div class="md-6">
-                <strong>Archived On:</strong> ${formatDate(entry.archivedAt)}
+              <div class="col-md-6">
+                <strong>From:</strong> ${entry.from}
               </div>
+              <div class="col-md-6">
+                <strong>Office:</strong> ${entry.office}
               </div>
-              <div class="mb-3">
-                <strong>Subject:</strong> ${entry.subject}
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6 onset-md-6">
+                <strong>Archived On:</strong> ${entry.archivedOn}
               </div>
-              <div class="mb-3">
-                <strong>Endorsed To:</strong> ${entry.endorsedTo}
-              </div>
-              <div class="mb-3">
-                <strong>Remarks:</strong> ${entry.remarks || "None"}
-              </div>
-             
+            </div>
+            <div class="mb-3">
+              <strong>Subject:</strong> ${entry.subject}
+            </div>
+            <div class="mb-3">
+              <strong>Endorsed To:</strong> ${entry.endorsedTo}
+            </div>
+            <div class="mb-3">
+              <strong>Remarks:</strong> ${entry.remarks || "None"}
+            </div>
+              
             `;
             modal.show();
           }
@@ -2704,6 +2456,9 @@
           case "documentsSection":
             loadDocuments();
             break;
+          case "usersSection":
+            loadUsers();
+            break;
           case "archivesSection":
             loadArchivedEntries();
             break;
@@ -2712,7 +2467,6 @@
             break;
           case "profileSection":
             loadProfile();
-            loadAccounts(); // Only load accounts table in profile section
             break;
           default:
             loadEntries();
@@ -2732,6 +2486,13 @@
         .addEventListener("click", function (e) {
           e.preventDefault();
           handleNavigation("documentsSection");
+        });
+
+      document
+        .getElementById("usersLink")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          handleNavigation("usersSection");
         });
 
       document
@@ -2787,7 +2548,7 @@
               const entryMonth = entryDate.getMonth();
 
               // Yearly statistics
-              if (entryYear === currentYear) {
+              if (entryYear === currentYear && entry.endorsedTo === 'PLD') {
                 yearlyStats.total++;
                 yearlyStats[entry.type.toLowerCase() + "s"]++;
 
@@ -2854,7 +2615,7 @@
           ).textContent = `${monthlyStats.lowestVolume.month} (${monthlyStats.lowestVolume.count})`;
 
           // Create monthly letters chart
-           const monthlyCtx = document
+          const monthlyCtx = document
             .getElementById("monthlyLettersChart")
             .getContext("2d");
           new Chart(monthlyCtx, {
@@ -2903,7 +2664,6 @@
             },
           });
 
-
           // Create letter type distribution chart (pie chart)
           const letterTypeCtx = document.getElementById("letterTypeChart").getContext("2d");
           new Chart(letterTypeCtx, {
@@ -2943,8 +2703,7 @@
             },
             options: {
               responsive: true,
-              maintainAspectRatio: true,
-              aspectRatio: 2,
+              maintainAspectRatio: false,
               plugins: {
                 legend: {
                   position: "right",
@@ -3044,10 +2803,10 @@
                   <td>${user.role}</td>
                   <td><span class="badge bg-warning">Active</span></td>
                   <td>
-                    <button class="btn btn-sm btn-primary" onclick="editUser('${key}')" title="Edit user">
+                    <button class="btn btn-sm btn-primary" onclick="editUser('${key}')" title="Edit this entry">
                       <i class="bi bi-pencil"></i>
                     </button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteUser('${key}')" title="Delete user">
+                    <button class="btn btn-sm btn-danger" onclick="deleteUser('${key}')" title="Archive this entry">
                       <i class="bi bi-trash"></i>
                     </button>
                   </td>
@@ -3068,8 +2827,9 @@
                     orientation: 'landscape',
                     pageSize: 'LEGAL',
                     customize: function (doc) {
-                      doc.defaultStyle.fontSize = 10;                  
-                      doc.styles.tableHeader.fontSize = 11;      
+                      doc.defaultStyle.fontSize = 10;              
+                      doc.styles.tableHeader.fontSize = 11;        
+                      doc.styles.tableHeader.alignment = 'left'
                       const colCount = doc.content[1].table.body[0].length;
                       doc.content[1].table.widths = Array(colCount).fill('*');
                     }
@@ -3119,28 +2879,41 @@
             tbody.innerHTML = "";
 
             if (logs) {
-              Object.entries(logs).forEach(([key, log]) => {
-                // Format timestamp
-                const date = new Date(log.timestamp);
-                const formattedTimestamp = date.toLocaleString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  second: '2-digit',
-                  hour12: true
+              // Fetch all entries to check endorsedTo
+              database.ref('entries').once('value', (entriesSnapshot) => {
+                const entries = entriesSnapshot.val() || {};
+                Object.entries(logs).forEach(([key, log]) => {
+                  // Only show if the related entry is endorsed to PLD
+                  let show = false;
+                  if (log.controlNumber) {
+                    // Find entry by controlNumber
+                    const entry = Object.values(entries).find(e => e.controlNumber === log.controlNumber);
+                    if (entry && entry.endorsedTo === 'PLD') show = true;
+                  }
+                  // Optionally, show logs not tied to a controlNumber (e.g., system logs)
+                  // if (!log.controlNumber) show = true;
+                  if (show) {
+                    const date = new Date(log.timestamp);
+                    const formattedTimestamp = date.toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      second: '2-digit',
+                      hour12: true
+                    });
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                      <td>${formattedTimestamp}</td>
+                      <td>${log.user}</td>
+                      <td>${log.action}</td>
+                      <td>${log.details}</td>
+                      <td>${log.controlNumber || "-"}</td>
+                    `;
+                    tbody.appendChild(row);
+                  }
                 });
-
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                <td>${formattedTimestamp}</td>
-                <td>${log.user}</td>
-                <td>${log.action}</td>
-                <td>${log.details}</td>
-                <td>${log.controlNumber || "-"}</td>
-              `;
-                tbody.appendChild(row);
               });
             }
 
@@ -3238,46 +3011,30 @@
         database.ref('users/' + user.uid).once('value').then((snapshot) => {
           const userData = snapshot.val();
           if (userData) {
-            // Safely update UI elements
-            const updateElement = (id, value) => {
-              const element = document.getElementById(id);
-              if (element) {
-                element.textContent = value;
-              }
-            };
-
-            const updateInputValue = (id, value) => {
-              const element = document.getElementById(id);
-              if (element) {
-                element.value = value || '';
-              }
-            };
-
-            // Update profile information if elements exist
-            updateElement("profileName", `${userData.firstName || ''} ${userData.lastName || ''}`);
-            updateElement("profileRole", userData.role || '');
-            updateElement("currentUserName", `${userData.firstName || ''} ${userData.lastName || ''}`);
-            updateElement("currentUserRole", userData.role || '');
-            updateInputValue("email", userData.email || user.email);
+            // Update profile information
+            document.getElementById("profileName").textContent = `${userData.firstName} ${userData.lastName}`;
+            document.getElementById("profileRole").textContent = userData.role;
             
-            // Update form fields if they exist
-            updateInputValue("firstName", userData.firstName);
-            updateInputValue("lastName", userData.lastName);
-            updateInputValue("phone", userData.phone);
-            updateInputValue("department", userData.department);
-            updateInputValue("position", userData.position);
+            // Update form fields
+            document.getElementById("firstName").value = userData.firstName;
+            document.getElementById("lastName").value = userData.lastName;
+            document.getElementById("email").value = userData.email || "admin@centralcomm.com";
+            document.getElementById("phone").value = userData.phone || "";
+            document.getElementById("department").value = userData.department || "";
+            document.getElementById("position").value = userData.position || "";
             
             // Set role and disable it if it exists
             const roleSelect = document.getElementById("role");
-            if (roleSelect) {
-              roleSelect.value = userData.role || '';
-              roleSelect.disabled = !!userData.role;
+            if (userData.role) {
+              roleSelect.value = userData.role;
+              roleSelect.disabled = true;
+            } else {
+              roleSelect.disabled = false;
             }
 
             // Update profile image if available
-            const profileImage = document.getElementById("profileImage");
-            if (profileImage && user.photoURL) {
-              profileImage.src = user.photoURL;
+            if (user.photoURL) {
+              document.getElementById("profileImage").src = user.photoURL;
             }
           }
           Swal.close();
@@ -3318,7 +3075,7 @@
                 sessionStorage.clear();
                 localStorage.clear();
 
-                // Redirect to login page
+                // Redirect to selection page
                 window.location.href = "../pages/selection.html";
               })
               .catch((error) => {
@@ -3331,147 +3088,118 @@
 
       // Check authentication state
       firebase.auth().onAuthStateChanged((user) => {
-        // Temporarily disable automatic redirect to allow proper login flow
-        // if (!user && window.location.pathname.includes("admin/index.html")) {
-        //   // Add a small delay to prevent redirect loops and ensure Firebase is fully initialized
-        //   setTimeout(() => {
-        //     if (!firebase.auth().currentUser) {
-        //       window.location.href = "../pages/selection.html";
-        //     }
-        //   }, 1000);
-        // } else 
-        if (user) {
-          // Safely update UI elements
-          const updateElement = (id, value) => {
-            const element = document.getElementById(id);
-            if (element) {
-              element.textContent = value;
-            }
-          };
-
+        if (!user) {
+          // If no user is signed in, redirect to selection page
+          window.location.href = "../pages/selection.html";
+        } else if (user) {
           // Set the current user's email
-          updateElement("email", user.email || "");
-          updateElement("currentUserEmail", user.email || "");
+          document.getElementById("email").value = user.email || "";
+          document.getElementById("currentUserEmail").textContent = user.email || "";
           
           // Fetch user details from database
           database.ref('users/' + user.uid).once('value').then((snapshot) => {
             const userData = snapshot.val();
             if (userData) {
-              // Check if profile is complete
+              // Check if profile is complete (has first name, last name, and role)
               const isProfileComplete = userData.firstName && userData.lastName && userData.role;
               
               if (!isProfileComplete) {
                 // Show profile completion modal
-                showProfileCompletionModal(user);
+                Swal.fire({
+                  title: 'Complete Your Profile',
+                  html: `
+                    <form id="initialProfileForm">
+                      <div class="mb-3">
+                        <label for="initialFirstName" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="initialFirstName" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="initialLastName" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="initialLastName" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="initialRole" class="form-label">Role</label>
+                        <select class="form-select" id="initialRole" required>
+                          <option value="">Select Role</option>
+                          <option value="Administrator">Administrator</option>
+                          <option value="Staff">Staff</option>
+                        </select>
+                      </div>
+                    </form>
+                  `,
+                  showCancelButton: false,
+                  confirmButtonText: 'Save Profile',
+                  confirmButtonColor: '#002C75',
+                  allowOutsideClick: false,
+                  preConfirm: () => {
+                    const firstName = document.getElementById('initialFirstName').value;
+                    const lastName = document.getElementById('initialLastName').value;
+                    const role = document.getElementById('initialRole').value;
+                    
+                    if (!firstName || !lastName || !role) {
+                      Swal.showValidationMessage('Please fill in all fields');
+                      return false;
+                    }
+                    
+                    return { firstName, lastName, role };
+                  }
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    const { firstName, lastName, role } = result.value;
+                    
+                    // Update user data in database
+                    const updates = {
+                      firstName: firstName,
+                      lastName: lastName,
+                      role: role,
+                      updatedAt: firebase.database.ServerValue.TIMESTAMP
+                    };
+                    
+                    database.ref('users/' + user.uid).update(updates)
+                      .then(() => {
+                        // Update user's display name in Firebase Auth
+                        return user.updateProfile({
+                          displayName: `${firstName} ${lastName}`
+                        });
+                      })
+                      .then(() => {
+                        // Update UI with new user info
+                        document.getElementById("currentUserName").textContent = `${firstName} ${lastName}`;
+                        document.getElementById("currentUserRole").textContent = role;
+                        
+                        // Show success message
+                        Swal.fire({
+                          title: 'Success!',
+                          text: 'Profile completed successfully!',
+                          icon: 'success',
+                          confirmButtonColor: '#002C75'
+                        });
+                      })
+                      .catch((error) => {
+                        console.error("Error updating profile:", error);
+                        showErrorAlert("Error updating profile. Please try again.");
+                      });
+                  }
+                });
               } else {
-                // Update UI with user info
-                updateElement("currentUserName", `${userData.firstName} ${userData.lastName}`);
-                updateElement("currentUserRole", userData.role);
+                // Profile is complete, update UI normally
+                document.getElementById("currentUserName").textContent = `${userData.firstName} ${userData.lastName}`;
+                document.getElementById("currentUserRole").textContent = userData.role;
                 
                 // Update user avatar if available
-                const userAvatar = document.getElementById("userAvatar");
-                if (userAvatar && user.photoURL) {
-                  userAvatar.src = user.photoURL;
+                if (user.photoURL) {
+                  document.getElementById("userAvatar").src = user.photoURL;
                 }
               }
             }
           }).catch((error) => {
             console.error("Error fetching user data:", error);
             // Fallback to basic user info
-            updateElement("currentUserName", user.displayName || user.email);
-            updateElement("currentUserRole", "User");
+            document.getElementById("currentUserName").textContent = user.displayName || user.email;
+            document.getElementById("currentUserRole").textContent = "User";
           });
         }
       });
-
-      // Function to show profile completion modal
-      function showProfileCompletionModal(user) {
-        Swal.fire({
-          title: 'Complete Your Profile',
-          html: `
-            <form id="initialProfileForm">
-              <div class="mb-3">
-                <label for="initialFirstName" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="initialFirstName" required>
-              </div>
-              <div class="mb-3">
-                <label for="initialLastName" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="initialLastName" required>
-              </div>
-              <div class="mb-3">
-                <label for="initialRole" class="form-label">Role</label>
-                <select class="form-select" id="initialRole" required>
-                  <option value="">Select Role</option>
-                  <option value="Administrator">Administrator</option>
-                  <option value="Staff">Staff</option>
-                </select>
-              </div>
-            </form>
-          `,
-          showCancelButton: false,
-          confirmButtonText: 'Save Profile',
-          confirmButtonColor: '#2e7d32',
-          allowOutsideClick: false,
-          preConfirm: () => {
-            const firstName = document.getElementById('initialFirstName').value;
-            const lastName = document.getElementById('initialLastName').value;
-            const role = document.getElementById('initialRole').value;
-            
-            if (!firstName || !lastName || !role) {
-              Swal.showValidationMessage('Please fill in all fields');
-              return false;
-            }
-            
-            return { firstName, lastName, role };
-          }
-        }).then((result) => {
-          if (result.isConfirmed) {
-            handleProfileCompletion(user, result.value);
-          }
-        });
-      }
-
-      // Function to handle profile completion
-      function handleProfileCompletion(user, profileData) {
-        const updates = {
-          firstName: profileData.firstName,
-          lastName: profileData.lastName,
-          role: profileData.role,
-          updatedAt: firebase.database.ServerValue.TIMESTAMP
-        };
-        
-        database.ref('users/' + user.uid).update(updates)
-          .then(() => {
-            // Update user's display name in Firebase Auth
-            return user.updateProfile({
-              displayName: `${profileData.firstName} ${profileData.lastName}`
-            });
-          })
-          .then(() => {
-            // Safely update UI elements
-            const updateElement = (id, value) => {
-              const element = document.getElementById(id);
-              if (element) {
-                element.textContent = value;
-              }
-            };
-
-            updateElement("currentUserName", `${profileData.firstName} ${profileData.lastName}`);
-            updateElement("currentUserRole", profileData.role);
-            
-            // Show success message
-            Swal.fire({
-              title: 'Success!',
-              text: 'Profile completed successfully!',
-              icon: 'success',
-              confirmButtonColor: '#002C75'
-            });
-          })
-          .catch((error) => {
-            console.error("Error updating profile:", error);
-            showErrorAlert("Error updating profile. Please try again.");
-          });
-      }
 
       // Function to create new user
       document.getElementById("saveUser").addEventListener("click", function () {
@@ -3588,8 +3316,8 @@
           });
       });
 
-       // Function to update status options based on type
-       function updateStatusOptions(type) {
+      // Function to update status options based on type
+      function updateStatusOptions(type) {
         const statusSelect = document.getElementById("status");
         const editStatusSelect = document.getElementById("editStatus");
         
@@ -3611,7 +3339,8 @@
             // Request statuses
             const requestStatuses = [
               { value: "For Review", text: "For Review and Approval (Ongoing)" },
-              { value: "Request Granted", text: "Request Granted (Done)" }
+              { value: "Request Granted", text: "Request Granted (Done)" },
+              { value: "Request Denied", text: "Request Denied" }
             ];
             addStatusOptions(requestStatuses);
             break;
@@ -3673,104 +3402,28 @@
         const initialType = document.getElementById("letterType").value;
         updateStatusOptions(initialType);
       });
-      
-      // Update the DataTables initialization
-      $("#monthly-stats-table").DataTable({
-        dom: "Bfrtip",
-        buttons: [
-          { 
-            extend: 'copy', 
-            className: 'btn btn-sm',
-            title: 'Administrative Division Dashboard'
-          },
-          { 
-            extend: 'csv', 
-            className: 'btn btn-success',
-            title: 'Administrative Division Dashboard'
-          },
-          { 
-            extend: 'excel', 
-            className: 'btn btn-success',
-            title: 'Administrative Division Dashboard'
-          },
-          { 
-            extend: 'pdf', 
-            className: 'btn btn-danger',
-            orientation: 'landscape',
-            pageSize: 'LEGAL',
-            title: 'Administrative Division Dashboard',
-            customize: function (doc) {
-              doc.defaultStyle.fontSize = 10;
-              doc.styles.tableHeader.fontSize = 11;
-              doc.styles.tableHeader.alignment = 'left';
-              const colCount = doc.content[1].table.body[0].length;
-              doc.content[1].table.widths = Array(colCount).fill('*');
-            }
-          },
-          { 
-            extend: 'print', 
-            className: 'btn btn-primary',
-            title: 'Administrative Division Dashboard'
-          }
-        ],
-        pageLength: 10,
-        order: [[4, "desc"]], // Sort by Date Received by default
-        destroy: true,
-        language: {
-          search: "Search entries:",
-        },
-        columnDefs: [
-          { width: "5%", targets: 0 }, // #
-          { width: "12%", targets: 1 }, // Control Number (increased width)
-          { width: "8%", targets: 2 }, // Letter Type
-          { width: "7%", targets: 3 }, // Time Received
-          { width: "7%", targets: 4 }, // Date Received
-          { width: "7%", targets: 5 }, // From
-          { width: "7%", targets: 6 }, // Office
-          { width: "10%", targets: 7 }, // Subject
-          { width: "7%", targets: 8 }, // Time Received (Admin)
-          { width: "7%", targets: 9 }, // Date Received (Admin)
-          { width: "7%", targets: 10 }, // Endorsed To
-          { width: "7%", targets: 11 }, // Remarks
-          { width: "7%", targets: 12 }, // File Code
-          { width: "5%", targets: 13 }, // Status
-          { width: "5%", targets: 14 }  // Actions
-        ],
-        scrollX: true,
-        scrollCollapse: true,
-        fixedColumns: {
-          left: 1,
-          right: 1
-        }
-      });
 
       // Add this function near the top of the script section
       function getCurrentYear() {
         return new Date().getFullYear();
       }
 
-      // Function to handle search in accordion tables
-      function initializeSearch() {
+         // Function to handle search in accordion tables
+         function initializeSearch() {
         const currentYear = getCurrentYear();
-        const now = new Date();
         const months = [
           "January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December"
         ];
-        const currentMonthIndex = now.getMonth();
-        const reorderedMonths = [
-          ...months.slice(currentMonthIndex),
-          ...months.slice(0, currentMonthIndex)
-        ];
 
-        reorderedMonths.forEach(month => {
+        months.forEach(month => {
           const monthKey = `${month.toLowerCase()}${currentYear}`;
           const searchInput = document.getElementById(`search${monthKey}`);
           const tableId = `monthly-stats-table-${monthKey}`;
           
           if (searchInput) {
             // Create title for this month
-            const title = `${month} ${currentYear} - Administrative Division Dashboard`;
+            const title = `${month} ${currentYear} - Endorsement Section Dashboard`;
             
             // Initialize DataTable for this month
             $(`#${tableId}`).DataTable({
@@ -3853,6 +3506,9 @@
 
       // Function to initialize DataTable for a specific month
       function initializeDataTable(monthKey, tableId, data) {
+        // Filter data to only include rows where endorsedTo is 'PLD'
+        const filteredData = data.filter(entry => entry.endorsedTo === 'PLD');
+
         // Destroy existing DataTable if it exists
         if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
           $(`#${tableId}`).DataTable().destroy();
@@ -3861,40 +3517,64 @@
         // Extract month name from monthKey (e.g., "may2024" -> "May")
         const monthName = monthKey.replace(/\d+/g, '').charAt(0).toUpperCase() + monthKey.replace(/\d+/g, '').slice(1);
         const currentYear = new Date().getFullYear();
-        const title = `${monthName} ${currentYear} - Administrative Division Dashboard`;
+        const title = `${monthName} ${currentYear} - Endorsement Section Dashboard`;
 
-        // Initialize new DataTable with basic configuration
+        // Initialize new DataTable with export buttons at the top (like archives)
         const table = $(`#${tableId}`).DataTable({
-          data: data,
+          data: filteredData,
           columns: [
-              { data: null, render: (data, type, row, meta) => meta.row + 1 },
-              { data: 'controlNumber' },
-              { data: 'type' },
-              { data: 'fileUrl', render: function(data) { return data ? `<a href="${data}" target="_blank">View File</a>` : '' } },
-              { data: 'timeReceived' },
-              { data: 'dateReceived' },
-              { data: 'from' },
-              { data: 'office' },
-              { data: 'subject' },
-              { data: 'adminTimeReceived', defaultContent: '' },
-              { data: 'adminDateReceived', defaultContent: '' },
-              { data: 'endorsedTo', defaultContent: '' },
-              { data: 'remarks', defaultContent: '' },
-              { data: 'fileCode', defaultContent: '' },
-              {
+            {
+              data: null,
+              render: function(data, type, row, meta) {
+                // Extract the numeric part of the control number (after the dash)
+                const getNum = cn => {
+                  const match = (cn || '').match(/-(\d+)$/);
+                  return match ? parseInt(match[1], 10) : -1;
+                };
+                // Get all visible rows' control numbers
+                const api = meta.settings ? new $.fn.dataTable.Api(meta.settings) : null;
+                if (!api) return meta.row + 1;
+                const allRows = api.rows({ search: 'applied' }).data().toArray();
+                // Sort all rows by full control number descending
+                const sorted = allRows.slice().sort((a, b) => getNum(b.controlNumber) - getNum(a.controlNumber));
+                // Find this row's index in the sorted array using only controlNumber
+                const idx = sorted.findIndex(r => r.controlNumber === row.controlNumber);
+                return idx >= 0 ? idx + 1 : meta.row + 1; // fallback to visible order if not found
+              },
+              orderable: false
+            },
+            { data: 'controlNumber' },
+            { data: 'type' },
+            { data: 'fileUrl', render: function(data) { return data ? `<a href="${data}" target="_blank">View File</a>` : '' } },
+            { data: 'timeReceived' },
+            { data: 'dateReceived' },
+            { data: 'from' },
+            { data: 'office' },
+            { data: 'subject' },
+            { data: 'endorsedTo', defaultContent: '' },
+            { data: 'remarks', defaultContent: '' },
+            {
               data: 'status',
               render: function(data, type, row) {
-                return `<span class="badge bg-${getStatusColor(data)}">${data || 'Pending'}</span>`;
+                switch (data) {
+                  case "Under Investigation": return '<span class="badge bg-primary">Under Investigation</span>';
+                  case "Processing": return '<span class="badge bg-info">Processing</span>';
+                  case "Completed": return '<span class="badge bg-success">Completed</span>';
+                  case "Calendar Pending": return '<span class="badge bg-warning">Calendar Pending</span>';
+                  case "For Review": return '<span class="badge bg-primary">For Review</span>';
+                  // ...add more as needed
+                  default: return `<span class="badge bg-secondary">${data}</span>`;
+                }
               }
             },
             {
               data: null,
               render: function(data, type, row) {
                 return `
-                  <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editEntryModal" onclick="editEntry('${row.key}')" title="Edit entry">
+                  <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editEntryModal" onclick="editEntry('${row.key}')" title="Edit this entry">
                     <i class="bi bi-pencil"></i>
                   </button>
-                  <button class="btn btn-sm btn-warning" onclick="deleteEntry('${row.key}')" title="Archive entry">
+                  <button class="btn btn-sm btn-warning" onclick="deleteEntry('${row.key}')" title="Archive this entry">
                     <i class="bi bi-archive"></i>
                   </button>
                 `;
@@ -3902,13 +3582,7 @@
             }
           ],
           pageLength: 10,
-          order: [[4, "desc"]],
-          scrollX: true,
-          scrollCollapse: true,
-          fixedColumns: {
-            left: 1,
-            right: 1
-          },
+          order: [[1, 'desc']], // Sort by Control Number (string, but last 3 digits will be highest at top)
           dom: "Bfrtip", // Buttons, filter, processing, table, pagination
           buttons: [
             { 
@@ -3948,7 +3622,23 @@
           ],
           language: {
             search: "Search entries:",
-          }
+          },
+          responsive: true,
+          autoWidth: false,
+          columnDefs: [
+            { width: "5%", targets: 0 },
+            { width: "10%", targets: 1 },
+            { width: "8%", targets: 2 },
+            { width: "8%", targets: 3 },
+            { width: "8%", targets: 4 },
+            { width: "10%", targets: 5 },
+            { width: "10%", targets: 6 },
+            { width: "15%", targets: 7 },
+            { width: "10%", targets: 8 },
+            { width: "10%", targets: 9 },
+            { width: "8%", targets: 10 },
+            { width: "8%", targets: 11 }
+          ]
         });
 
         // Add search functionality
@@ -3965,320 +3655,223 @@
         return table;
       }
 
-      // Toggle account creation form
-      document.getElementById('toggleAccountForm1').addEventListener('click', function() {
-        const form = document.getElementById('createAccountForm');
-        form.classList.toggle('d-none');
-        this.innerHTML = form.classList.contains('d-none') 
-          ? '<i class="bi bi-plus-circle me-1"></i>Add New Account'
-          : '';
-      });
+      // Update the loadEntries function to use the new initialization
+      function loadEntries() {
+        const currentYear = getCurrentYear();
+        entriesRef.on("value", (snapshot) => {
+          const entries = snapshot.val();
+          const accordionContainer = document.getElementById("monthlyStatsAccordion");
 
-      // Cancel button handler
-      document.getElementById('cancelAccountCreate').addEventListener('click', function() {
-        document.getElementById('createAccountForm').classList.add('d-none');
-        document.getElementById('toggleAccountForm1').innerHTML = '"></i>Add New Account';
-        document.getElementById('createAccountForm').reset();
-      });
+          // Create months array
+          const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+          ];
+          const now = new Date();
+          const currentMonthIdx = now.getMonth();
+         // Only include months up to and including the current month, in descending order
+          const visibleMonths = months.slice(0, currentMonthIdx + 1).reverse();
 
-      // Handle account creation form submission
-      document.getElementById('createAccountForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('newAccountEmail').value;
-        const password = document.getElementById('newAccountPassword').value;
-        const confirmPassword = document.getElementById('confirmNewAccountPassword').value;
-        const role = document.getElementById('newAccountRole').value;
-        const department = document.getElementById('newAccountDepartment').value;
-        const status = document.getElementById('newAccountStatus').value;
+          // Clear existing content
+          accordionContainer.innerHTML = "";
 
-        // Validate passwords match
-        if (password !== confirmPassword) {
-          showErrorAlert('Passwords do not match!');
-          return;
-        }
-
-        // Validate password length
-        if (password.length < 6) {
-          showErrorAlert('Password must be at least 6 characters long!');
-          return;
-        }
-
-        // Show loading state
-        Swal.fire({
-          title: 'Creating Account',
-          text: 'Please wait while we create the account...',
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
-        });
-
-        // Create user in Firebase Auth
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then((userCredential) => {
-            const user = userCredential.user;
-            
-            // Create user data object
-            const userData = {
-              email: email,
-              role: role,
-              department: department,
-              status: status,
-              createdAt: firebase.database.ServerValue.TIMESTAMP,
-              createdBy: firebase.auth().currentUser.email
-            };
-
-            // Save user data to database
-            return database.ref('users/' + user.uid).set(userData);
-          })
-          .then(() => {
-            // Show success message
-            Swal.fire({
-              title: 'Success!',
-              text: 'Account created successfully!',
-              icon: 'success',
-              confirmButtonColor: '#002C75'
-            });
-
-            // Reset form and hide it
-            this.reset();
-            this.classList.add('d-none');
-            document.getElementById('toggleAccountForm1').innerHTML = 
-              '<i class="bi bi-plus-circle me-1"></i>Add New Account';
-
-            // Log activity
-            logActivity('account_create', `Created new account for ${email}`, null);
-
-            // Reload accounts table
-            loadAccounts();
-          })
-          .catch((error) => {
-            console.error('Error creating account:', error);
-            Swal.fire({
-              title: 'Error!',
-              text: error.message,
-              icon: 'error',
-              confirmButtonColor: '#dc3545'
-            });
+          // Create empty accordion items for visible months in descending order
+            visibleMonths.forEach((month) => {
+            const monthKey = `${month.toLowerCase()}${currentYear}`;
+            const accordionItem = document.createElement("div");
+            accordionItem.className = "accordion-item border-0 mb-2";
+            accordionItem.id = `accordion-${monthKey}`;
+            accordionItem.innerHTML = `
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${monthKey}" title="Expand/collapse month details">
+                  <div class="d-flex justify-content-between align-items-center w-100">
+                    <div>
+                      <span class="fw-bold">${month} ${currentYear}</span>
+                    </div>
+                    <div class="text-muted small">
+                      <i class="bi bi-arrow-down-circle me-1"></i>
+                      Click to view details
+                    </div>
+                  </div>
+                </button>
+              </h2>
+              <div id="${monthKey}" class="accordion-collapse collapse" data-bs-parent="#monthlyStatsAccordion">
+                <div class="accordion-body">
+                  <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading data for ${month} ${currentYear}...</p>
+                  </div>
+                </div>
+              </div>
+            `;
+            accordionContainer.appendChild(accordionItem);
           });
-      });
 
-      // Function to load accounts
-      function loadAccounts() {
-        const accountsTable = document.getElementById('accountsTable').getElementsByTagName('tbody')[0];
-        accountsTable.innerHTML = '<tr><td colspan="6" class="text-center">Loading accounts...</td></tr>';
+          // Then populate each month's data as it arrives
+            visibleMonths.forEach((month) => {
+            const monthKey = `${month.toLowerCase()}${currentYear}`;
+            const tableId = `monthly-stats-table-${monthKey}`;
 
-        database.ref('users').once('value')
-          .then((snapshot) => {
-            const accounts = snapshot.val();
-            accountsTable.innerHTML = '';
+            // Get monthly data
+            database
+              .ref(`monthlyData/${monthKey}`)
+              .once("value", (monthlySnapshot) => {
+                const monthlyData = monthlySnapshot.val() || {
+                  total: 0,
+                  complaints: 0,
+                  proposals: 0,
+                  invitations: 0,
+                  requests: 0,
+                  entries: [],
+                };
 
-            if (accounts) {
-              Object.entries(accounts).forEach(([uid, account]) => {
-                const row = accountsTable.insertRow();
-                row.innerHTML = `
-                  <td>${account.email}</td>
-                  <td><span class="badge bg-primary">${account.role}</td>
-                  <td>${account.department}</td>
-                  <td><span class="badge bg-${account.status === 'active' ? 'success' : 'danger'}">${account.status}</span></td>
-                  <td>${formatDate(account.createdAt)}</td>
-                  <td>
-                    <button class="btn btn-sm btn-warning" onclick="resetPassword('${uid}')" title="Reset password">
-                      <i class="bi bi-key"></i>
-                    </button>
-                    <button class="btn btn-sm btn-${account.status === 'active' ? 'danger' : 'success'}" onclick="toggleAccountStatus('${uid}', '${account.status}')" title="Toggle account status">
-                      <i class="bi bi-toggle-${account.status === 'active' ? 'off' : 'on'}"></i>
-                    </button>
-                  </td>
-                `;
-              });
-            } else {
-              accountsTable.innerHTML = '<tr><td colspan="6" class="text-center">No accounts found</td></tr>';
-            }
-          })
-          .catch((error) => {
-            console.error('Error loading accounts:', error);
-            accountsTable.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading accounts</td></tr>';
-          });
-      }
+                // Get entries for this month
+                const monthEntries = monthlyData.entries
+                  .map((key) => {
+                    const entry = entries[key];
+                    return entry ? { key, ...entry } : null;
+                  })
+                  .filter((entry) => entry && entry.status !== "Archived" && entry.endorsedTo === 'PLD');
 
-      // Function to reset password
-      function resetPassword(uid) {
-        Swal.fire({
-          title: 'Reset Password',
-          text: 'Are you sure you want to reset this account\'s password?',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#002C75',
-          cancelButtonColor: '#dc3545',
-          confirmButtonText: 'Yes, reset it!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Generate temporary password
-            const tempPassword = Math.random().toString(36).slice(-8);
-            
-            // Get user email first
-            database.ref(`users/${uid}`).once('value')
-              .then((snapshot) => {
-                const userData = snapshot.val();
-                if (!userData || !userData.email) {
-                  throw new Error('User email not found');
+                // Calculate statistics including archived entries
+                const stats = {
+                  complaints: 0,
+                  proposals: 0,
+                  invitations: 0,
+                  requests: 0,
+                  total: 0
+                };
+
+                // Count only non-archived entries and only those endorsed to PLD
+                monthlyData.entries.forEach(key => {
+                  const entry = entries[key];
+                  if (entry && entry.status !== "Archived" && entry.endorsedTo === 'PLD') {
+                    stats.total++;
+                    const type = entry.type.toLowerCase();
+                    if (type === 'complaint') stats.complaints++;
+                    else if (type === 'proposal') stats.proposals++;
+                    else if (type === 'invitation') stats.invitations++;
+                    else if (type === 'request') stats.requests++;
+                  }
+                });
+
+                // Calculate percentage for each type based on total
+                function getTypePercent(count, total) {
+                  if (total === 0) return 0;
+                  return Math.round((count / total) * 100);
                 }
+                const complaintsPercent = getTypePercent(stats.complaints, stats.total);
+                const proposalsPercent = getTypePercent(stats.proposals, stats.total);
+                const invitationsPercent = getTypePercent(stats.invitations, stats.total);
+                const requestsPercent = getTypePercent(stats.requests, stats.total);
 
-                // Create custom auth token
-                return firebase.auth().sendPasswordResetEmail(userData.email);
-              })
-              .then(() => {
-                // Show success message
-                Swal.fire({
-                  title: 'Password Reset Email Sent!',
-                  html: `A password reset email has been sent to the user's email address.`,
-                  icon: 'success',
-                  confirmButtonColor: '#002C75'
+                // Sort entries by date
+                monthEntries.sort((a, b) => {
+                  return new Date(b.dateReceived) - new Date(a.dateReceived);
                 });
 
-                // Log activity
-                logActivity('password_reset_request', `Initiated password reset for user ${uid}`, null);
-              })
-              .catch((error) => {
-                console.error('Error resetting password:', error);
-                Swal.fire({
-                  title: 'Error!',
-                  text: 'Error resetting password. ' + error.message,
-                  icon: 'error',
-                  confirmButtonColor: '#dc3545'
-                });
+                // Update the accordion item with the data
+                const accordionBody = document.querySelector(
+                  `#${monthKey} .accordion-body`
+                );
+                if (accordionBody) {
+                  accordionBody.innerHTML = `
+                    <!-- ${month} Statistics -->
+                    <div class="row mb-4">
+                      <div class="col-md-3">
+                        <div class="card bg-primary bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-primary">Complaints</h6>
+                            <h2 class="card-text">${stats.complaints}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-primary">
+                                <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-warning bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-warning">Proposals</h6>
+                            <h2 class="card-text">${stats.proposals}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-warning">
+                                <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-info bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-info">Invitations</h6>
+                            <h2 class="card-text">${stats.invitations}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-info">
+                                <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-warning bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-success">Requests</h6>
+                            <h2 class="card-text">${stats.requests}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-success">
+                                <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="table-responsive">
+                      <table class="table table-hover monthly-stats-table" id="${tableId}">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Control Number</th>
+                            <th>Type</th>
+                            <th>File</th>
+                            <th>Time Received</th>
+                            <th>Date Received</th>
+                            <th>From</th>
+                            <th>Office</th>
+                            <th>Subject</th>
+                            <th>Endorsed To</th>
+                            <th>Remarks</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
+                    </div>
+                  `;
+
+                  // Initialize DataTable with the data
+                  setTimeout(() => {
+                    try {
+                      console.log(`Initializing table for ${month} with data:`, monthEntries);
+                      initializeDataTable(monthKey, tableId, monthEntries);
+                    } catch (error) {
+                      console.error(`Error initializing DataTable for ${month}:`, error);
+                    }
+                  }, 100);
+                }
               });
-          }
-        });
-      }
-
-      // Function to toggle account status
-      function toggleAccountStatus(uid, currentStatus) {
-        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-        
-        Swal.fire({
-          title: 'Change Account Status',
-          text: `Are you sure you want to ${newStatus === 'active' ? 'activate' : 'deactivate'} this account?`,
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#002C75',
-          cancelButtonColor: '#dc3545',
-          confirmButtonText: 'Yes, change it!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            database.ref(`users/${uid}/status`).set(newStatus)
-              .then(() => {
-                showSuccessAlert(`Account ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully!`);
-                loadAccounts();
-                logActivity('status_change', `Changed account status to ${newStatus} for user ${uid}`, null);
-              })
-              .catch((error) => {
-                console.error('Error changing account status:', error);
-                showErrorAlert('Error changing account status. Please try again.');
-              });
-          }
-        });
-      }
-
-      // Load accounts when profile section is shown
-      document.getElementById('profileLink').addEventListener('click', function() {
-        setTimeout(loadAccounts, 500); // Delay to ensure DOM is ready
-      });
-
-      // Add this function to handle updating own password in profile section
-      function updateOwnPassword() {
-        const currentPassword = document.getElementById('currentPassword').value;
-        const newPassword = document.getElementById('newPassword').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
-
-        if (!currentPassword || !newPassword || !confirmPassword) {
-          showErrorAlert('Please fill in all password fields');
-          return;
-        }
-
-        if (newPassword !== confirmPassword) {
-          showErrorAlert('New passwords do not match');
-          return;
-        }
-
-        if (newPassword.length < 6) {
-          showErrorAlert('New password must be at least 6 characters long');
-          return;
-        }
-
-        const user = firebase.auth().currentUser;
-        if (!user) {
-          showErrorAlert('You must be logged in to change your password');
-          return;
-        }
-
-        // Show loading state
-        Swal.fire({
-          title: 'Updating Password',
-          text: 'Please wait...',
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
-        });
-
-        // Reauthenticate with current password
-        const credential = firebase.auth.EmailAuthProvider.credential(
-          user.email,
-          currentPassword
-        );
-
-        user.reauthenticateWithCredential(credential)
-          .then(() => {
-            // Update password
-            return user.updatePassword(newPassword);
-          })
-          .then(() => {
-            // Clear form
-            document.getElementById('passwordForm').reset();
-
-            // Show success message
-            Swal.fire({
-              title: 'Success!',
-              text: 'Your password has been updated successfully',
-              icon: 'success',
-              confirmButtonColor: '#002C75'
-            });
-
-            // Log activity
-            logActivity('password_change', 'Changed own password', null);
-          })
-          .catch((error) => {
-            console.error('Error updating password:', error);
-            Swal.fire({
-              title: 'Error!',
-              text: 'Error updating password: ' + error.message,
-              icon: 'error',
-              confirmButtonColor: '#dc3545'
-            });
           });
+        });
       }
-
-      // Update the password form submission handler
-      document.getElementById('passwordForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        updateOwnPassword();
-      });
-
-      const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-      ];
-      const now = new Date();
-      const currentMonthIndex = now.getMonth(); // 0-based index
-
-      // Reorder months so current month is first
-      const reorderedMonths = [
-        ...months.slice(currentMonthIndex),
-        ...months.slice(0, currentMonthIndex)
-      ];
 
       // === ARCHIVES FILTER LOGIC ===
 
@@ -4393,36 +3986,21 @@
       // === END ARCHIVES FILTER LOGIC ===
 
       // === EMAILJS INTEGRATION ===
-      // Initialize EmailJS (replace 'Tp4tK-Kp7Vr1m3Kv6' with your actual EmailJS user ID if different)
-      emailjs.init('mr3lRz__Eu1dWmX1Z');
+      // Initialize EmailJS (replace 'YOUR_USER_ID' with your actual EmailJS user ID)
+      emailjs.init('Tp4tK-Kp7Vr1m3Kv6'); // <-- Replace with your EmailJS user ID
 
       // Function to send email notification on status update
-        // === EMAILJS INTEGRATION ===
-      // Initialize EmailJS (already in your setup)
-      emailjs.init('mr3lRz__Eu1dWmX1Z');
-
       function sendStatusUpdateEmail(entry) {
-        // Use the client email from the entry or fallback
-        const clientEmail = entry.fromEmail || "mysagesierra@gmail.com";
-
-        // Send the email using EmailJS
-        emailjs.send("service_zfmf4zb", "template_h3f31qv", {
+        // Use the client email from the entry
+        const clientEmail = entry.fromEmail || "ramosrommel2001@gmail.com";
+        emailjs.send('service_07b62xr', 'template_v65zya9', {
           to_email: clientEmail,
-          reply_to: clientEmail, // reply-to for email responses
           title: "Document Status Update",
-
-          // 🧩 Template Data — must match your EmailJS placeholders
           controlNumber: entry.controlNumber,
           subject: entry.subject,
           status: entry.status,
-          statusRemarks: entry.statusRemarks || "No additional remarks provided.",
           fileUrl: entry.fileUrl || "",
-
-          // 📨 Additional fields for custom message block
-          name: entry.name || "Unknown Sender",
-          time: entry.time || new Date().toLocaleString(), // fallback to current time
-          message: entry.message || "No message content provided.",
-          email: clientEmail
+          email: clientEmail // for Reply To
         })
         .then(function(response) {
           console.log('Email sent!', response.status, response.text);
@@ -4430,6 +4008,7 @@
           console.error('Failed to send email:', error);
         });
       }
+      // ... existing code ...
 
       // Show preview for fileUrl in create modal
       document.getElementById("fileUrl").addEventListener("input", function() {
@@ -4446,122 +4025,13 @@
         }
       });
 
-      // Notification logic
-      const notifBadge = document.getElementById('notifBadge');
-      const notifDropdown = document.getElementById('notifDropdown');
-      let unreadCount = 0;
-      let notifications = [];
-
-      // Listen for new entries (created in the last 5 minutes)
-      entriesRef.orderByChild('createdAt').limitToLast(10).on('child_added', (snapshot) => {
-        const entry = snapshot.val();
-        if (!entry || !entry.createdAt) return;
-        const now = Date.now();
-        if (now - entry.createdAt < 5 * 60 * 1000) { // 5 minutes
-          notifications.unshift({
-            controlNumber: entry.controlNumber,
-            subject: entry.subject,
-            createdAt: entry.createdAt
-          });
-          unreadCount++;
-          updateNotifUI();
+      // Register the datetime-moment plugin for DataTables
+      $(document).ready(function() {
+        if ($.fn.dataTable && $.fn.dataTable.moment) {
+          $.fn.dataTable.moment('YYYY-MM-DD'); // For Date Received
+          $.fn.dataTable.moment('HH:mm');      // For Time Received
         }
       });
-
-      function updateNotifUI() {
-        const allNotifBadge = document.getElementById('allNotifBadge');
-        allNotifBadge.textContent = unreadCount;
-        allNotifBadge.style.display = unreadCount > 0 ? 'inline-block' : 'none';
-      }
-
-      document.getElementById("notificationsLink").addEventListener("click", function(e) {
-        e.preventDefault();
-        unreadCount = 0;
-        const allNotifBadge = document.getElementById('allNotifBadge');
-        allNotifBadge.style.display = 'none';
-        const modal = new bootstrap.Modal(document.getElementById("allNotificationsModal"));
-        modal.show();
-        loadAllNotificationsModal();
-      });
-
-      function loadAllNotificationsModal() {
-        entriesRef.orderByChild('createdAt').once("value", (snapshot) => {
-          const entries = snapshot.val();
-          const tbody = document.querySelector("#allNotificationsTable tbody");
-          tbody.innerHTML = "";
-          const now = Date.now();
-          if (entries) {
-            Object.entries(entries)
-              .sort((a, b) => b[1].createdAt - a[1].createdAt)
-              .forEach(([key, entry]) => {
-                // Mark as new if within last 5 minutes
-                const isNew = now - entry.createdAt < 5 * 60 * 1000;
-                const newBadge = isNew ? '<span class="badge bg-success ms-2">New</span>' : '';
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                  <td>${entry.controlNumber} ${newBadge}</td>
-                  <td>${entry.subject}</td>
-                  <td>${new Date(entry.createdAt).toLocaleString()}</td>
-                  <td>
-                    <button class="btn btn-sm btn-primary view-entry-btn" data-key="${key}" title="View entry details">
-                      <i class="bi bi-eye"></i> View
-                    </button>
-                  </td>
-                `;
-                tbody.appendChild(row);
-              });
-          }
-          // Always (re)initialize DataTables after updating the table
-          if ($.fn.DataTable.isDataTable('#allNotificationsTable')) {
-            $('#allNotificationsTable').DataTable().destroy();
-          }
-          $('#allNotificationsTable').DataTable({
-            pageLength: 10,
-            order: [[2, 'desc']],
-            language: {
-              search: 'Search notifications:',
-              emptyTable: 'No notifications found.'
-            }
-          });
-        });
-      }
-
-      // Initialize DataTables on the notifications modal table when modal is shown
-      $('#allNotificationsModal').on('shown.bs.modal', function () {
-        if ($.fn.DataTable.isDataTable('#allNotificationsTable')) {
-          $('#allNotificationsTable').DataTable().destroy();
-        }
-        $('#allNotificationsTable').DataTable({
-          pageLength: 10,
-          order: [[2, 'desc']],
-          language: {
-            search: 'Search notifications:',
-            emptyTable: 'No notifications found.'
-          }
-        });
-      });
-
-      // Delegate click event for view buttons in notifications modal
-      $('#allNotificationsTable').off('click', '.view-entry-btn').on('click', '.view-entry-btn', function() {
-        const key = $(this).data('key');
-        $('#allNotificationsModal').modal('hide');
-        setTimeout(() => {
-          editEntry(key);
-          $('#editEntryModal').modal('show');
-        }, 300);
-      });
-
-      function getStatusBadge(status) {
-        switch (status) {
-          case "Under Investigation": return '<span class="badge bg-primary">Under Investigation</span>';
-          case "Processing": return '<span class="badge bg-info">Processing</span>';
-          case "Completed": return '<span class="badge bg-success">Completed</span>';
-          case "Calendar Pending": return '<span class="badge bg-warning">Calendar Pending</span>';
-          case "For Review": return '<span class="badge bg-primary">For Review</span>';
-          // ...add more as needed
-          default: return `<span class="badge bg-secondary">${status}</span>`;
-        }
-      }
     </script>
   </body>
 </html>

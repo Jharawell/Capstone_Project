@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CentralComm - Receiving Login</title>
+    <title>CentralComm - Endorsement Login</title>
     <link rel="shortcut icon" href="../assets/images/logo.png" type="image/x-icon" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -39,7 +39,6 @@
         margin: 0;
         background: url(../assets/images/bg-login-page.png) no-repeat center center;
         background-size: cover;
-        font-family: 'Poppins', sans-serif;
       }
 
       .back-button {
@@ -89,14 +88,11 @@
       }
 
       .login-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 12px;
         width: 100%;
         max-width: 450px;
         overflow: hidden;
         position: relative;
         left: -120px;
-        box-shadow: var(--box-shadow);
       }
 
       .login-header {
@@ -178,8 +174,8 @@
       }
 
       .form-check-input:checked {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
+        background-color: var(--primary-green);
+        border-color: var(--primary-green);
       }
 
       .form-check-label {
@@ -199,17 +195,10 @@
         .login-body {
           padding: 1.25rem;
         }
-
-        .login-card {
-          left: 0;
-        }
-
-        .side-image {
-          display: none;
-        }
       }
     </style>
   </head>
+
   <body>
     <a href="../pages/selection.html" class="back-button">
       <i class="bi bi-arrow-left"></i>
@@ -224,7 +213,7 @@
         <div class="login-header">
           <img src="../assets/images/logo.png" alt="CentralComm Logo" />
           <h2><span class="text-central">CENTRAL</span><span class="text-comm">COMM</span></h2>
-          <p>Receiving Section Login</p>
+          <p>Endorsement Office Login</p>
         </div>
         <div class="login-body">
           <form id="loginForm">
@@ -234,7 +223,7 @@
                   <i class="bi bi-person"></i>
                 </span>
                 <input
-                  type="email"
+                  type="text"
                   class="form-control with-icon"
                   id="email"
                   placeholder="Email"
@@ -317,12 +306,11 @@
         auth
           .signInWithEmailAndPassword(email, password)
           .then((userCredential) => {
-            // Check if user is from Receiving Section and has @receiving.com email
+            // Check if user is from Endorsement Office
             firebase.database().ref('users/' + userCredential.user.uid).once('value')
               .then((snapshot) => {
                 const userData = snapshot.val();
-                const userEmail = userCredential.user.email;
-                if (userData && userData.department === 'Receiving Division' && userEmail.endsWith('@receiving.com')) {
+                if (userData && userData.department === 'Endorsement Office') {
                   // Store remember me preference
                   if (rememberMe) {
                     localStorage.setItem("rememberMe", "true");
@@ -339,15 +327,15 @@
                     icon: "success",
                     confirmButtonColor: "#002C75",
                   }).then(() => {
-                    // Redirect to receiving dashboard
-                    window.location.href = "../receiving/index.html";
+                    // Redirect to endorsement dashboard
+                    window.location.href = "../endorsement/index.html";
                   });
                 } else {
-                  // Sign out if not receiving section user or wrong email domain
+                  // Sign out if not endorsement office user
                   auth.signOut();
                   Swal.fire({
                     title: "Access Denied",
-                    text: "Access restricted to @receiving.com email accounts in the Receiving Division.",
+                    text: "You do not have permission to access the Endorsement Office portal.",
                     icon: "error",
                     confirmButtonColor: "#dc3545",
                   });
@@ -393,12 +381,12 @@
       // Check authentication state
       auth.onAuthStateChanged((user) => {
         if (user) {
-          // Check if user is from Receiving Section
+          // Check if user is from Endorsement Office
           firebase.database().ref('users/' + user.uid).once('value')
             .then((snapshot) => {
               const userData = snapshot.val();
-              if (userData && userData.department === 'Receiving Division' && user.email.endsWith('@receiving.com')) {
-                window.location.href = "../receiving/index.html";
+              if (userData && userData.department === 'Endorsement Office') {
+                window.location.href = "../endorsement/index.html";
               }
             });
         }
