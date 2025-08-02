@@ -535,6 +535,65 @@
                           </div>
                         </div>
                         <div class="col-md-6">
+                          <label for="finalRole" class="form-label">Final Role</label>
+                          <div class="input-group">
+                            <span class="input-group-text">
+                              <i class="bi bi-check-circle"></i>
+                            </span>
+                            <input type="text" class="form-control" id="finalRole" readonly placeholder="Will be set automatically">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Endorsement Office Selection -->
+                      <div class="row mb-3" id="endorsementOfficeRow" style="display: none;">
+                        <div class="col-md-6">
+                          <label for="endorsementOffice" class="form-label">Endorsement Office</label>
+                          <div class="input-group">
+                            <span class="input-group-text">
+                              <i class="bi bi-building"></i>
+                            </span>
+                            <select class="form-control" id="endorsementOffice">
+                              <option value="">Select Endorsement Office</option>
+                              <option value="Vice Mayor's Office">Vice Mayor's Office</option>
+                              <option value="Sangguniang Panlungsod">Sangguniang Panlungsod</option>
+                              <option value="CAO">CAO</option>
+                              <option value="CASSO">CASSO</option>
+                              <option value="CADMO">CADMO</option>
+                              <option value="CBO">CBO</option>
+                              <option value="CEPMO">CEPMO</option>
+                              <option value="CHRMO">CHRMO</option>
+                              <option value="CLO">CLO</option>
+                              <option value="CPDSO">CPDSO</option>
+                              <option value="CTO">CTO</option>
+                              <option value="GSO">GSO</option>
+                              <option value="CBAO">CBAO</option>
+                              <option value="CEO">CEO</option>
+                              <option value="CSWDO">CSWDO</option>
+                              <option value="HSO">HSO</option>
+                              <option value="LCR">LCR</option>
+                              <option value="CVAO">CVAO</option>
+                              <option value="DepEd">DepEd</option>
+                              <option value="COA">COA</option>
+                              <option value="MTCC">MTCC</option>
+                              <option value="RTCC">RTCC</option>
+                              <option value="Prosecutor's Office">Prosecutor's Office</option>
+                              <option value="PLEB">PLEB</option>
+                              <option value="POSD">POSD</option>
+                              <option value="PESO">PESO</option>
+                              <option value="PIO">PIO</option>
+                              <option value="PLD">PLD</option>
+                              <option value="SSD">SSD</option>
+                              <option value="PDAO">PDAO</option>
+                              <option value="MITD">MITD</option>
+                              <option value="CCTV/EWSS">CCTV/EWSS</option>
+                              <option value="CDRRMO">CDRRMO</option>
+                              <option value="LIBRARY">LIBRARY</option>
+                              <option value="PERSONAL STAFF">PERSONAL STAFF</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
                           <label for="newAccountEmail" class="form-label">Email Address</label>
                           <div class="input-group">
                             <span class="input-group-text">
@@ -3343,100 +3402,155 @@
           },
         });
 
-                database
-          .ref("logs")
-          .on("value", (snapshot) => {
-            try {
-              const logs = snapshot.val();
-              const tbody = document.querySelector("#historyTable tbody");
-              
-              if (!tbody) {
-                console.error("History table tbody not found");
-                Swal.close();
-                return;
-              }
-              
-              tbody.innerHTML = "";
+        // Get current user info
+        const currentUser = getSectionUser();
+        let userOffice = null;
 
-              if (logs) {
-                Object.entries(logs).forEach(([key, log]) => {
-                  try {
-                    // Format timestamp
-                    const date = new Date(log.timestamp);
-                    const timestampValue = date.getTime();
-                    const formattedTimestamp = date.toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: true
-                    });
+        // Extract office from user role if it's an endorsement role
+        if (currentUser.role && currentUser.role.startsWith("Endorsement -")) {
+          userOffice = currentUser.role.replace("Endorsement - ", "");
+        }
 
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                    <td data-order="${timestampValue}">${formattedTimestamp}</td>
-                    <td>${log.user || "Unknown User"}</td>
-                    <td>${log.action || "Unknown Action"}</td>
-                    <td>${log.details || "No details"}</td>
-                    <td>${log.controlNumber || "-"}</td>
-                  `;
-                    tbody.appendChild(row);
-                  } catch (error) {
-                    console.error("Error processing log entry:", error, log);
-                  }
-                });
-              }
-
-              // Initialize DataTable
-              $("#historyTable").DataTable({
-                dom: "Bfrtip",
-                buttons: [
-                  { extend: 'copy', className: 'btn btn-sm' },
-                  { extend: 'csv', className: 'btn btn-success' },
-                  { extend: 'excel', className: 'btn btn-success' },
-                  { extend: 'pdf', className: 'btn btn-danger',
-                      orientation: 'landscape',
-                      pageSize: 'LEGAL',
-                      customize: function (doc) {
-                        doc.defaultStyle.fontSize = 10;              
-                        doc.styles.tableHeader.fontSize = 11;        
-                        doc.styles.tableHeader.alignment = 'left'
-                        const colCount = doc.content[1].table.body[0].length;
-                        doc.content[1].table.widths = Array(colCount).fill('*');
-                      }
-                    },
-                  { extend: 'print', className: 'btn btn-primary' }
-              ],
-                pageLength: 10,
-                order: [[0, "desc"]], // Sort by Timestamp column (index 0) in descending order - latest first
-                destroy: true,
-                language: {
-                  search: "Search history:",
-                },
-                columnDefs: [
-                  { width: "20%", targets: 0 }, // Timestamp
-                  { width: "15%", targets: 1 }, // User
-                  { width: "10%", targets: 2 }, // Action
-                  { width: "40%", targets: 3 }, // Details
-                  { width: "15%", targets: 4 }  // Control Number
-                ],
+        // First, get all entries to check which ones are endorsed to the user's office
+        const entriesPromise = userOffice ? database.ref("entries").once("value") : Promise.resolve(null);
+        
+        entriesPromise.then((entriesSnapshot) => {
+          const relevantControlNumbers = new Set();
+          
+          if (entriesSnapshot && userOffice) {
+            const entries = entriesSnapshot.val();
+            if (entries) {
+              Object.entries(entries).forEach(([key, entry]) => {
+                if (entry.endorsedTo === userOffice) {
+                  relevantControlNumbers.add(entry.controlNumber);
+                }
               });
+            }
+          }
 
-              // Close loading state
-              Swal.close();
-            } catch (error) {
-              console.error("Error processing history data:", error);
+          database
+            .ref("logs")
+            .on("value", (snapshot) => {
+              try {
+                const logs = snapshot.val();
+                const tbody = document.querySelector("#historyTable tbody");
+                
+                if (!tbody) {
+                  console.error("History table tbody not found");
+                  Swal.close();
+                  return;
+                }
+                
+                tbody.innerHTML = "";
+
+                if (logs) {
+                  Object.entries(logs).forEach(([key, log]) => {
+                    try {
+                      // Filter logs based on user's office
+                      if (userOffice) {
+                        // For endorsement users, only show logs related to their office
+                        const logDetails = log.details || "";
+                        const logAction = log.action || "";
+                        const logControlNumber = log.controlNumber || "";
+                        
+                        // Check if the log is related to the user's office
+                        const isRelevantLog = logDetails.includes(userOffice) || 
+                                            logAction.includes(userOffice) ||
+                                            logControlNumber.includes(userOffice) ||
+                                            relevantControlNumbers.has(logControlNumber);
+                        
+                        // Also check if it's a general system log that should be visible to all
+                        const isGeneralLog = logAction === "login" || 
+                                           logAction === "logout" || 
+                                           logAction === "profile_update" ||
+                                           logAction === "password_change";
+                        
+                        if (!isRelevantLog && !isGeneralLog) {
+                          return; // Skip this log entry
+                        }
+                      }
+
+                      // Format timestamp
+                      const date = new Date(log.timestamp);
+                      const timestampValue = date.getTime();
+                      const formattedTimestamp = date.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true
+                      });
+
+                      const row = document.createElement("tr");
+                      row.innerHTML = `
+                      <td data-order="${timestampValue}">${formattedTimestamp}</td>
+                      <td>${log.user || "Unknown User"}</td>
+                      <td>${log.action || "Unknown Action"}</td>
+                      <td>${log.details || "No details"}</td>
+                      <td>${log.controlNumber || "-"}</td>
+                    `;
+                      tbody.appendChild(row);
+                    } catch (error) {
+                      console.error("Error processing log entry:", error, log);
+                    }
+                  });
+                }
+
+                // Initialize DataTable
+                $("#historyTable").DataTable({
+                  dom: "Bfrtip",
+                  buttons: [
+                    { extend: 'copy', className: 'btn btn-sm' },
+                    { extend: 'csv', className: 'btn btn-success' },
+                    { extend: 'excel', className: 'btn btn-success' },
+                    { extend: 'pdf', className: 'btn btn-danger',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        customize: function (doc) {
+                          doc.defaultStyle.fontSize = 10;              
+                          doc.styles.tableHeader.fontSize = 11;        
+                          doc.styles.tableHeader.alignment = 'left'
+                          const colCount = doc.content[1].table.body[0].length;
+                          doc.content[1].table.widths = Array(colCount).fill('*');
+                        }
+                      },
+                    { extend: 'print', className: 'btn btn-primary' }
+                ],
+                  pageLength: 10,
+                  order: [[0, "desc"]], // Sort by Timestamp column (index 0) in descending order - latest first
+                  destroy: true,
+                  language: {
+                    search: "Search history:",
+                  },
+                  columnDefs: [
+                    { width: "20%", targets: 0 }, // Timestamp
+                    { width: "15%", targets: 1 }, // User
+                    { width: "10%", targets: 2 }, // Action
+                    { width: "40%", targets: 3 }, // Details
+                    { width: "15%", targets: 4 }  // Control Number
+                  ],
+                });
+
+                // Close loading state
+                Swal.close();
+              } catch (error) {
+                console.error("Error processing history data:", error);
+                Swal.close();
+                showErrorAlert("Error loading history. Please try again.");
+              }
+            }, (error) => {
+              // Error callback for .on() method
+              console.error("Error loading history:", error);
               Swal.close();
               showErrorAlert("Error loading history. Please try again.");
-            }
-          }, (error) => {
-            // Error callback for .on() method
-            console.error("Error loading history:", error);
-            Swal.close();
-            showErrorAlert("Error loading history. Please try again.");
-          });
+            });
+        }).catch((error) => {
+          console.error("Error loading entries for filtering:", error);
+          Swal.close();
+          showErrorAlert("Error loading history. Please try again.");
+        });
       }
 
       // Function to view audit log details
@@ -5019,6 +5133,66 @@
             window.print();
           });
         }
+
+        // Role selection handler for automatic department assignment and endorsement office dropdown
+        const roleSelect = document.getElementById("newAccountRole");
+        const departmentSelect = document.getElementById("newAccountDepartment");
+        const endorsementOfficeRow = document.getElementById("endorsementOfficeRow");
+        const endorsementOfficeSelect = document.getElementById("endorsementOffice");
+        const finalRoleInput = document.getElementById("finalRole");
+        
+        if (roleSelect && departmentSelect) {
+          roleSelect.addEventListener("change", function() {
+            const selectedRole = this.value;
+            
+            // Auto-set department based on role selection
+            const emailInput = document.getElementById("newAccountEmail");
+            
+            if (selectedRole === "Receiving") {
+              departmentSelect.value = "Receiving Division";
+              endorsementOfficeRow.style.display = "none";
+              finalRoleInput.value = "Receiving";
+              emailInput.value = "";
+            } else if (selectedRole === "Admin") {
+              departmentSelect.value = "Administrative Division";
+              endorsementOfficeRow.style.display = "none";
+              finalRoleInput.value = "Admin";
+              emailInput.value = "";
+            } else if (selectedRole === "Endorsement") {
+              departmentSelect.value = "Endorsement Division";
+              endorsementOfficeRow.style.display = "block";
+              endorsementOfficeSelect.required = true;
+              finalRoleInput.value = "";
+              emailInput.value = "";
+            } else {
+              departmentSelect.value = "";
+              endorsementOfficeRow.style.display = "none";
+              finalRoleInput.value = "";
+              emailInput.value = "";
+            }
+          });
+        }
+
+        // Endorsement office selection handler
+        if (endorsementOfficeSelect) {
+          endorsementOfficeSelect.addEventListener("change", function() {
+            const selectedOffice = this.value;
+            const emailInput = document.getElementById("newAccountEmail");
+            
+            if (selectedOffice) {
+              finalRoleInput.value = `Endorsement - ${selectedOffice}`;
+              
+              // Auto-generate email based on endorsement office
+              const officeAcronym = selectedOffice.toLowerCase().replace(/\s+/g, '-');
+              emailInput.value = `@endorsement-${officeAcronym}.com`;
+            } else {
+              finalRoleInput.value = "";
+              emailInput.value = "";
+            }
+          });
+        }
+
+
       });
     </script>
   </body>

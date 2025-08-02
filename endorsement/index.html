@@ -459,7 +459,7 @@
                             type="email"
                             class="form-control with-icon"
                             id="email"
-                            value="admin@centralcomm.com"
+                            value=""
                             readonly
                           />
                         </div>
@@ -868,6 +868,18 @@
                   <option value="Request Denied">Request Denied</option>
                 </select>
               </div>
+              <!-- Add Status Remarks field for status explanations -->
+              <div class="mb-3">
+                <label for="editStatusRemarks" class="form-label">Status Explanation</label>
+                <textarea
+                  class="form-control"
+                  id="editStatusRemarks"
+                  rows="3"
+                  placeholder="Please provide explanation or reasons for the status change..."
+                  required
+                ></textarea>
+                <div class="form-text">This explanation will be included in the email notification to the client.</div>
+              </div>
               <!-- Add Google Drive File URL field to Edit Entry Form -->
               <div class="mb-3">
                 <label for="editFileUrl" class="form-label">Google Drive File URL</label>
@@ -1210,6 +1222,130 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <!-- Add department access control script -->
+    <script>
+    // Department Access Control System
+    class DepartmentAccessControl {
+      constructor() {
+        this.departmentDomains = {
+          'PLD': '@endorsement-pld.com',
+          'PIO': '@endorsement-pio.com',
+          'CAO': '@endorsement-cao.com',
+          'CASSO': '@endorsement-casso.com',
+          'CADMO': '@endorsement-cadmo.com',
+          'CBO': '@endorsement-cbo.com',
+          'CEPMO': '@endorsement-cepmo.com',
+          'CHRMO': '@endorsement-chrmo.com',
+          'CLO': '@endorsement-clo.com',
+          'CPDSO': '@endorsement-cpdso.com',
+          'CTO': '@endorsement-cto.com',
+          'GSO': '@endorsement-gso.com',
+          'CBAO': '@endorsement-cbao.com',
+          'CEO': '@endorsement-ceo.com',
+          'CSWDO': '@endorsement-cswdo.com',
+          'HSO': '@endorsement-hso.com',
+          'LCR': '@endorsement-lcr.com',
+          'CVAO': '@endorsement-cvao.com',
+          'DepEd': '@endorsement-deped.com',
+          'COA': '@endorsement-coa.com',
+          'MTCC': '@endorsement-mtcc.com',
+          'RTCC': '@endorsement-rtcc.com',
+          'Prosecutor': '@endorsement-prosecutor.com',
+          'PESO': '@endorsement-peso.com',
+          'PLEB': '@endorsement-pleb.com',
+          'POSD': '@endorsement-posd.com',
+          'SSD': '@endorsement-ssd.com',
+          'PDAO': '@endorsement-pdao.com',
+          'MITD': '@endorsement-mitd.com',
+          'CCTV': '@endorsement-cctv.com',
+          'CDRRMO': '@endorsement-cdrrmo.com',
+          'LIBRARY': '@endorsement-library.com',
+          'PERSONAL_STAFF': '@endorsement-personal-staff.com'
+        };
+        this.domainToDepartment = {};
+        Object.entries(this.departmentDomains).forEach(([dept, domain]) => {
+          this.domainToDepartment[domain] = dept;
+        });
+        this.adminEmails = [
+          'admin@centralcomm.com',
+          'cmobaguio2600@gmail.com',
+          'endorsement@endorsement.com'
+        ];
+      }
+      getUserDepartment(email) {
+        if (!email) return null;
+        if (this.adminEmails.includes(email)) return 'ADMIN';
+        const domain = '@' + email.split('@')[1];
+        return this.domainToDepartment[domain] || null;
+      }
+      hasAccessToEntry(userEmail, entry) {
+        const userDept = this.getUserDepartment(userEmail);
+        if (userDept === 'ADMIN') return true;
+        if (entry && entry.endorsedTo) return entry.endorsedTo === userDept;
+        return false;
+      }
+      filterEntriesByDepartment(entries, userEmail) {
+        const userDept = this.getUserDepartment(userEmail);
+        if (!entries) return [];
+        if (userDept === 'ADMIN') return Object.entries(entries).map(([key, entry]) => ({ key, ...entry }));
+        return Object.entries(entries).filter(([key, entry]) => this.hasAccessToEntry(userEmail, entry)).map(([key, entry]) => ({ key, ...entry }));
+      }
+      getDepartmentName(deptCode) {
+        const departmentNames = {
+          'PLD': 'Permit and Licensing Department',
+          'PIO': 'Public Information Office',
+          'CAO': 'City Administrator Office',
+          'CASSO': 'City Accountant Office',
+          'CADMO': 'City Agriculture Office',
+          'CBO': 'City Budget Office',
+          'CEPMO': 'City Engineering Office',
+          'CHRMO': 'City Human Resource Office',
+          'CLO': 'City Legal Office',
+          'CPDSO': 'City Planning Office',
+          'CTO': 'City Treasurer Office',
+          'GSO': 'General Services Office',
+          'CBAO': 'City Building Office',
+          'CEO': 'City Environment Office',
+          'CSWDO': 'City Social Welfare Office',
+          'HSO': 'Health Services Office',
+          'LCR': 'Local Civil Registry',
+          'CVAO': 'City Veterinary Office',
+          'DepEd': 'Department of Education',
+          'COA': 'Commission on Audit',
+          'MTCC': 'Municipal Trial Court',
+          'RTCC': 'Regional Trial Court',
+          'Prosecutor': 'Prosecutor Office',
+          'PESO': 'Public Employment Office',
+          'PLEB': 'People Law Enforcement Board',
+          'POSD': 'Public Order and Safety Office',
+          'SSD': 'Social Services Department',
+          'PDAO': 'Persons with Disability Office',
+          'MITD': 'Management Information Office',
+          'CCTV': 'CCTV/EWSS Office',
+          'CDRRMO': 'City Disaster Risk Reduction Office',
+          'LIBRARY': 'City Library',
+          'PERSONAL_STAFF': 'Personal Staff'
+        };
+        return departmentNames[deptCode] || deptCode;
+      }
+      validateSectionAccess(userEmail) {
+        const userDept = this.getUserDepartment(userEmail);
+        return !!userDept;
+      }
+      getUserDisplayInfo(userEmail) {
+        const userDept = this.getUserDepartment(userEmail);
+        if (userDept === 'ADMIN') {
+          return { name: 'Administrator', department: 'System Administrator', role: 'Administrator' };
+        }
+        if (userDept) {
+          return { name: this.getDepartmentName(userDept), department: this.getDepartmentName(userDept), role: 'Department Staff' };
+        }
+        return { name: 'Unknown User', department: 'Unknown Department', role: 'User' };
+      }
+    }
+    const departmentAccessControl = new DepartmentAccessControl();
+    window.departmentAccessControl = departmentAccessControl;
+    </script>
 
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
@@ -1388,26 +1524,25 @@
 
       // Function to load entries into the table
       function loadEntries() {
+        const currentUser = getCurrentUser();
         const currentYear = getCurrentYear();
+        if (!departmentAccessControl.validateSectionAccess(currentUser.email)) {
+          showErrorAlert("You don't have access to this section.");
+          window.location.href = "../pages/selection.html";
+          return;
+        }
         entriesRef.on("value", (snapshot) => {
-          const entries = snapshot.val();
-          const accordionContainer = document.getElementById(
-            "monthlyStatsAccordion"
-          );
-
-          // Create months array
+          const allEntries = snapshot.val();
+          const filteredEntries = departmentAccessControl.filterEntriesByDepartment(allEntries, currentUser.email);
+          const accordionContainer = document.getElementById("monthlyStatsAccordion");
           const months = [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
           ];
           const now = new Date();
           const currentMonthIdx = now.getMonth();
-          const reorderedMonths = months.slice(currentMonthIdx).concat(months.slice(0, currentMonthIdx));
-
-          // Clear existing content
+          const visibleMonths = months.slice(0, currentMonthIdx + 1).reverse();
           accordionContainer.innerHTML = "";
-
-           // Create empty accordion items for visible months in descending order
           visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
@@ -1440,13 +1575,9 @@
             `;
             accordionContainer.appendChild(accordionItem);
           });
-
-          // Then populate each month's data as it arrives
           visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const tableId = `monthly-stats-table-${monthKey}`;
-
-            // Get monthly data
             database
               .ref(`monthlyData/${monthKey}`)
               .once("value", (monthlySnapshot) => {
@@ -1458,16 +1589,15 @@
                   requests: 0,
                   entries: [],
                 };
-
-                // Get entries for this month
                 const monthEntries = monthlyData.entries
                   .map((key) => {
-                    const entry = entries[key];
+                    const entry = allEntries[key];
                     return entry ? { key, ...entry } : null;
                   })
-                  .filter((entry) => entry && entry.status !== "Archived" && entry.endorsedTo === 'PLD');
-
-                // Calculate statistics including archived entries
+                  .filter((entry) => {
+                    if (!entry || entry.status === "Archived") return false;
+                    return departmentAccessControl.hasAccessToEntry(currentUser.email, entry);
+                  });
                 const stats = {
                   complaints: 0,
                   proposals: 0,
@@ -1475,21 +1605,14 @@
                   requests: 0,
                   total: 0
                 };
-
-                // Count only non-archived entries and only those endorsed to PLD
-                monthlyData.entries.forEach(key => {
-                  const entry = entries[key];
-                  if (entry && entry.status !== "Archived" && entry.endorsedTo === 'PLD') {
-                    stats.total++;
-                    const type = entry.type.toLowerCase();
-                    if (type === 'complaint') stats.complaints++;
-                    else if (type === 'proposal') stats.proposals++;
-                    else if (type === 'invitation') stats.invitations++;
-                    else if (type === 'request') stats.requests++;
-                  }
+                monthEntries.forEach(entry => {
+                  stats.total++;
+                  const type = entry.type.toLowerCase();
+                  if (type === 'complaint') stats.complaints++;
+                  else if (type === 'proposal') stats.proposals++;
+                  else if (type === 'invitation') stats.invitations++;
+                  else if (type === 'request') stats.requests++;
                 });
-
-                // Calculate percentage for each type based on total
                 function getTypePercent(count, total) {
                   if (total === 0) return 0;
                   return Math.round((count / total) * 100);
@@ -1498,109 +1621,95 @@
                 const proposalsPercent = getTypePercent(stats.proposals, stats.total);
                 const invitationsPercent = getTypePercent(stats.invitations, stats.total);
                 const requestsPercent = getTypePercent(stats.requests, stats.total);
-
-                // Sort entries by date
                 monthEntries.sort((a, b) => {
                   return new Date(b.dateReceived) - new Date(a.dateReceived);
                 });
-
-                // Update the accordion item with the data
                 const accordionBody = document.querySelector(
                   `#${monthKey} .accordion-body`
                 );
                 if (accordionBody) {
                   accordionBody.innerHTML = `
-                  <!-- ${month} Statistics -->
-                  <div class="row mb-4">
-                    <div class="col-md-3">
-                      <div class="card bg-primary bg-opacity-10">
-                        <div class="card-body">
-                          <h6 class="card-title text-primary">Complaints</h6>
-                          <h2 class="card-text">${stats.complaints}</h2>
-                          <div class="d-flex align-items-center">
-                            <span class="trend-indicator trend-up text-primary">
-                              <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
-                            </span>
+                    <!-- ${month} Statistics -->
+                    <div class="row mb-4">
+                      <div class="col-md-3">
+                        <div class="card bg-primary bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-primary">Complaints</h6>
+                            <h2 class="card-text">${stats.complaints}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-primary">
+                                <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-warning bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-warning">Proposals</h6>
+                            <h2 class="card-text">${stats.proposals}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-warning">
+                                <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-info bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-info">Invitations</h6>
+                            <h2 class="card-text">${stats.invitations}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-info">
+                                <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="card bg-warning bg-opacity-10">
+                          <div class="card-body">
+                            <h6 class="card-title text-success">Requests</h6>
+                            <h2 class="card-text">${stats.requests}</h2>
+                            <div class="d-flex align-items-center">
+                              <span class="trend-indicator trend-up text-success">
+                                <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3">
-                      <div class="card bg-warning bg-opacity-10">
-                        <div class="card-body">
-                          <h6 class="card-title text-warning">Proposals</h6>
-                          <h2 class="card-text">${stats.proposals}</h2>
-                          <div class="d-flex align-items-center">
-                            <span class="trend-indicator trend-up text-warning">
-                              <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                    <div class="table-responsive">
+                      <table class="table table-hover monthly-stats-table" id="${tableId}">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Control Number</th>
+                            <th>Type</th>
+                            <th>File</th>
+                            <th>Time Received</th>
+                            <th>Date Received</th>
+                            <th>From</th>
+                            <th>Office</th>
+                            <th>Subject</th>
+                            <th>Endorsed To</th>
+                            <th>Remarks</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                      </table>
                     </div>
-                    <div class="col-md-3">
-                      <div class="card bg-info bg-opacity-10">
-                        <div class="card-body">
-                          <h6 class="card-title text-info">Invitations</h6>
-                          <h2 class="card-text">${stats.invitations}</h2>
-                          <div class="d-flex align-items-center">
-                            <span class="trend-indicator trend-up text-info">
-                              <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3">
-                      <div class="card bg-warning bg-opacity-10">
-                        <div class="card-body">
-                          <h6 class="card-title text-success">Requests</h6>
-                          <h2 class="card-text">${stats.requests}</h2>
-                          <div class="d-flex align-items-center">
-                            <span class="trend-indicator trend-up text-success">
-                              <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="table-responsive">
-                     <div class="d-flex justify-content-between align-items-center mb-3">
-                      <div class="input-group" style="width: 300px;">
-                        <span class="input-group-text">
-                          <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" class="form-control" id="search${monthKey}" placeholder="Search entries...">
-                      </div>
-                    </div>
-
-                    <table class="table table-hover monthly-stats-table" id="monthly-stats-table-${monthKey}">
-                      <thead>
-                        <tr>
-                          <th>Control #</th>
-                          <th>Type</th>
-                          <th>File</th>
-                          <th>Time Received</th>
-                          <th>Date Received</th>
-                          <th>From</th>
-                          <th>Office</th>
-                          <th>Subject</th>
-                          <th>Endorsed To</th>
-                          <th>Remarks</th>
-                          <th>Status</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      </tbody>
-                    </table>
-                  </div>
-                `;
-
-                setTimeout(() => {
+                  `;
+                  setTimeout(() => {
                     try {
-                      console.log(`Initializing table for ${month} with data:`, monthEntries);
                       initializeDataTable(monthKey, tableId, monthEntries);
                     } catch (error) {
                       console.error(`Error initializing DataTable for ${month}:`, error);
@@ -1610,9 +1719,6 @@
               });
           });
         });
-
-        setTimeout(initializeSearch, 500);
-
       }
 
       // Function to get status color
@@ -2061,6 +2167,7 @@
           endorsedTo: document.getElementById("editEndorsedTo").value,
           remarks: document.getElementById("editRemarks").value,
           status: document.getElementById("editStatus").value,
+          statusRemarks: document.getElementById("editStatusRemarks").value, // Save status remarks
           fromEmail: document.getElementById("editClientEmail").value, // Save client email
           updatedAt: firebase.database.ServerValue.TIMESTAMP,
           fileUrl: document.getElementById("editFileUrl").value,
@@ -2068,7 +2175,7 @@
 
         // Validate required fields
         if (!formData.type || !formData.dateReceived || !formData.timeReceived || 
-            !formData.from || !formData.office || !formData.subject || !formData.status) {
+            !formData.from || !formData.office || !formData.subject || !formData.status || !formData.statusRemarks) {
           showErrorAlert("Please fill in all required fields");
           return;
         }
@@ -2268,6 +2375,7 @@
             document.getElementById("editSubject").value = entry.subject;
             document.getElementById("editEndorsedTo").value = entry.endorsedTo;
             document.getElementById("editRemarks").value = entry.remarks || "";
+            document.getElementById("editStatusRemarks").value = entry.statusRemarks || "";
             // Set client email in edit form
             document.getElementById("editClientEmail").value = entry.fromEmail || "";
             document.getElementById("editFileUrl").value = entry.fileUrl || "";
@@ -2429,7 +2537,7 @@
             // Group entries by year
             const entriesByYear = {};
             Object.entries(entries).forEach(([key, entry]) => {
-              if (entry.status === "Archived" && entry.endorsedTo === 'PLD') {
+              if (entry.status === "Archived" && departmentAccessControl.hasAccessToEntry(getCurrentUser().email, entry)) {
                 const year = new Date(entry.dateReceived).getFullYear();
                 if (!entriesByYear[year]) {
                   entriesByYear[year] = [];
@@ -2718,6 +2826,13 @@
         .addEventListener("click", function (e) {
           e.preventDefault();
           handleNavigation("profileSection");
+          
+          // Update profile email field when profile section is accessed
+          const currentUser = getCurrentUser();
+          const profileEmailElement = document.getElementById("email");
+          if (profileEmailElement && currentUser) {
+            profileEmailElement.value = currentUser.email;
+          }
         });
 
       // Function to load documents
@@ -2751,8 +2866,8 @@
               const entryYear = entryDate.getFullYear();
               const entryMonth = entryDate.getMonth();
 
-              // Yearly statistics
-              if (entryYear === currentYear && entry.endorsedTo === 'PLD') {
+              // Yearly statistics - filter by user's department
+              if (entryYear === currentYear && departmentAccessControl.hasAccessToEntry(getCurrentUser().email, entry)) {
                 yearlyStats.total++;
                 yearlyStats[entry.type.toLowerCase() + "s"]++;
 
@@ -3212,8 +3327,8 @@
 
       // Function to load profile
       function loadProfile() {
-        const sectionUser = getSectionUser();
-        if (!sectionUser) return;
+        const currentUser = getCurrentUser();
+        if (!currentUser) return;
 
         // Show loading state
         Swal.fire({
@@ -3225,14 +3340,14 @@
           },
         });
 
-        // Use section-specific user data
+        // Use current user data
         const userData = {
-          firstName: sectionUser.name.split(' ')[0] || '',
-          lastName: sectionUser.name.split(' ').slice(1).join(' ') || '',
-          email: sectionUser.email,
-          role: sectionUser.role,
+          firstName: currentUser.displayInfo.name.split(' ')[0] || '',
+          lastName: currentUser.displayInfo.name.split(' ').slice(1).join(' ') || '',
+          email: currentUser.email,
+          role: currentUser.displayInfo.role,
           phone: '',
-          department: '',
+          department: currentUser.displayInfo.department,
           position: ''
         };
 
@@ -3247,6 +3362,11 @@
         const positionElement = document.getElementById("position");
         const roleSelect = document.getElementById("role");
         const profileImageElement = document.getElementById("profileImage");
+        
+        // Ensure profile email is updated with current user email
+        if (emailElement) {
+          emailElement.value = userData.email;
+        }
 
         if (profileNameElement) {
           profileNameElement.textContent = `${userData.firstName} ${userData.lastName}`;
@@ -3362,8 +3482,15 @@
         const loggedInEmail = sessionStorage.getItem('endorsementLoggedInUserEmail') || localStorage.getItem('endorsementLoggedInUserEmail') || user.email || "";
           
           // Set the current user's email immediately from storage
-          document.getElementById("email").value = loggedInEmail;
-          document.getElementById("currentUserEmailendorsement").textContent = loggedInEmail;
+          const emailElement = document.getElementById("email");
+          const currentUserEmailElement = document.getElementById("currentUserEmailendorsement");
+          
+          if (emailElement) {
+            emailElement.value = loggedInEmail;
+          }
+          if (currentUserEmailElement) {
+            currentUserEmailElement.textContent = loggedInEmail;
+          }
           
           // Fetch user details from database
           database.ref('users/' + user.uid).once('value').then((snapshot) => {
@@ -3800,8 +3927,16 @@
 
       // Function to initialize DataTable for a specific month
       function initializeDataTable(monthKey, tableId, data) {
-        // Filter data to only include rows where endorsedTo is 'PLD'
-        const filteredData = data.filter(entry => entry.endorsedTo === 'PLD');
+        // Data is already filtered by department in loadEntries function
+        // No need to filter again here
+        const filteredData = data;
+        
+        console.log(`Initializing DataTable for ${monthKey}:`, {
+          tableId: tableId,
+          dataLength: data.length,
+          filteredDataLength: filteredData.length,
+          data: data
+        });
 
         // Destroy existing DataTable if it exists
         if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
@@ -3951,26 +4086,34 @@
 
       // Update the loadEntries function to use the new initialization
       function loadEntries() {
+        const currentUser = getCurrentUser();
         const currentYear = getCurrentYear();
+        
+        console.log('Current user:', currentUser);
+        console.log('User department:', currentUser.department);
+        
+        if (!departmentAccessControl.validateSectionAccess(currentUser.email)) {
+          showErrorAlert("You don't have access to this section.");
+          window.location.href = "../pages/selection.html";
+          return;
+        }
+        
         entriesRef.on("value", (snapshot) => {
-          const entries = snapshot.val();
+          const allEntries = snapshot.val();
+          console.log('All entries:', allEntries);
+          
           const accordionContainer = document.getElementById("monthlyStatsAccordion");
-
-          // Create months array
           const months = [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
           ];
           const now = new Date();
           const currentMonthIdx = now.getMonth();
-         // Only include months up to and including the current month, in descending order
           const visibleMonths = months.slice(0, currentMonthIdx + 1).reverse();
-
-          // Clear existing content
+          
           accordionContainer.innerHTML = "";
-
-          // Create empty accordion items for visible months in descending order
-            visibleMonths.forEach((month) => {
+          
+          visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
@@ -4002,13 +4145,11 @@
             `;
             accordionContainer.appendChild(accordionItem);
           });
-
-          // Then populate each month's data as it arrives
-            visibleMonths.forEach((month) => {
+          
+          visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const tableId = `monthly-stats-table-${monthKey}`;
-
-            // Get monthly data
+            
             database
               .ref(`monthlyData/${monthKey}`)
               .once("value", (monthlySnapshot) => {
@@ -4020,16 +4161,27 @@
                   requests: 0,
                   entries: [],
                 };
-
-                // Get entries for this month
+                
+                console.log(`Monthly data for ${month}:`, monthlyData);
+                
+                // Get all entries for this month and filter by department
                 const monthEntries = monthlyData.entries
                   .map((key) => {
-                    const entry = entries[key];
+                    const entry = allEntries[key];
                     return entry ? { key, ...entry } : null;
                   })
-                  .filter((entry) => entry && entry.status !== "Archived" && entry.endorsedTo === 'PLD');
-
-                // Calculate statistics including archived entries
+                  .filter((entry) => {
+                    if (!entry || entry.status === "Archived") return false;
+                    
+                    // Check if user has access to this entry
+                    const hasAccess = departmentAccessControl.hasAccessToEntry(currentUser.email, entry);
+                    console.log(`Entry ${entry.controlNumber} - Endorsed To: ${entry.endorsedTo}, User Dept: ${currentUser.department}, Has Access: ${hasAccess}`);
+                    
+                    return hasAccess;
+                  });
+                
+                console.log(`Filtered entries for ${month}:`, monthEntries);
+                
                 const stats = {
                   complaints: 0,
                   proposals: 0,
@@ -4037,21 +4189,16 @@
                   requests: 0,
                   total: 0
                 };
-
-                // Count only non-archived entries and only those endorsed to PLD
-                monthlyData.entries.forEach(key => {
-                  const entry = entries[key];
-                  if (entry && entry.status !== "Archived" && entry.endorsedTo === 'PLD') {
-                    stats.total++;
-                    const type = entry.type.toLowerCase();
-                    if (type === 'complaint') stats.complaints++;
-                    else if (type === 'proposal') stats.proposals++;
-                    else if (type === 'invitation') stats.invitations++;
-                    else if (type === 'request') stats.requests++;
-                  }
+                
+                monthEntries.forEach(entry => {
+                  stats.total++;
+                  const type = entry.type.toLowerCase();
+                  if (type === 'complaint') stats.complaints++;
+                  else if (type === 'proposal') stats.proposals++;
+                  else if (type === 'invitation') stats.invitations++;
+                  else if (type === 'request') stats.requests++;
                 });
-
-                // Calculate percentage for each type based on total
+                
                 function getTypePercent(count, total) {
                   if (total === 0) return 0;
                   return Math.round((count / total) * 100);
@@ -4060,13 +4207,9 @@
                 const proposalsPercent = getTypePercent(stats.proposals, stats.total);
                 const invitationsPercent = getTypePercent(stats.invitations, stats.total);
                 const requestsPercent = getTypePercent(stats.requests, stats.total);
-
-                // Sort entries by date
                 monthEntries.sort((a, b) => {
                   return new Date(b.dateReceived) - new Date(a.dateReceived);
                 });
-
-                // Update the accordion item with the data
                 const accordionBody = document.querySelector(
                   `#${monthKey} .accordion-body`
                 );
@@ -4151,11 +4294,8 @@
                       </table>
                     </div>
                   `;
-
-                  // Initialize DataTable with the data
                   setTimeout(() => {
                     try {
-                      console.log(`Initializing table for ${month} with data:`, monthEntries);
                       initializeDataTable(monthKey, tableId, monthEntries);
                     } catch (error) {
                       console.error(`Error initializing DataTable for ${month}:`, error);
@@ -4293,6 +4433,7 @@
           controlNumber: entry.controlNumber,
           subject: entry.subject,
           status: entry.status,
+          statusRemarks: entry.statusRemarks || "No additional remarks provided.",
           fileUrl: entry.fileUrl || "",
           email: clientEmail // for Reply To
         })
@@ -4338,6 +4479,66 @@
             window.print();
           });
         }
+      });
+
+      function getCurrentUser() {
+        // Get user email from session storage (set during login) or fallback to Firebase user
+        const userEmail = sessionStorage.getItem('endorsementLoggedInUserEmail') || 
+                         localStorage.getItem('endorsementLoggedInUserEmail') || 
+                         'endorsement@endorsement.com';
+        
+        console.log('Getting current user with email:', userEmail);
+        
+        const userDept = departmentAccessControl.getUserDepartment(userEmail);
+        console.log('User department determined:', userDept);
+        
+        return {
+          email: userEmail,
+          department: userDept,
+          displayInfo: departmentAccessControl.getUserDisplayInfo(userEmail)
+        };
+      }
+
+      // Initialize the dashboard with user info and load entries
+      document.addEventListener("DOMContentLoaded", function () {
+        const currentUser = getCurrentUser();
+        console.log('DOMContentLoaded - Current user:', currentUser);
+        
+        // Update user display in sidebar
+        const emailElement = document.getElementById("currentUserEmailendorsement");
+        const nameElement = document.getElementById("currentUserName");
+        
+        if (emailElement) {
+          emailElement.textContent = currentUser.email;
+        }
+        if (nameElement) {
+          nameElement.textContent = currentUser.displayInfo.name;
+        }
+        
+        // Also update the profile email field (like admin system does)
+        const profileEmailElement = document.getElementById("email");
+        if (profileEmailElement) {
+          profileEmailElement.value = currentUser.email;
+        }
+        
+        console.log('User display updated - Email:', currentUser.email, 'Name:', currentUser.displayInfo.name);
+        
+        // Test the filtering logic
+        console.log('Testing department access control:');
+        console.log('- User email:', currentUser.email);
+        console.log('- User department:', currentUser.department);
+        console.log('- Is admin:', currentUser.department === 'ADMIN');
+        
+        loadEntries();
+        
+        // Also update profile email after a short delay to ensure all elements are loaded
+        setTimeout(() => {
+          const profileEmailElement = document.getElementById("email");
+          if (profileEmailElement) {
+            profileEmailElement.value = currentUser.email;
+            console.log('Profile email updated to:', currentUser.email);
+          }
+        }, 1000);
       });
     </script>
   </body>

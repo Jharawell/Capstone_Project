@@ -174,7 +174,7 @@
                   <h1 class="h2 mb-1">Receiving Section - Mayor's Office Dashboard</h1>
                   <div>
                   <p class="mb-0">Welcome back, <span id="currentUserName">Receiving</span></p>
-                    <p class="mb-0 text-muted">Role: <span id="currentUserRole">Receiving Staff</span></p>
+                    <!-- <p class="mb-0 text-muted">Role: <span id="currentUserRole">Receiving Staff</span></p> -->
                   </div>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mb-2 mb-md-0">
@@ -860,9 +860,9 @@
                   rows="3"
                 ></textarea>
               </div>
-              <div class="mb-3" hidden>
+              <div class="mb-3">
                 <label for="editStatus" class="form-label">Status</label>
-                <select class="form-select" id="editStatus" required disabled>
+                <select class="form-select" id="editStatus" required>
                   <option value="Pending">Pending</option>
                   <option value="Processing">Processing</option>
                   <option value="Completed">Completed</option>
@@ -870,6 +870,18 @@
                   <option value="Under Investigation">Under Investigation (Ongoing)</option>
                   <option value="Inspection">Inspection, Acted Upon (Done)</option>
                 </select>
+              </div>
+              <!-- Add Status Remarks field for status explanations -->
+              <div class="mb-3">
+                <label for="editStatusRemarks" class="form-label">Status Explanation</label>
+                <textarea
+                  class="form-control"
+                  id="editStatusRemarks"
+                  rows="3"
+                  placeholder="Please provide explanation or reasons for the status change..."
+                  required
+                ></textarea>
+                <div class="form-text">This explanation will be included in the email notification to the client.</div>
               </div>
               <!-- Add Google Drive File URL field to Edit Entry Form -->
               <div class="mb-3">
@@ -2083,6 +2095,7 @@
           endorsedTo: document.getElementById("editEndorsedTo").value,
           remarks: document.getElementById("editRemarks").value,
           status: document.getElementById("editStatus").value,
+          statusRemarks: document.getElementById("editStatusRemarks").value, // Save status remarks
           fromEmail: document.getElementById("editClientEmail").value, // Save client email
           updatedAt: firebase.database.ServerValue.TIMESTAMP,
           fileUrl: document.getElementById("editFileUrl").value,
@@ -2090,7 +2103,7 @@
 
         // Validate required fields
         if (!formData.type || !formData.dateReceived || !formData.timeReceived || 
-            !formData.from || !formData.office || !formData.subject) {
+            !formData.from || !formData.office || !formData.subject || !formData.status || !formData.statusRemarks) {
           showErrorAlert("Please fill in all required fields");
           return;
         }
@@ -2110,6 +2123,9 @@
           }
           if (originalEntry.office !== formData.office) {
             changes.push(`Office: "${originalEntry.office}" → "${formData.office}"`);
+          }
+          if (originalEntry.statusRemarks !== formData.statusRemarks) {
+            changes.push(`Status Explanation: "${originalEntry.statusRemarks || 'None'}" → "${formData.statusRemarks || 'None'}"`);
           }
 
         entriesRef.child(key)
@@ -2321,6 +2337,7 @@
             document.getElementById("editSubject").value = entry.subject;
             document.getElementById("editEndorsedTo").value = entry.endorsedTo;
             document.getElementById("editRemarks").value = entry.remarks || "";
+            document.getElementById("editStatusRemarks").value = entry.statusRemarks || "";
             // Set client email in edit form
             document.getElementById("editClientEmail").value = entry.fromEmail || "";
             document.getElementById("editFileUrl").value = entry.fileUrl || "";
@@ -4354,6 +4371,7 @@
           controlNumber: entry.controlNumber,
           subject: entry.subject,
           status: entry.status,
+          statusRemarks: entry.statusRemarks || "No additional remarks provided.",
           fileUrl: entry.fileUrl || "",
           email: clientEmail // for Reply To
         })
