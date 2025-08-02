@@ -172,7 +172,10 @@
               <div class="d-flex justify-content-between align-items-center">
                 <div>
                   <h1 class="h2 mb-1">Receiving Section - Mayor's Office Dashboard</h1>
+                  <div>
                   <p class="mb-0">Welcome back, <span id="currentUserName">Receiving</span></p>
+                    <p class="mb-0 text-muted">Role: <span id="currentUserRole">Receiving Staff</span></p>
+                  </div>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mb-2 mb-md-0">
                   <!-- Create New Button -->
@@ -403,6 +406,11 @@
                   <h1 class="h2 mb-1">History</h1>
                   <p class="mb-0 text-white-50">View system activity history</p>
                 </div>
+                <div>
+                  <button id="refreshHistoryBtn" class="btn btn-outline-light" title="Refresh history data">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                  </button>
+                </div>
               </div>
             </div>
             <div class="card mb-4">
@@ -445,6 +453,7 @@
                   <div class="card-body">
                     <h5 class="card-title mb-4">Account Settings</h5>
                     <form id="profileForm">
+
                       <div class="mb-3">
                         <label for="email" class="form-label">Email Address</label>
                         <div class="input-group">
@@ -461,20 +470,21 @@
                         </div>
                       </div>
                       <div class="mb-3">
-                        <label for="role" class="form-label">Department</label>
+                        <label for="role" class="form-label">Role</label>
                         <div class="input-group">
                           <span class="input-group-text">
                             <i class="bi bi-person-badge"></i>
                           </span>
-                          <input
-                            type="text"
-                            class="form-control with-icon"
-                            id="role"
-                            value="Receiving Section - Mayor's Office"
-                            readonly
-                          />
+                          <select class="form-select" id="role" required>
+                            <option value="">Select Role</option>
+                            <option value="Receiving Staff">Receiving Staff</option>
+                            <option value="Receiving Administrator">Receiving Administrator</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Administrator">Administrator</option>
+                          </select>
                         </div>
                       </div>
+
                     </form>
                   </div>
                 </div>
@@ -533,6 +543,8 @@
                   </div>
                 </div>
               </div>
+
+
             </div>
           </div>
         </div>
@@ -848,7 +860,7 @@
                   rows="3"
                 ></textarea>
               </div>
-              <div class="mb-3">
+              <div class="mb-3" hidden>
                 <label for="editStatus" class="form-label">Status</label>
                 <select class="form-select" id="editStatus" required disabled>
                   <option value="Pending">Pending</option>
@@ -1225,6 +1237,11 @@
     <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
     <script>
+      // Function to get current year
+      function getCurrentYear() {
+        return new Date().getFullYear();
+      }
+
       // Initialize Firebase
       const firebaseConfig = {
         apiKey: "AIzaSyCaSHRLbIRWW8COl5iwHb19dMDYYLJ2DIk",
@@ -1302,8 +1319,7 @@
               Object.entries(entries).forEach(([_, entry]) => {
                 const entryYear = new Date(entry.dateReceived).getFullYear();
                 if (
-                  currentYear === 2025 &&
-                  entryYear < 2025 &&
+                  currentYear > entryYear &&
                   entry.status !== "Archived"
                 ) {
                   totalToArchive++;
@@ -1325,8 +1341,7 @@
               Object.entries(entries).forEach(([key, entry]) => {
                 const entryYear = new Date(entry.dateReceived).getFullYear();
                 if (
-                  currentYear === 2025 &&
-                  entryYear < 2025 &&
+                  currentYear > entryYear &&
                   entry.status !== "Archived"
                 ) {
                   entriesRef
@@ -1390,12 +1405,16 @@
           ];
           const now = new Date();
           const currentMonthIdx = now.getMonth();
-          const reorderedMonths = months.slice(currentMonthIdx).concat(months.slice(0, currentMonthIdx));
+          // Get months from current month back to January (current month first, then older months)
+          const visibleMonths = [];
+          for (let i = currentMonthIdx; i >= 0; i--) {
+            visibleMonths.push(months[i]);
+          }
 
           // Clear existing content
           accordionContainer.innerHTML = "";
 
-           // Create empty accordion items for visible months in descending order
+           // Create empty accordion items for visible months (current month first, then older months)
           visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
             const accordionItem = document.createElement("div");
@@ -1588,12 +1607,26 @@
 
                 setTimeout(() => {
                     try {
+                      // Check if the table element exists before initializing
+                      const tableElement = document.getElementById(tableId);
+                      if (!tableElement) {
+                        console.error(`Table element with ID ${tableId} not found for ${month}`);
+                        return;
+                      }
+                      
+                      // Check if the table has a tbody element
+                      const tbodyElement = tableElement.querySelector('tbody');
+                      if (!tbodyElement) {
+                        console.error(`Table body not found for ${month} table`);
+                        return;
+                      }
+                      
                       console.log(`Initializing table for ${month} with data:`, monthEntries);
                       initializeDataTable(monthKey, tableId, monthEntries);
                     } catch (error) {
                       console.error(`Error initializing DataTable for ${month}:`, error);
                     }
-                  }, 100);
+                  }, 200);
                 }
               });
           });
@@ -1639,22 +1672,38 @@
 
       // Function to log activity
       function logActivity(action, details, controlNumber) {
-        const user = firebase.auth().currentUser;
+        try {
+          // Get section-specific user
+          const sectionUser = getSectionUser();
+          
         const logData = {
           timestamp: firebase.database.ServerValue.TIMESTAMP,
-          user: user ? user.email : "admin@centralcomm.com",
-          action: action,
-          details: details,
-          controlNumber: controlNumber,
+            user: sectionUser.email,
+            action: action || "unknown",
+            details: details || "No details provided",
+            controlNumber: controlNumber || "N/A",
           ipAddress: "127.0.0.1", // Replace with actual IP when available
-        };
+            section: "receiving" // Add section identifier
+          };
+
+          // Check if database is available
+          if (!database) {
+            console.error("Database not available for logging activity");
+            return;
+          }
 
         database
           .ref("logs")
           .push(logData)
+            .then(() => {
+              console.log("Activity logged successfully:", action, details);
+            })
           .catch((error) => {
             console.error("Error logging activity:", error);
           });
+        } catch (error) {
+          console.error("Error in logActivity function:", error);
+        }
       }
 
       // Function to show success alert
@@ -2018,6 +2067,11 @@
       // Update edit entry handler
       document.getElementById("updateEntry").addEventListener("click", function() {
         const key = document.getElementById("editEntryForm").dataset.key;
+        
+        // Get current entry data to compare changes
+        entriesRef.child(key).once("value", (snapshot) => {
+          const originalEntry = snapshot.val();
+          
         const formData = {
           type: document.getElementById("editType").value,
           controlNumber: document.getElementById("editControlNumber").value,
@@ -2036,19 +2090,48 @@
 
         // Validate required fields
         if (!formData.type || !formData.dateReceived || !formData.timeReceived || 
-            !formData.from || !formData.office || !formData.subject || !formData.status) {
+            !formData.from || !formData.office || !formData.subject) {
           showErrorAlert("Please fill in all required fields");
           return;
         }
 
+          // Track specific field changes for logging
+          const changes = [];
+          
+          // Check for changes in tracked fields
+          if (originalEntry.type !== formData.type) {
+            changes.push(`Type: "${originalEntry.type}" → "${formData.type}"`);
+          }
+          if (originalEntry.fromEmail !== formData.fromEmail) {
+            changes.push(`Client Email: "${originalEntry.fromEmail || 'None'}" → "${formData.fromEmail || 'None'}"`);
+          }
+          if (originalEntry.from !== formData.from) {
+            changes.push(`From: "${originalEntry.from}" → "${formData.from}"`);
+          }
+          if (originalEntry.office !== formData.office) {
+            changes.push(`Office: "${originalEntry.office}" → "${formData.office}"`);
+          }
+
         entriesRef.child(key)
           .update(formData)
           .then(() => {
+              // Log specific field changes if any
+              if (changes.length > 0) {
+                changes.forEach(change => {
+                  logActivity(
+                    "field_update",
+                    `Field updated: ${change}`,
+                    formData.controlNumber
+                  );
+                });
+              } else {
+                // Log general update if no tracked fields changed
             logActivity(
               "update",
               `Updated entry: ${formData.subject}`,
               formData.controlNumber
             );
+              }
 
             showSuccessAlert("Entry updated successfully!");
             const modal = bootstrap.Modal.getInstance(
@@ -2074,6 +2157,7 @@
           .catch((error) => {
             console.error("Error updating entry:", error);
             showErrorAlert("Error updating entry. Please try again.");
+            });
           });
       });
 
@@ -2087,24 +2171,43 @@
             firstName: document.getElementById("firstName").value,
             lastName: document.getElementById("lastName").value,
             email: document.getElementById("email").value,
-            phone: document.getElementById("phone").value,
-            department: document.getElementById("department").value,
-            position: document.getElementById("position").value,
-          role: document.getElementById("role").value,
+            role: document.getElementById("role").value,
             updatedAt: firebase.database.ServerValue.TIMESTAMP,
           };
+
+        // Validate required fields
+        if (!profileData.firstName || !profileData.lastName || !profileData.role) {
+          showErrorAlert("Please fill in all required fields");
+          return;
+        }
 
         // Update user data in database
         database.ref("users/" + user.uid).update(profileData)
             .then(() => {
             // Update the displayed user info
-            document.getElementById("profileName").textContent = `${profileData.firstName} ${profileData.lastName}`;
-            document.getElementById("profileRole").textContent = profileData.role;
-            document.getElementById("currentUserName").textContent = `${profileData.firstName} ${profileData.lastName}`;
-            document.getElementById("currentUserRole").textContent = profileData.role;
+            const currentUserNameElement = document.getElementById("currentUserName");
+            const currentUserRoleElement = document.getElementById("currentUserRole");
+            const profileNameElement = document.getElementById("profileName");
+            const profileRoleElement = document.getElementById("profileRole");
+            
+            if (currentUserNameElement) {
+              currentUserNameElement.textContent = `${profileData.firstName} ${profileData.lastName}`;
+            }
+            
+            if (currentUserRoleElement) {
+              currentUserRoleElement.textContent = profileData.role;
+            }
+            
+            if (profileNameElement) {
+              profileNameElement.textContent = `${profileData.firstName} ${profileData.lastName}`;
+            }
+            
+            if (profileRoleElement) {
+              profileRoleElement.textContent = profileData.role;
+            }
             
               showSuccessAlert("Profile updated successfully!");
-            logActivity("profile_update", "Updated profile information", user.uid);
+            // logActivity("profile_update", "Updated profile information", "N/A"); // Removed - not entry-related
             })
             .catch((error) => {
               console.error("Error updating profile:", error);
@@ -2139,7 +2242,7 @@
           })
           .then(() => {
           showSuccessAlert("Password updated successfully!");
-            logActivity("password_change", "Changed password", user.uid);
+            // logActivity("password_change", "Changed password", "N/A"); // Removed - not entry-related
           document.getElementById("passwordForm").reset();
           })
           .catch((error) => {
@@ -2272,10 +2375,103 @@
           });
         });
 
-      // Load entries and check for archiving when page loads
+      // Section-specific user management
+      const SECTION_NAME = "receiving";
+      const DEFAULT_EMAIL = "receivingbaguio645@gmail.com";
+      const DEFAULT_NAME = "Receiving";
+      const DEFAULT_ROLE = "Receiving Staff";
+
+      // Function to get section-specific user info
+      function getSectionUser() {
+        const sectionUser = localStorage.getItem(`sectionUser_${SECTION_NAME}`);
+        if (sectionUser) {
+          return JSON.parse(sectionUser);
+        }
+        return {
+          email: DEFAULT_EMAIL,
+          name: DEFAULT_NAME,
+          role: DEFAULT_ROLE
+        };
+      }
+
+      // Function to set section-specific user info
+      function setSectionUser(userInfo) {
+        localStorage.setItem(`sectionUser_${SECTION_NAME}`, JSON.stringify(userInfo));
+        updateUserDisplay(userInfo);
+      }
+
+      // Function to update user display
+      function updateUserDisplay(userInfo) {
+        const currentUserEmailElement = document.getElementById("currentUserEmailreceiving");
+        const currentUserNameElement = document.getElementById("currentUserName");
+        const currentUserRoleElement = document.getElementById("currentUserRole");
+        
+        if (currentUserEmailElement) {
+          currentUserEmailElement.textContent = userInfo.email;
+        }
+        if (currentUserNameElement) {
+          currentUserNameElement.textContent = userInfo.name;
+        }
+        if (currentUserRoleElement) {
+          currentUserRoleElement.textContent = userInfo.role;
+        }
+      }
+
+      // Function to validate section access
+      function validateSectionAccess() {
+        const currentUser = getSectionUser();
+        const allowedEmails = [
+          "receivingbaguio645@gmail.com",
+          "admin@centralcomm.com",
+          "cmobaguio2600@gmail.com"
+        ];
+        
+        if (!allowedEmails.includes(currentUser.email)) {
+          console.warn("User not authorized for receiving section:", currentUser.email);
+          // You can redirect or show warning here
+        }
+      }
+
+      // Load entries when page loads
       document.addEventListener("DOMContentLoaded", function () {
-        checkAndArchiveEntries();
+        // Initialize section-specific user management
+        const sectionUser = getSectionUser();
+        updateUserDisplay(sectionUser);
+        validateSectionAccess();
+
+        // Initialize Firebase auth state listener (for logging purposes only)
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            console.log("Firebase user signed in:", user.email);
+            // Get the logged-in email from storage or use Firebase user email
+            const loggedInEmail = sessionStorage.getItem('receivingLoggedInUserEmail') || localStorage.getItem('receivingLoggedInUserEmail') || user.email;
+            
+            // Update section user with the actual logged-in email
+            setSectionUser({
+              email: loggedInEmail,
+              name: "Receiving",
+              role: "Staff"
+            });
+          } else {
+            console.log("No Firebase user signed in");
+            // Keep section-specific user info
+          }
+        });
+
+        // Load initial data
         loadEntries();
+        
+        // Test history functionality
+        setTimeout(() => {
+          console.log("Testing history functionality...");
+          // Add a test log entry if no logs exist
+          database.ref("logs").once("value").then((snapshot) => {
+            if (!snapshot.val() || Object.keys(snapshot.val()).length === 0) {
+              console.log("No logs found, adding test log...");
+              // logActivity("test", "History functionality test", "TEST-001"); // Removed - test log
+            }
+          });
+        }, 2000);
       });
 
       // Function to load archived entries
@@ -2308,8 +2504,16 @@
               }
             });
 
-            // Sort years in descending order
-            const years = Object.keys(entriesByYear).sort((a, b) => b - a);
+            // Generate a range of years (current year and previous 5 years)
+            const currentYear = getCurrentYear();
+            const years = [];
+            for (let year = currentYear; year >= currentYear - 5; year--) {
+              years.push(year.toString());
+              // Initialize empty array for years that don't have archived entries yet
+              if (!entriesByYear[year]) {
+                entriesByYear[year] = [];
+              }
+            }
 
             // Add year selector
             const yearSelector = document.createElement("div");
@@ -2334,80 +2538,105 @@
               yearAccordion.className = "col-12 mb-4";
               yearAccordion.id = `year-${year}`;
               yearAccordion.style.display = year === getCurrentYear().toString() ? 'block' : 'none';
-              yearAccordion.innerHTML = `
-                <div class="card">
-                  <div class="card-header">
-                    <h5 class="card-title mb-0">${year}</h5>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-hover archived-entries-table" id="archivedTable${year}">
-                        <thead>
-                          <tr>
-                            <th>Control #</th>
-                            <th>Type</th>
-                            <th>File</th>
-                            <th>Time Received</th>
-                            <th>Date Received</th>
-                            <th>From</th>
-                            <th>Office</th>
-                            <th>Subject</th>
-                            <th>Endorsed To</th>
-                            <th>Remarks</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          ${yearEntries.map((entry) => `
+              
+              // Check if this year has archived entries
+              if (yearEntries.length > 0) {
+                yearAccordion.innerHTML = `
+                  <div class="card">
+                    <div class="card-header">
+                      <h5 class="card-title mb-0">${year}</h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="table-responsive">
+                        <table class="table table-hover archived-entries-table" id="archivedTable${year}">
+                          <thead>
                             <tr>
-                              <td>${entry.controlNumber}</td>
-                              <td>${entry.type}</td>
-                              <td>${entry.fileUrl ? `<a href="${entry.fileUrl}" target="_blank">View File</a>` : ''}</td>
-                              <td>${entry.timeReceived}</td>
-                              <td>${formatDate(entry.dateReceived)}</td>
-                              <td>${entry.from}</td>
-                              <td>${entry.office}</td>
-                              <td>${entry.subject}</td>
-                              <td>${entry.endorsedTo}</td>
-                              <td>${entry.remarks || ""}</td>
-                              <td><span class="badge bg-secondary">Archived</span></td>
-                              <td>
-                                <button class="btn btn-sm btn-info" onclick="viewArchivedEntry('${entry.key}')" title="View archived entry details">
-                                  <i class="bi bi-eye"></i>
-                                </button>
-                                <button class="btn btn-sm btn-warning" onclick="restoreEntry('${entry.key}')" title="Restore archived entry">
-                                  <i class="bi bi-arrow-counterclockwise"></i>
-                                </button>
-                              </td>
+                              <th>Control #</th>
+                              <th>Type</th>
+                              <th>File</th>
+                              <th>Time Received</th>
+                              <th>Date Received</th>
+                              <th>From</th>
+                              <th>Office</th>
+                              <th>Subject</th>
+                              <th>Endorsed To</th>
+                              <th>Remarks</th>
+                              <th>Status</th>
+                              <th>Actions</th>
                             </tr>
-                          `).join("")}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            ${yearEntries.map((entry) => `
+                              <tr>
+                                <td>${entry.controlNumber}</td>
+                                <td>${entry.type}</td>
+                                <td>${entry.fileUrl ? `<a href="${entry.fileUrl}" target="_blank">View File</a>` : ''}</td>
+                                <td>${entry.timeReceived}</td>
+                                <td>${formatDate(entry.dateReceived)}</td>
+                                <td>${entry.from}</td>
+                                <td>${entry.office}</td>
+                                <td>${entry.subject}</td>
+                                <td>${entry.endorsedTo}</td>
+                                <td>${entry.remarks || ""}</td>
+                                <td><span class="badge bg-secondary">Archived</span></td>
+                                <td>
+                                  <button class="btn btn-sm btn-info" onclick="viewArchivedEntry('${entry.key}')" title="View archived entry details">
+                                    <i class="bi bi-eye"></i>
+                                  </button>
+                                  <button class="btn btn-sm btn-warning" onclick="restoreEntry('${entry.key}')" title="Restore archived entry">
+                                    <i class="bi bi-arrow-counterclockwise"></i>
+                                  </button>
+                                </td>
+                              </tr>
+                            `).join("")}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
-                </div>
-              `;
+                `;
+              } else {
+                // Show message for years with no archived entries
+                yearAccordion.innerHTML = `
+                  <div class="card">
+                    <div class="card-header">
+                      <h5 class="card-title mb-0">${year}</h5>
+                    </div>
+                    <div class="card-body">
+                      <div class="text-center text-muted">
+                        <i class="bi bi-archive fs-1 mb-3"></i>
+                        <p>No archived entries found for ${year}</p>
+                        <small>Entries from this year will appear here once they are archived.</small>
+                      </div>
+                    </div>
+                  </div>
+                `;
+              }
               archivedYearsContainer.appendChild(yearAccordion);
 
-              // Initialize DataTable for this year's entries
-              $(`#archivedTable${year}`).DataTable({
-                dom: "Bfrtip",
-                buttons: [
-                  { extend: 'copy', className: 'btn btn-sm' },
-                  { extend: 'csv', className: 'btn btn-success' },
-                  { extend: 'excel', className: 'btn btn-success' },
-                  { extend: 'pdf', className: 'btn btn-danger',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL',
-                    customize: function (doc) {
-                      doc.defaultStyle.fontSize = 10;              
-                      doc.styles.tableHeader.fontSize = 11;        
-                      doc.styles.tableHeader.alignment = 'left'
-                      const colCount = doc.content[1].table.body[0].length;
-                      doc.content[1].table.widths = Array(colCount).fill('*');
-                    }
-                  },
+              // Initialize DataTable for this year's entries with a small delay to ensure DOM is ready
+              if (yearEntries.length > 0) {
+                setTimeout(() => {
+                  try {
+                    const tableElement = document.getElementById(`archivedTable${year}`);
+                    if (tableElement && tableElement.querySelector('tbody') && tableElement.querySelector('tbody').children.length > 0) {
+                $(`#archivedTable${year}`).DataTable({
+                  dom: "Bfrtip",
+                  buttons: [
+                    { extend: 'copy', className: 'btn btn-sm' },
+                    { extend: 'csv', className: 'btn btn-success' },
+                    { extend: 'excel', className: 'btn btn-success' },
+                    { extend: 'pdf', className: 'btn btn-danger',
+                      orientation: 'landscape',
+                      pageSize: 'LEGAL',
+                      customize: function (doc) {
+                        doc.defaultStyle.fontSize = 10;              
+                        doc.styles.tableHeader.fontSize = 11;        
+                        doc.styles.tableHeader.alignment = 'left'
+                        const colCount = doc.content[1].table.body[0].length;
+                        doc.content[1].table.widths = Array(colCount).fill('*');
+                      }
+                    },
                   { extend: 'print', className: 'btn btn-primary' }
                 ],
                 pageLength: 10,
@@ -2417,6 +2646,14 @@
                   search: "Search entries:",
                 },
               });
+                 } else {
+                   console.log(`Table archivedTable${year} has no data or invalid structure`);
+                 }
+               } catch (error) {
+                 console.error(`Error initializing DataTable for year ${year}:`, error);
+               }
+               }, 100); // Small delay to ensure DOM is ready
+               }
             });
 
             // Add event listener for year selector
@@ -2487,8 +2724,8 @@
               </div>
             </div>
             <div class="row mb-3">
-              <div class="col-md-6 onset-md-6">
-                <strong>Archived On:</strong> ${entry.archivedOn}
+              <div class="col-md-6">
+                <strong>Archived On:</strong> ${entry.archivedAt ? new Date(entry.archivedAt).toLocaleString() : 'N/A'}
               </div>
             </div>
             <div class="mb-3">
@@ -2537,6 +2774,7 @@
             loadArchivedEntries();
             break;
           case "historySection":
+            console.log("Loading history section...");
             loadHistory();
             break;
           case "profileSection":
@@ -2588,6 +2826,14 @@
         .addEventListener("click", function (e) {
           e.preventDefault();
           handleNavigation("profileSection");
+        });
+
+      // Add event listener for history refresh button
+      document.addEventListener("click", function(e) {
+        if (e.target && e.target.id === "refreshHistoryBtn") {
+          e.preventDefault();
+          loadHistory();
+        }
         });
 
       // Function to load documents
@@ -2692,6 +2938,13 @@
           const monthlyCtx = document
             .getElementById("monthlyLettersChart")
             .getContext("2d");
+          
+          // Destroy existing chart if it exists
+          const existingMonthlyChart = Chart.getChart("monthlyLettersChart");
+          if (existingMonthlyChart) {
+            existingMonthlyChart.destroy();
+          }
+          
           new Chart(monthlyCtx, {
             type: "bar",
             data: {
@@ -2740,6 +2993,13 @@
 
           // Create letter type distribution chart (pie chart)
           const letterTypeCtx = document.getElementById("letterTypeChart").getContext("2d");
+          
+          // Destroy existing chart if it exists
+          const existingLetterTypeChart = Chart.getChart("letterTypeChart");
+          if (existingLetterTypeChart) {
+            existingLetterTypeChart.destroy();
+          }
+          
           new Chart(letterTypeCtx, {
             type: "pie",
             data: {
@@ -2930,9 +3190,24 @@
 
       // Function to load history
       function loadHistory() {
-        // Check if DataTable is already initialized
-        if ($.fn.DataTable.isDataTable("#historyTable")) {
+        console.log("loadHistory function called");
+        
+        // Check if history table exists
+        const historyTable = document.getElementById("historyTable");
+        if (!historyTable) {
+          console.error("History table not found in DOM");
+          showErrorAlert("History table not found. Please refresh the page.");
+          return;
+        }
+        
+        // Check if DataTable is already initialized and destroy it safely
+        try {
+          if (typeof $ !== 'undefined' && $.fn.DataTable && $.fn.DataTable.isDataTable("#historyTable")) {
           $("#historyTable").DataTable().destroy();
+          }
+        } catch (destroyError) {
+          console.warn("Error destroying existing DataTable:", destroyError);
+          // Continue anyway, the new initialization will handle it
         }
 
         // Show loading state
@@ -2945,18 +3220,47 @@
           },
         });
 
+        // Check if Firebase is properly initialized
+        if (!database) {
+          console.error("Firebase database not initialized");
+          Swal.close();
+          showErrorAlert("Database connection error. Please refresh the page.");
+          return;
+        }
+
         database
           .ref("logs")
-          .on("value", (snapshot) => {
+          .once("value")
+          .then((snapshot) => {
             const logs = snapshot.val();
             const tbody = document.querySelector("#historyTable tbody");
+            
+            if (!tbody) {
+              console.error("History table tbody not found");
+              Swal.close();
+              showErrorAlert("History table not found. Please refresh the page.");
+              return;
+            }
+            
             tbody.innerHTML = "";
 
-            if (logs) {
-              Object.entries(logs).forEach(([key, log]) => {
-                // Format timestamp
+            if (logs && Object.keys(logs).length > 0) {
+              // Convert logs object to array and sort by timestamp
+              const logsArray = Object.entries(logs).map(([key, log]) => ({
+                key,
+                ...log
+              })).sort((a, b) => b.timestamp - a.timestamp);
+
+              logsArray.forEach((log) => {
+                try {
+                  // Format timestamp with error handling
+                  let formattedTimestamp = "Invalid Date";
+                  let timestampValue = 0;
+                  if (log.timestamp) {
                 const date = new Date(log.timestamp);
-                const formattedTimestamp = date.toLocaleString('en-US', {
+                    if (!isNaN(date.getTime())) {
+                      timestampValue = date.getTime();
+                      formattedTimestamp = date.toLocaleString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric',
@@ -2965,23 +3269,131 @@
                   second: '2-digit',
                   hour12: true
                 });
+                    }
+                  }
+
+                  // Ensure all values are properly escaped and safe
+                  const safeUser = (log.user || "Unknown User").replace(/[<>]/g, '');
+                  const safeAction = (log.action || "Unknown Action").replace(/[<>]/g, '');
+                  const safeDetails = (log.details || "No details").replace(/[<>]/g, '');
+                  const safeControlNumber = (log.controlNumber || "-").replace(/[<>]/g, '');
 
                 const row = document.createElement("tr");
                 row.innerHTML = `
-                  <td>${formattedTimestamp}</td>
-                  <td>${log.user}</td>
-                  <td>${log.action}</td>
-                  <td>${log.details}</td>
-                  <td>${log.controlNumber || "-"}</td>
-                `;
+                    <td data-order="${timestampValue}">${formattedTimestamp}</td>
+                    <td>${safeUser}</td>
+                    <td>${safeAction}</td>
+                    <td>${safeDetails}</td>
+                    <td>${safeControlNumber}</td>
+                  `;
+                  
+                  // Verify the row was created properly before appending
+                  if (row && row.children && row.children.length === 5) {
                 tbody.appendChild(row);
+                  } else {
+                    console.error("Invalid row structure created for log:", log);
+                  }
+                } catch (error) {
+                  console.error("Error processing log entry:", error, log);
+                }
               });
+            } else {
+              // Show message when no logs are found
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td colspan="5" class="text-center text-muted">
+                  <i class="bi bi-clock-history fs-1 mb-3 d-block"></i>
+                  <p>No history records found</p>
+                  <small>Activity logs will appear here once actions are performed in the system.</small>
+                </td>
+              `;
+              
+              // Verify the row was created properly before appending
+              if (row && tbody) {
+                tbody.appendChild(row);
+              } else {
+                console.error("Error creating no-data row or tbody not found");
+              }
             }
 
-            // Initialize DataTable
-            $("#historyTable").DataTable({
-              dom: "Bfrtip",
-              buttons: [
+            // Initialize DataTable with error handling
+            try {
+              // Ensure the table element exists and is ready
+              const historyTable = document.getElementById("historyTable");
+              if (!historyTable) {
+                console.error("History table element not found");
+                Swal.close();
+                return;
+              }
+
+              // Ensure jQuery and DataTables are loaded
+              if (typeof $ === 'undefined') {
+                console.error("jQuery not loaded");
+                Swal.close();
+                return;
+              }
+              
+              if (!$.fn.DataTable) {
+                console.error("DataTables not loaded");
+                Swal.close();
+                return;
+              }
+              
+              // Check for required DataTables plugins
+              if (!$.fn.dataTable.Buttons) {
+                console.warn("DataTables Buttons plugin not loaded - buttons will not work");
+              }
+              
+              if (!$.fn.dataTable.ext.buttons) {
+                console.warn("DataTables Buttons extension not loaded - buttons will not work");
+              }
+
+              // Destroy existing DataTable if it exists
+              if ($.fn.DataTable.isDataTable("#historyTable")) {
+                $("#historyTable").DataTable().destroy();
+              }
+
+              // Small delay to ensure DOM is ready
+              setTimeout(() => {
+                try {
+                  // Additional verification before initialization
+                  const tableElement = document.getElementById("historyTable");
+                  const thead = tableElement.querySelector("thead");
+                  const tbody = tableElement.querySelector("tbody");
+                  
+                  if (!thead || !tbody) {
+                    console.error("Table structure incomplete - missing thead or tbody");
+                    return;
+                  }
+                  
+                  console.log("Initializing DataTable for history table...");
+                  
+                  // Start with basic configuration and add features progressively
+                  const dataTableConfig = {
+                    pageLength: 10,
+                    order: [[0, "desc"]], // Sort by Timestamp column (index 0) in descending order - latest first
+                    destroy: true,
+                    language: {
+                      search: "Search history:",
+                      emptyTable: "No history records found",
+                      zeroRecords: "No matching history records found"
+                    },
+                    columnDefs: [
+                      { width: "20%", targets: 0 }, // Timestamp
+                      { width: "15%", targets: 1 }, // User
+                      { width: "10%", targets: 2 }, // Action
+                      { width: "40%", targets: 3 }, // Details
+                      { width: "15%", targets: 4 }  // Control Number
+                    ],
+                    initComplete: function() {
+                      console.log("History DataTable initialized successfully");
+                    }
+                  };
+                  
+                  // Add buttons if available
+                  if ($.fn.dataTable.Buttons && $.fn.dataTable.ext.buttons) {
+                    dataTableConfig.dom = "Bfrtip";
+                    dataTableConfig.buttons = [
                 { extend: 'copy', className: 'btn btn-sm' },
                 { extend: 'csv', className: 'btn btn-success' },
                 { extend: 'excel', className: 'btn btn-success' },
@@ -2997,21 +3409,30 @@
                     }
                   },
                 { extend: 'print', className: 'btn btn-primary' }
-              ],
-              pageLength: 10,
-              order: [[0, "desc"]],
-              destroy: true,
-              language: {
-                search: "Search history:",
-              },
-              columnDefs: [
-                { width: "20%", targets: 0 }, // Timestamp
-                { width: "15%", targets: 1 }, // User
-                { width: "10%", targets: 2 }, // Action
-                { width: "40%", targets: 3 }, // Details
-                { width: "15%", targets: 4 }  // Control Number
-              ],
-            });
+                    ];
+                  } else {
+                    dataTableConfig.dom = "frtip"; // No buttons
+                  }
+                  
+                  $("#historyTable").DataTable(dataTableConfig);
+                } catch (innerError) {
+                  console.error("Error in DataTable initialization:", innerError);
+                  
+                  // Fallback: Add basic table styling if DataTable fails
+                  try {
+                    const table = document.getElementById("historyTable");
+                    if (table) {
+                      table.classList.add("table-striped", "table-bordered");
+                      console.log("Applied fallback table styling");
+                    }
+                  } catch (fallbackError) {
+                    console.error("Error applying fallback styling:", fallbackError);
+                  }
+                }
+              }, 100);
+            } catch (error) {
+              console.error("Error initializing DataTable:", error);
+            }
 
             // Close loading state
             Swal.close();
@@ -3055,8 +3476,9 @@
 
       // Function to load profile
       function loadProfile() {
-        const user = firebase.auth().currentUser;
-        if (!user) return;
+        // Get the logged-in email from storage
+        const loggedInEmail = sessionStorage.getItem('receivingLoggedInUserEmail') || localStorage.getItem('receivingLoggedInUserEmail') || '';
+        if (!loggedInEmail) return;
 
         // Show loading state
         Swal.fire({
@@ -3068,42 +3490,61 @@
           },
         });
 
-        // Fetch user data from database
-        database.ref('users/' + user.uid).once('value').then((snapshot) => {
-          const userData = snapshot.val();
-          if (userData) {
-            // Update profile information
-            document.getElementById("profileName").textContent = `${userData.firstName} ${userData.lastName}`;
-            document.getElementById("profileRole").textContent = userData.role;
+        // Use logged-in user data
+        const userData = {
+          firstName: 'Receiving',
+          lastName: '',
+          email: loggedInEmail,
+          role: 'Staff'
+        };
+
+            // Update profile information with null checks
+            const profileNameElement = document.getElementById("profileName");
+            const profileRoleElement = document.getElementById("profileRole");
+            const firstNameElement = document.getElementById("firstName");
+            const lastNameElement = document.getElementById("lastName");
+            const emailElement = document.getElementById("email");
+            const roleSelect = document.getElementById("role");
+            const profileImageElement = document.getElementById("profileImage");
+
+            if (profileNameElement) {
+              profileNameElement.textContent = `${userData.firstName || ''} ${userData.lastName || ''}`.trim() || 'No Name Set';
+            }
+            
+            if (profileRoleElement) {
+              profileRoleElement.textContent = userData.role || 'No Role Set';
+            }
             
             // Update form fields
-            document.getElementById("firstName").value = userData.firstName;
-            document.getElementById("lastName").value = userData.lastName;
-            document.getElementById("email").value = userData.email || "admin@centralcomm.com";
-            document.getElementById("phone").value = userData.phone || "";
-            document.getElementById("department").value = userData.department || "";
-            document.getElementById("position").value = userData.position || "";
+            if (firstNameElement) {
+              firstNameElement.value = userData.firstName || '';
+            }
+            
+            if (lastNameElement) {
+              lastNameElement.value = userData.lastName || '';
+            }
+            
+            if (emailElement) {
+          emailElement.value = userData.email || '';
+            }
             
             // Set role and disable it if it exists
-            const roleSelect = document.getElementById("role");
+            if (roleSelect) {
             if (userData.role) {
               roleSelect.value = userData.role;
               roleSelect.disabled = true;
             } else {
               roleSelect.disabled = false;
+              }
             }
 
             // Update profile image if available
-            if (user.photoURL) {
-              document.getElementById("profileImage").src = user.photoURL;
+        if (profileImageElement) {
+          // Use a default profile image or leave empty
+          profileImageElement.src = 'assets/images/logo.png'; // Default logo as profile image
             }
-          }
+
           Swal.close();
-        }).catch((error) => {
-          console.error("Error loading profile:", error);
-          Swal.close();
-          showErrorAlert("Error loading profile. Please try again.");
-        });
       }
 
       // Initialize the dashboard on page load
@@ -3127,40 +3568,94 @@
           "Yes, sign out"
         ).then((result) => {
           if (result.isConfirmed) {
-            // Sign out from Firebase
-            firebase
-              .auth()
-              .signOut()
-              .then(() => {
-                // Clear any session data
-                sessionStorage.clear();
-                localStorage.clear();
+            // Clear session data for this specific section
+            sessionStorage.removeItem('receiving_section_auth');
+            localStorage.removeItem('receiving_section_auth');
+            
+                    // Clear stored user email
+        sessionStorage.removeItem('receivingLoggedInUserEmail');
+        localStorage.removeItem('receivingLoggedInUserEmail');
+            
+            // Store sign out timestamp to prevent immediate redirect
+            sessionStorage.setItem('receiving_signout_time', Date.now().toString());
 
-                // Redirect to selection page
-                window.location.href = "../pages/selection.html";
-              })
-              .catch((error) => {
-                console.error("Error signing out:", error);
-                showErrorAlert("Error signing out. Please try again.");
-              });
+            // Redirect to selection page
+            window.location.href = "../pages/selection.html";
           }
         });
       }
 
       // Check authentication state
       firebase.auth().onAuthStateChanged((user) => {
+        // Check if user was signed out from this specific section
+        const signoutTime = sessionStorage.getItem('receiving_signout_time');
+        const currentTime = Date.now();
+        
+        // If signout was within the last 5 seconds, don't redirect back
+        if (signoutTime && (currentTime - parseInt(signoutTime)) < 5000) {
+          return;
+        }
+        
+        // Clean up old signout timestamp
+        if (signoutTime && (currentTime - parseInt(signoutTime)) >= 5000) {
+          sessionStorage.removeItem('receiving_signout_time');
+        }
+        
+        // Check if user has access to receiving section first
+          const receivingAuth = sessionStorage.getItem('receiving_section_auth') || localStorage.getItem('receiving_section_auth');
+        
+          if (!receivingAuth) {
+            // User doesn't have access to this section, redirect to selection
+            window.location.href = "../pages/selection.html";
+            return;
+          }
+        
         if (!user) {
           // If no user is signed in, redirect to selection page
           window.location.href = "../pages/selection.html";
         } else if (user) {
-          // Set the current user's email
-          document.getElementById("email").value = user.email || "";
-          document.getElementById("currentUserEmail").textContent = user.email || "";
+                  // Get user email from session storage (set during login) or fallback to Firebase user
+        const loggedInEmail = sessionStorage.getItem('receivingLoggedInUserEmail') || localStorage.getItem('receivingLoggedInUserEmail') || user.email || "";
+          
+          // Set the current user's email immediately from storage
+          document.getElementById("email").value = loggedInEmail;
+          document.getElementById("currentUserEmailreceiving").textContent = loggedInEmail;
           
           // Fetch user details from database
           database.ref('users/' + user.uid).once('value').then((snapshot) => {
             const userData = snapshot.val();
+            console.log('User data from database:', userData); // Debug log
             if (userData) {
+              // Check if user has appropriate role and department for receiving section
+              const allowedRoles = ['Receiving', 'Receiving Staff', 'Receiving Administrator', 'Staff', 'Administrator'];
+              const allowedDepartments = ['Receiving Division'];
+              
+              if (!allowedRoles.includes(userData.role)) {
+                // User doesn't have appropriate role for receiving section
+                Swal.fire({
+                  title: 'Access Denied',
+                  text: 'You do not have the appropriate role to access the Receiving Section.',
+                  icon: 'error',
+                  confirmButtonColor: '#dc3545'
+                }).then(() => {
+                  window.location.href = "../pages/selection.html";
+                });
+                return;
+              }
+              
+              if (!allowedDepartments.includes(userData.department)) {
+                // User doesn't have appropriate department for receiving section
+                Swal.fire({
+                  title: 'Access Denied',
+                  text: 'You do not have permission to access the Receiving Section. Only Receiving Division users are allowed.',
+                  icon: 'error',
+                  confirmButtonColor: '#dc3545'
+                }).then(() => {
+                  window.location.href = "../pages/selection.html";
+                });
+                return;
+              }
+              
               // Check if profile is complete (has first name, last name, and role)
               const isProfileComplete = userData.firstName && userData.lastName && userData.role;
               
@@ -3182,8 +3677,10 @@
                         <label for="initialRole" class="form-label">Role</label>
                         <select class="form-select" id="initialRole" required>
                           <option value="">Select Role</option>
-                          <option value="Administrator">Administrator</option>
+                          <option value="Receiving Staff">Receiving Staff</option>
+                          <option value="Receiving Administrator">Receiving Administrator</option>
                           <option value="Staff">Staff</option>
+                          <option value="Administrator">Administrator</option>
                         </select>
                       </div>
                     </form>
@@ -3304,7 +3801,7 @@
         });
 
         // Create user with Firebase Auth
-        auth
+        firebase.auth()
           .createUserWithEmailAndPassword(email, password)
           .then((userCredential) => {
             const user = userCredential.user;
@@ -3463,12 +3960,7 @@
         updateStatusOptions(initialType);
       });
 
-      // Add this function near the top of the script section
-      function getCurrentYear() {
-        return new Date().getFullYear();
-      }
-
-         // Function to handle search in accordion tables
+      // Function to handle search in accordion tables
          function initializeSearch() {
         const currentYear = getCurrentYear();
         const months = [
@@ -3566,9 +4058,36 @@
 
       // Function to initialize DataTable for a specific month
       function initializeDataTable(monthKey, tableId, data) {
+        // Check if the table element exists
+        const tableElement = document.getElementById(tableId);
+        if (!tableElement) {
+          console.error(`Table element with ID ${tableId} not found for ${monthKey}`);
+          return null;
+        }
+        
+        // Check if jQuery and DataTable are available
+        if (typeof $ === 'undefined' || !$.fn.DataTable) {
+          console.error('jQuery or DataTable not available');
+          return null;
+        }
+        
+        // Validate data
+        if (!Array.isArray(data)) {
+          console.error(`Invalid data format for ${monthKey}: expected array, got ${typeof data}`);
+          return null;
+        }
+        
         // Destroy existing DataTable if it exists
         if ($.fn.DataTable.isDataTable(`#${tableId}`)) {
           $(`#${tableId}`).DataTable().destroy();
+        }
+        
+        // Ensure table has proper structure
+        const thead = tableElement.querySelector('thead');
+        const tbody = tableElement.querySelector('tbody');
+        if (!thead || !tbody) {
+          console.error(`Table structure incomplete for ${monthKey}: missing thead or tbody`);
+          return null;
         }
 
         // Extract month name from monthKey (e.g., "may2024" -> "May")
@@ -3577,7 +4096,9 @@
         const title = `${monthName} ${currentYear} - Receiving Section Dashboard`;
 
         // Initialize new DataTable with export buttons at the top (like archives)
-        const table = $(`#${tableId}`).DataTable({
+        let table;
+        try {
+          table = $(`#${tableId}`).DataTable({
           data: data,
           columns: [
             { 
@@ -3684,238 +4205,28 @@
             { width: "8%", targets: 11 }
           ]
         });
+        } catch (error) {
+          console.error(`Error initializing DataTable for ${monthKey}:`, error);
+          return null;
+        }
 
         // Add search functionality
         const searchInput = document.getElementById(`search${monthKey}`);
-        if (searchInput) {
+        if (searchInput && table) {
           searchInput.addEventListener('keyup', function() {
             table.search(this.value).draw();
           });
         }
 
         // After DataTable initialization, style the buttons
+        if (table) {
         $(`#${tableId}_wrapper .dt-buttons`).addClass('btn-group flex-wrap mb-2');
+        }
 
         return table;
       }
 
-      // Update the loadEntries function to use the new initialization
-      function loadEntries() {
-        const currentYear = getCurrentYear();
-        entriesRef.on("value", (snapshot) => {
-          const entries = snapshot.val();
-          const accordionContainer = document.getElementById("monthlyStatsAccordion");
 
-          // Create months array
-          const months = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-          ];
-          const now = new Date();
-          const currentMonthIdx = now.getMonth();
-         // Only include months up to and including the current month, in descending order
-          const visibleMonths = months.slice(0, currentMonthIdx + 1).reverse();
-
-          // Clear existing content
-          accordionContainer.innerHTML = "";
-
-          // Create empty accordion items for visible months in descending order
-            visibleMonths.forEach((month) => {
-            const monthKey = `${month.toLowerCase()}${currentYear}`;
-            const accordionItem = document.createElement("div");
-            accordionItem.className = "accordion-item border-0 mb-2";
-            accordionItem.id = `accordion-${monthKey}`;
-            accordionItem.innerHTML = `
-              <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${monthKey}" title="Expand/collapse month details">
-                  <div class="d-flex justify-content-between align-items-center w-100">
-                    <div>
-                      <span class="fw-bold">${month} ${currentYear}</span>
-                    </div>
-                    <div class="text-muted small">
-                      <i class="bi bi-arrow-down-circle me-1"></i>
-                      Click to view details
-                    </div>
-                  </div>
-                </button>
-              </h2>
-              <div id="${monthKey}" class="accordion-collapse collapse" data-bs-parent="#monthlyStatsAccordion">
-                <div class="accordion-body">
-                  <div class="text-center">
-                    <div class="spinner-border text-primary" role="status">
-                      <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-2">Loading data for ${month} ${currentYear}...</p>
-                  </div>
-                </div>
-              </div>
-            `;
-            accordionContainer.appendChild(accordionItem);
-          });
-
-          // Then populate each month's data as it arrives
-            visibleMonths.forEach((month) => {
-            const monthKey = `${month.toLowerCase()}${currentYear}`;
-            const tableId = `monthly-stats-table-${monthKey}`;
-
-            // Get monthly data
-            database
-              .ref(`monthlyData/${monthKey}`)
-              .once("value", (monthlySnapshot) => {
-                const monthlyData = monthlySnapshot.val() || {
-                  total: 0,
-                  complaints: 0,
-                  proposals: 0,
-                  invitations: 0,
-                  requests: 0,
-                  entries: [],
-                };
-
-                // Get entries for this month
-                const monthEntries = monthlyData.entries
-                  .map((key) => {
-                    const entry = entries[key];
-                    return entry ? { key, ...entry } : null;
-                  })
-                  .filter((entry) => entry && entry.status !== "Archived");
-
-                // Calculate statistics including archived entries
-                const stats = {
-                  complaints: 0,
-                  proposals: 0,
-                  invitations: 0,
-                  requests: 0,
-                  total: 0
-                };
-
-                // Count only non-archived entries
-                monthlyData.entries.forEach(key => {
-                  const entry = entries[key];
-                  if (entry && entry.status !== "Archived") {
-                    stats.total++;
-                    const type = entry.type.toLowerCase();
-                    if (type === 'complaint') stats.complaints++;
-                    else if (type === 'proposal') stats.proposals++;
-                    else if (type === 'invitation') stats.invitations++;
-                    else if (type === 'request') stats.requests++;
-                  }
-                });
-
-                // Calculate percentage for each type based on total
-                function getTypePercent(count, total) {
-                  if (total === 0) return 0;
-                  return Math.round((count / total) * 100);
-                }
-                const complaintsPercent = getTypePercent(stats.complaints, stats.total);
-                const proposalsPercent = getTypePercent(stats.proposals, stats.total);
-                const invitationsPercent = getTypePercent(stats.invitations, stats.total);
-                const requestsPercent = getTypePercent(stats.requests, stats.total);
-
-                // Sort entries by date
-                monthEntries.sort((a, b) => {
-                  return new Date(b.dateReceived) - new Date(a.dateReceived);
-                });
-
-                // Update the accordion item with the data
-                const accordionBody = document.querySelector(
-                  `#${monthKey} .accordion-body`
-                );
-                if (accordionBody) {
-                  accordionBody.innerHTML = `
-                    <!-- ${month} Statistics -->
-                    <div class="row mb-4">
-                      <div class="col-md-3">
-                        <div class="card bg-primary bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-primary">Complaints</h6>
-                            <h2 class="card-text">${stats.complaints}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-primary">
-                                <i class="bi bi-arrow-up me-1"></i>${complaintsPercent}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-warning bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-warning">Proposals</h6>
-                            <h2 class="card-text">${stats.proposals}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-warning">
-                                <i class="bi bi-arrow-up me-1"></i>${proposalsPercent}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-info bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-info">Invitations</h6>
-                            <h2 class="card-text">${stats.invitations}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-info">
-                                <i class="bi bi-arrow-up me-1"></i>${invitationsPercent}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-3">
-                        <div class="card bg-warning bg-opacity-10">
-                          <div class="card-body">
-                            <h6 class="card-title text-success">Requests</h6>
-                            <h2 class="card-text">${stats.requests}</h2>
-                            <div class="d-flex align-items-center">
-                              <span class="trend-indicator trend-up text-success">
-                                <i class="bi bi-arrow-up me-1"></i>${requestsPercent}%
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="table-responsive">
-                      <table class="table table-hover monthly-stats-table" id="${tableId}">
-                        <thead>
-                          <tr>
-                            <th>#</th>
-                            <th>Control Number</th>
-                            <th>Type</th>
-                            <th>File</th>
-                            <th>Time Received</th>
-                            <th>Date Received</th>
-                            <th>From</th>
-                            <th>Office</th>
-                            <th>Subject</th>
-                            <th>Endorsed To</th>
-                            <th>Remarks</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                      </table>
-                    </div>
-                  `;
-
-                  // Initialize DataTable with the data
-                  setTimeout(() => {
-                    try {
-                      console.log(`Initializing table for ${month} with data:`, monthEntries);
-                      initializeDataTable(monthKey, tableId, monthEntries);
-                    } catch (error) {
-                      console.error(`Error initializing DataTable for ${month}:`, error);
-                    }
-                  }, 100);
-                }
-              });
-          });
-        });
-      }
 
       // === ARCHIVES FILTER LOGIC ===
 

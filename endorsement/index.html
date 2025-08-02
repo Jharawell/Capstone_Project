@@ -1651,22 +1651,38 @@
 
       // Function to log activity
       function logActivity(action, details, controlNumber) {
-        const user = firebase.auth().currentUser;
-        const logData = {
-          timestamp: firebase.database.ServerValue.TIMESTAMP,
-          user: user ? user.email : "admin@centralcomm.com",
-          action: action,
-          details: details,
-          controlNumber: controlNumber,
-          ipAddress: "127.0.0.1", // Replace with actual IP when available
-        };
+        try {
+          // Get section-specific user
+          const sectionUser = getSectionUser();
+          
+          const logData = {
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            user: sectionUser.email,
+            action: action || "unknown",
+            details: details || "No details provided",
+            controlNumber: controlNumber || "N/A",
+            ipAddress: "127.0.0.1", // Replace with actual IP when available
+            section: "endorsement" // Add section identifier
+          };
 
-        database
-          .ref("logs")
-          .push(logData)
-          .catch((error) => {
-            console.error("Error logging activity:", error);
-          });
+          // Check if database is available
+          if (!database) {
+            console.error("Database not available for logging activity");
+            return;
+          }
+
+          database
+            .ref("logs")
+            .push(logData)
+            .then(() => {
+              console.log("Activity logged successfully:", action, details);
+            })
+            .catch((error) => {
+              console.error("Error logging activity:", error);
+            });
+        } catch (error) {
+          console.error("Error in logActivity function:", error);
+        }
       }
 
       // Function to show success alert
@@ -2057,40 +2073,58 @@
           return;
         }
 
-        entriesRef.child(key)
-          .update(formData)
-          .then(() => {
-            logActivity(
-              "update",
-              `Updated entry: ${formData.subject}`,
-              formData.controlNumber
-            );
-
-            showSuccessAlert("Entry updated successfully!");
-            const modal = bootstrap.Modal.getInstance(
-              document.getElementById("editEntryModal")
-            );
-            modal.hide();
-
-            // Send email notification to client
-            sendStatusUpdateEmail(formData);
-
-            const entryDate = new Date(formData.dateReceived);
-            const monthKey = entryDate.toLocaleString("default", { month: "long" }).toLowerCase() + entryDate.getFullYear();
-            loadEntries();
-            setTimeout(() => {
-              const accordionButton = document.querySelector(
-                `button[data-bs-target="#${monthKey}"]`
-              );
-              if (accordionButton) {
-                accordionButton.click();
+        // Get the previous status before updating
+        entriesRef.child(key).once("value", (snapshot) => {
+          const previousEntry = snapshot.val();
+          const previousStatus = previousEntry ? previousEntry.status : "Unknown";
+          const newStatus = formData.status;
+          
+          // Update the entry
+          entriesRef.child(key)
+            .update(formData)
+            .then(() => {
+              // Log with more specific details for status changes
+              if (previousStatus !== newStatus) {
+                logActivity(
+                  "status_update",
+                  `Status changed from "${previousStatus}" to "${newStatus}" for entry: ${formData.subject}`,
+                  formData.controlNumber
+                );
+              } else {
+                logActivity(
+                  "update",
+                  `Updated entry: ${formData.subject}`,
+                  formData.controlNumber
+                );
               }
-            }, 500);
-          })
-          .catch((error) => {
-            console.error("Error updating entry:", error);
-            showErrorAlert("Error updating entry. Please try again.");
-          });
+
+              showSuccessAlert("Entry updated successfully!");
+              
+              const modal = bootstrap.Modal.getInstance(
+                document.getElementById("editEntryModal")
+              );
+              modal.hide();
+
+              // Send email notification to client
+              sendStatusUpdateEmail(formData);
+
+              const entryDate = new Date(formData.dateReceived);
+              const monthKey = entryDate.toLocaleString("default", { month: "long" }).toLowerCase() + entryDate.getFullYear();
+              loadEntries();
+              setTimeout(() => {
+                const accordionButton = document.querySelector(
+                  `button[data-bs-target="#${monthKey}"]`
+                );
+                if (accordionButton) {
+                  accordionButton.click();
+                }
+              }, 500);
+            })
+            .catch((error) => {
+              console.error("Error updating entry:", error);
+              showErrorAlert("Error updating entry. Please try again.");
+            });
+        });
       });
 
       // Update profile form submission
@@ -2120,7 +2154,7 @@
             document.getElementById("currentUserRole").textContent = profileData.role;
             
               showSuccessAlert("Profile updated successfully!");
-            logActivity("profile_update", "Updated profile information", user.uid);
+            // logActivity("profile_update", "Updated profile information", "N/A"); // Removed - not entry-related
             })
             .catch((error) => {
               console.error("Error updating profile:", error);
@@ -2155,7 +2189,7 @@
           })
           .then(() => {
           showSuccessAlert("Password updated successfully!");
-            logActivity("password_change", "Changed password", user.uid);
+            // logActivity("password_change", "Changed password", "N/A"); // Removed - not entry-related
           document.getElementById("passwordForm").reset();
           })
           .catch((error) => {
@@ -2288,8 +2322,88 @@
           });
         });
 
+      // Section-specific user management
+      const SECTION_NAME = "endorsement";
+      const DEFAULT_EMAIL = "endorsement@endorsement.com";
+      const DEFAULT_NAME = "Endorsement";
+      const DEFAULT_ROLE = "Endorsement Staff";
+
+      // Function to get section-specific user info
+      function getSectionUser() {
+        const sectionUser = localStorage.getItem(`sectionUser_${SECTION_NAME}`);
+        if (sectionUser) {
+          return JSON.parse(sectionUser);
+        }
+        return {
+          email: DEFAULT_EMAIL,
+          name: DEFAULT_NAME,
+          role: DEFAULT_ROLE
+        };
+      }
+
+      // Function to set section-specific user info
+      function setSectionUser(userInfo) {
+        localStorage.setItem(`sectionUser_${SECTION_NAME}`, JSON.stringify(userInfo));
+        updateUserDisplay(userInfo);
+      }
+
+      // Function to update user display
+      function updateUserDisplay(userInfo) {
+        const currentUserEmailElement = document.getElementById("currentUserEmailendorsement");
+        const currentUserNameElement = document.getElementById("currentUserName");
+        const currentUserRoleElement = document.getElementById("currentUserRole");
+        
+        if (currentUserEmailElement) {
+          currentUserEmailElement.textContent = userInfo.email;
+        }
+        if (currentUserNameElement) {
+          currentUserNameElement.textContent = userInfo.name;
+        }
+        if (currentUserRoleElement) {
+          currentUserRoleElement.textContent = userInfo.role;
+        }
+      }
+
+      // Function to validate section access
+      function validateSectionAccess() {
+        const currentUser = getSectionUser();
+        const allowedEmails = [
+          "endorsement@endorsement.com",
+          "admin@centralcomm.com",
+          "cmobaguio2600@gmail.com"
+        ];
+        
+        if (!allowedEmails.includes(currentUser.email)) {
+          console.warn("User not authorized for endorsement section:", currentUser.email);
+          // You can redirect or show warning here
+        }
+      }
+
       // Load entries and check for archiving when page loads
       document.addEventListener("DOMContentLoaded", function () {
+        // Initialize section-specific user management
+        const sectionUser = getSectionUser();
+        updateUserDisplay(sectionUser);
+        validateSectionAccess();
+
+        // Initialize Firebase auth state listener (for logging purposes only)
+        firebase.auth().onAuthStateChanged(function(user) {
+          if (user) {
+            console.log("Firebase user signed in:", user.email);
+            // Only update if it's an admin user
+            if (user.email === "admin@centralcomm.com" || user.email === "cmobaguio2600@gmail.com") {
+              setSectionUser({
+                email: user.email,
+                name: "Admin",
+                role: "Administrator"
+              });
+            }
+          } else {
+            console.log("No Firebase user signed in");
+            // Keep section-specific user info
+          }
+        });
+
         checkAndArchiveEntries();
         loadEntries();
       });
@@ -2427,7 +2541,7 @@
                   { extend: 'print', className: 'btn btn-primary' }
                 ],
                 pageLength: 10,
-                order: [[3, "desc"]],
+                order: [[0, "desc"]], // Sort by Control Number column (index 0) in descending order
                 destroy: true,
                 language: {
                   search: "Search entries:",
@@ -2704,6 +2818,17 @@
             "lowestVolumeMonth"
           ).textContent = `${monthlyStats.lowestVolume.month} (${monthlyStats.lowestVolume.count})`;
 
+          // Destroy existing charts before creating new ones
+          const existingMonthlyChart = Chart.getChart("monthlyLettersChart");
+          if (existingMonthlyChart) {
+            existingMonthlyChart.destroy();
+          }
+          
+          const existingLetterTypeChart = Chart.getChart("letterTypeChart");
+          if (existingLetterTypeChart) {
+            existingLetterTypeChart.destroy();
+          }
+
           // Create monthly letters chart
           const monthlyCtx = document
             .getElementById("monthlyLettersChart")
@@ -2961,95 +3086,98 @@
           },
         });
 
-        database
-          .ref("logs")
-          .on("value", (snapshot) => {
-            const logs = snapshot.val();
-            const tbody = document.querySelector("#historyTable tbody");
-            tbody.innerHTML = "";
+        try {
+          database
+            .ref("logs")
+            .on("value", (snapshot) => {
+              try {
+                const logs = snapshot.val();
+                const tbody = document.querySelector("#historyTable tbody");
+                tbody.innerHTML = "";
 
-            if (logs) {
-              // Fetch all entries to check endorsedTo
-              database.ref('entries').once('value', (entriesSnapshot) => {
-                const entries = entriesSnapshot.val() || {};
-                Object.entries(logs).forEach(([key, log]) => {
-                  // Only show if the related entry is endorsed to PLD
-                  let show = false;
-                  if (log.controlNumber) {
-                    // Find entry by controlNumber
-                    const entry = Object.values(entries).find(e => e.controlNumber === log.controlNumber);
-                    if (entry && entry.endorsedTo === 'PLD') show = true;
-                  }
-                  // Optionally, show logs not tied to a controlNumber (e.g., system logs)
-                  // if (!log.controlNumber) show = true;
-                  if (show) {
-                    const date = new Date(log.timestamp);
-                    const formattedTimestamp = date.toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: true
-                    });
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                      <td>${formattedTimestamp}</td>
-                      <td>${log.user}</td>
-                      <td>${log.action}</td>
-                      <td>${log.details}</td>
-                      <td>${log.controlNumber || "-"}</td>
-                    `;
-                    tbody.appendChild(row);
-                  }
-                });
-              });
-            }
-
-            // Initialize DataTable
-            $("#historyTable").DataTable({
-              dom: "Bfrtip",
-              buttons: [
-                { extend: 'copy', className: 'btn btn-sm' },
-                { extend: 'csv', className: 'btn btn-success' },
-                { extend: 'excel', className: 'btn btn-success' },
-                { extend: 'pdf', className: 'btn btn-danger',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL',
-                    customize: function (doc) {
-                      doc.defaultStyle.fontSize = 10;              
-                      doc.styles.tableHeader.fontSize = 11;        
-                      doc.styles.tableHeader.alignment = 'left'
-                      const colCount = doc.content[1].table.body[0].length;
-                      doc.content[1].table.widths = Array(colCount).fill('*');
+                if (logs) {
+                  // Show all logs without filtering by endorsedTo
+                  Object.entries(logs).forEach(([key, log]) => {
+                    try {
+                      const date = new Date(log.timestamp);
+                      const timestampValue = date.getTime();
+                      const formattedTimestamp = date.toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: true
+                      });
+                      const row = document.createElement("tr");
+                      row.innerHTML = `
+                        <td data-order="${timestampValue}">${formattedTimestamp}</td>
+                        <td>${log.user}</td>
+                        <td>${log.action}</td>
+                        <td>${log.details}</td>
+                        <td>${log.controlNumber || "-"}</td>
+                      `;
+                      tbody.appendChild(row);
+                    } catch (error) {
+                      console.error("Error processing log entry:", error, log);
                     }
-                  },
-                { extend: 'print', className: 'btn btn-primary' }
-              ],
-              pageLength: 10,
-              order: [[0, "desc"]],
-              destroy: true,
-              language: {
-                search: "Search history:",
-              },
-              columnDefs: [
-                { width: "20%", targets: 0 }, // Timestamp
-                { width: "15%", targets: 1 }, // User
-                { width: "10%", targets: 2 }, // Action
-                { width: "40%", targets: 3 }, // Details
-                { width: "15%", targets: 4 }  // Control Number
-              ],
-            });
+                  });
+                }
 
-            // Close loading state
-            Swal.close();
-          })
-          .catch((error) => {
-            console.error("Error loading history:", error);
-            Swal.close();
-            showErrorAlert("Error loading history. Please try again.");
-          });
+                // Initialize DataTable
+                $("#historyTable").DataTable({
+                  dom: "Bfrtip",
+                  buttons: [
+                    { extend: 'copy', className: 'btn btn-sm' },
+                    { extend: 'csv', className: 'btn btn-success' },
+                    { extend: 'excel', className: 'btn btn-success' },
+                    { extend: 'pdf', className: 'btn btn-danger',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        customize: function (doc) {
+                          doc.defaultStyle.fontSize = 10;              
+                          doc.styles.tableHeader.fontSize = 11;        
+                          doc.styles.tableHeader.alignment = 'left'
+                          const colCount = doc.content[1].table.body[0].length;
+                          doc.content[1].table.widths = Array(colCount).fill('*');
+                        }
+                      },
+                    { extend: 'print', className: 'btn btn-primary' }
+                  ],
+                  pageLength: 10,
+                  order: [[0, "desc"]], // Sort by Timestamp column (index 0) in descending order - latest first
+                  destroy: true,
+                  language: {
+                    search: "Search history:",
+                  },
+                  columnDefs: [
+                    { width: "20%", targets: 0 }, // Timestamp
+                    { width: "15%", targets: 1 }, // User
+                    { width: "10%", targets: 2 }, // Action
+                    { width: "40%", targets: 3 }, // Details
+                    { width: "15%", targets: 4 }  // Control Number
+                  ],
+                });
+
+                // Close loading state
+                Swal.close();
+              } catch (error) {
+                console.error("Error processing logs:", error);
+                Swal.close();
+                showErrorAlert("Error processing history data. Please try again.");
+              }
+            }, (error) => {
+              // Error callback for the .on() listener
+              console.error("Error loading history:", error);
+              Swal.close();
+              showErrorAlert("Error loading history. Please try again.");
+            });
+        } catch (error) {
+          console.error("Error setting up history listener:", error);
+          Swal.close();
+          showErrorAlert("Error setting up history. Please try again.");
+        }
       }
 
       // Function to view audit log details
@@ -3084,8 +3212,8 @@
 
       // Function to load profile
       function loadProfile() {
-        const user = firebase.auth().currentUser;
-        if (!user) return;
+        const sectionUser = getSectionUser();
+        if (!sectionUser) return;
 
         // Show loading state
         Swal.fire({
@@ -3097,42 +3225,72 @@
           },
         });
 
-        // Fetch user data from database
-        database.ref('users/' + user.uid).once('value').then((snapshot) => {
-          const userData = snapshot.val();
-          if (userData) {
-            // Update profile information
-            document.getElementById("profileName").textContent = `${userData.firstName} ${userData.lastName}`;
-            document.getElementById("profileRole").textContent = userData.role;
-            
-            // Update form fields
-            document.getElementById("firstName").value = userData.firstName;
-            document.getElementById("lastName").value = userData.lastName;
-            document.getElementById("email").value = userData.email || "admin@centralcomm.com";
-            document.getElementById("phone").value = userData.phone || "";
-            document.getElementById("department").value = userData.department || "";
-            document.getElementById("position").value = userData.position || "";
-            
-            // Set role and disable it if it exists
-            const roleSelect = document.getElementById("role");
-            if (userData.role) {
-              roleSelect.value = userData.role;
-              roleSelect.disabled = true;
-            } else {
-              roleSelect.disabled = false;
-            }
+        // Use section-specific user data
+        const userData = {
+          firstName: sectionUser.name.split(' ')[0] || '',
+          lastName: sectionUser.name.split(' ').slice(1).join(' ') || '',
+          email: sectionUser.email,
+          role: sectionUser.role,
+          phone: '',
+          department: '',
+          position: ''
+        };
 
-            // Update profile image if available
-            if (user.photoURL) {
-              document.getElementById("profileImage").src = user.photoURL;
-            }
+        // Update profile information
+        const profileNameElement = document.getElementById("profileName");
+        const profileRoleElement = document.getElementById("profileRole");
+        const firstNameElement = document.getElementById("firstName");
+        const lastNameElement = document.getElementById("lastName");
+        const emailElement = document.getElementById("email");
+        const phoneElement = document.getElementById("phone");
+        const departmentElement = document.getElementById("department");
+        const positionElement = document.getElementById("position");
+        const roleSelect = document.getElementById("role");
+        const profileImageElement = document.getElementById("profileImage");
+
+        if (profileNameElement) {
+          profileNameElement.textContent = `${userData.firstName} ${userData.lastName}`;
+        }
+        if (profileRoleElement) {
+          profileRoleElement.textContent = userData.role;
+        }
+        
+        // Update form fields
+        if (firstNameElement) {
+          firstNameElement.value = userData.firstName;
+        }
+        if (lastNameElement) {
+          lastNameElement.value = userData.lastName;
+        }
+        if (emailElement) {
+          emailElement.value = userData.email;
+        }
+        if (phoneElement) {
+          phoneElement.value = userData.phone;
+        }
+        if (departmentElement) {
+          departmentElement.value = userData.department;
+        }
+        if (positionElement) {
+          positionElement.value = userData.position;
+        }
+        
+        // Set role and disable it if it exists
+        if (roleSelect) {
+          if (userData.role) {
+            roleSelect.value = userData.role;
+            roleSelect.disabled = true;
+          } else {
+            roleSelect.disabled = false;
           }
-          Swal.close();
-        }).catch((error) => {
-          console.error("Error loading profile:", error);
-          Swal.close();
-          showErrorAlert("Error loading profile. Please try again.");
-        });
+        }
+
+        // Update profile image if available
+        if (profileImageElement) {
+          profileImageElement.src = 'assets/images/logo.png'; // Default logo as profile image
+        }
+
+        Swal.close();
       }
 
       // Initialize the dashboard on page load
@@ -3156,35 +3314,56 @@
           "Yes, sign out"
         ).then((result) => {
           if (result.isConfirmed) {
-            // Sign out from Firebase
-            firebase
-              .auth()
-              .signOut()
-              .then(() => {
-                // Clear any session data
-                sessionStorage.clear();
-                localStorage.clear();
+            // Clear session data for this specific section
+            sessionStorage.removeItem('endorsement_section_auth');
+            localStorage.removeItem('endorsement_section_auth');
+            
+                    // Clear stored user email
+        sessionStorage.removeItem('endorsementLoggedInUserEmail');
+        localStorage.removeItem('endorsementLoggedInUserEmail');
+            
+            // Store sign out timestamp to prevent immediate redirect
+            sessionStorage.setItem('endorsement_signout_time', Date.now().toString());
 
-                // Redirect to selection page
-                window.location.href = "../pages/selection.html";
-              })
-              .catch((error) => {
-                console.error("Error signing out:", error);
-                showErrorAlert("Error signing out. Please try again.");
-              });
+            // Redirect to selection page
+            window.location.href = "../pages/selection.html";
           }
         });
       }
 
       // Check authentication state
       firebase.auth().onAuthStateChanged((user) => {
+        // Check if user was signed out from this specific section
+        const signoutTime = sessionStorage.getItem('endorsement_signout_time');
+        const currentTime = Date.now();
+        
+        // If signout was within the last 5 seconds, don't redirect back
+        if (signoutTime && (currentTime - parseInt(signoutTime)) < 5000) {
+          return;
+        }
+        
+        // Clean up old signout timestamp
+        if (signoutTime && (currentTime - parseInt(signoutTime)) >= 5000) {
+          sessionStorage.removeItem('endorsement_signout_time');
+        }
+        
         if (!user) {
           // If no user is signed in, redirect to selection page
           window.location.href = "../pages/selection.html";
         } else if (user) {
-          // Set the current user's email
-          document.getElementById("email").value = user.email || "";
-          document.getElementById("currentUserEmail").textContent = user.email || "";
+          // Check if user has access to endorsement section
+          const endorsementAuth = sessionStorage.getItem('endorsement_section_auth') || localStorage.getItem('endorsement_section_auth');
+          if (!endorsementAuth) {
+            // User doesn't have access to this section, redirect to selection
+            window.location.href = "../pages/selection.html";
+            return;
+          }
+                  // Get user email from session storage (set during login) or fallback to Firebase user
+        const loggedInEmail = sessionStorage.getItem('endorsementLoggedInUserEmail') || localStorage.getItem('endorsementLoggedInUserEmail') || user.email || "";
+          
+          // Set the current user's email immediately from storage
+          document.getElementById("email").value = loggedInEmail;
+          document.getElementById("currentUserEmailendorsement").textContent = loggedInEmail;
           
           // Fetch user details from database
           database.ref('users/' + user.uid).once('value').then((snapshot) => {
@@ -3253,9 +3432,17 @@
                         });
                       })
                       .then(() => {
-                        // Update UI with new user info
-                        document.getElementById("currentUserName").textContent = `${firstName} ${lastName}`;
-                        document.getElementById("currentUserRole").textContent = role;
+                        // Update UI with new user info - with null checks
+                        const currentUserNameElement = document.getElementById("currentUserName");
+                        const currentUserRoleElement = document.getElementById("currentUserRole");
+                        
+                        if (currentUserNameElement) {
+                          currentUserNameElement.textContent = `${firstName} ${lastName}`;
+                        }
+                        
+                        if (currentUserRoleElement) {
+                          currentUserRoleElement.textContent = role;
+                        }
                         
                         // Show success message
                         Swal.fire({
@@ -3272,21 +3459,38 @@
                   }
                 });
               } else {
-                // Profile is complete, update UI normally
-                document.getElementById("currentUserName").textContent = `${userData.firstName} ${userData.lastName}`;
-                document.getElementById("currentUserRole").textContent = userData.role;
+                // Profile is complete, update UI normally - with null checks
+                const currentUserNameElement = document.getElementById("currentUserName");
+                const currentUserRoleElement = document.getElementById("currentUserRole");
+                const userAvatarElement = document.getElementById("userAvatar");
+                
+                if (currentUserNameElement) {
+                  currentUserNameElement.textContent = `${userData.firstName} ${userData.lastName}`;
+                }
+                
+                if (currentUserRoleElement) {
+                  currentUserRoleElement.textContent = userData.role;
+                }
                 
                 // Update user avatar if available
-                if (user.photoURL) {
-                  document.getElementById("userAvatar").src = user.photoURL;
+                if (user.photoURL && userAvatarElement) {
+                  userAvatarElement.src = user.photoURL;
                 }
               }
             }
           }).catch((error) => {
             console.error("Error fetching user data:", error);
-            // Fallback to basic user info
-            document.getElementById("currentUserName").textContent = user.displayName || user.email;
-            document.getElementById("currentUserRole").textContent = "User";
+            // Fallback to basic user info - with null checks
+            const currentUserNameElement = document.getElementById("currentUserName");
+            const currentUserRoleElement = document.getElementById("currentUserRole");
+            
+            if (currentUserNameElement) {
+              currentUserNameElement.textContent = user.displayName || user.email;
+            }
+            
+            if (currentUserRoleElement) {
+              currentUserRoleElement.textContent = "User";
+            }
           });
         }
       });

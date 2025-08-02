@@ -2451,57 +2451,82 @@
           }
         });
 
-        database.ref('logs').on('value', (snapshot) => {
-          const logs = snapshot.val();
-          const tbody = document.querySelector('#historyTable tbody');
-          tbody.innerHTML = '';
+        try {
+          database.ref('logs').on('value', (snapshot) => {
+            try {
+              const logs = snapshot.val();
+              const tbody = document.querySelector('#historyTable tbody');
+              tbody.innerHTML = '';
 
-          if (logs) {
-            Object.entries(logs).forEach(([key, log]) => {
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>${formatDate(log.timestamp)}</td>
-                <td>${log.user}</td>
-                <td>${log.action}</td>
-                <td>${log.details}</td>
-                <td>${log.controlNumber || '-'}</td>
-                <td>${log.ipAddress || '-'}</td>
-                <td class="small text-muted">${log.userAgent || '-'}</td>
-              `;
-              tbody.appendChild(row);
-            });
-          }
+              if (logs) {
+                Object.entries(logs).forEach(([key, log]) => {
+                  const date = new Date(log.timestamp);
+                  const timestampValue = date.getTime();
+                  const formattedTimestamp = date.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                  });
+                  
+                  const row = document.createElement('tr');
+                  row.innerHTML = `
+                    <td data-order="${timestampValue}">${formattedTimestamp}</td>
+                    <td>${log.user}</td>
+                    <td>${log.action}</td>
+                    <td>${log.details}</td>
+                    <td>${log.controlNumber || '-'}</td>
+                    <td>${log.ipAddress || '-'}</td>
+                    <td class="small text-muted">${log.userAgent || '-'}</td>
+                  `;
+                  tbody.appendChild(row);
+                });
+              }
 
-          // Initialize DataTable
-          $('#historyTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-              'copy', 'csv', 'excel', 'pdf', 'print'
-            ],
-            pageLength: 10,
-            order: [[0, 'desc']],
-            destroy: true,
-            language: {
-              search: "Search history:"
-            },
-            columnDefs: [
-              { width: '15%', targets: 0 },
-              { width: '10%', targets: 1 },
-              { width: '10%', targets: 2 },
-              { width: '25%', targets: 3 },
-              { width: '10%', targets: 4 },
-              { width: '15%', targets: 5 },
-              { width: '15%', targets: 6 }
-            ]
+              // Initialize DataTable
+              $('#historyTable').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                  'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                pageLength: 10,
+                order: [[0, 'desc']], // Sort by Timestamp column (index 0) in descending order - latest first
+                destroy: true,
+                language: {
+                  search: "Search history:"
+                },
+                columnDefs: [
+                  { width: '15%', targets: 0 },
+                  { width: '10%', targets: 1 },
+                  { width: '10%', targets: 2 },
+                  { width: '25%', targets: 3 },
+                  { width: '10%', targets: 4 },
+                  { width: '15%', targets: 5 },
+                  { width: '15%', targets: 6 }
+                ]
+              });
+
+              // Close loading state
+              Swal.close();
+            } catch (error) {
+              console.error('Error processing logs:', error);
+              Swal.close();
+              showErrorAlert('Error processing history data. Please try again.');
+            }
+          }, (error) => {
+            // Error callback for the .on() listener
+            console.error('Error loading history:', error);
+            Swal.close();
+            showErrorAlert('Error loading history. Please try again.');
           });
-
-          // Close loading state
+        } catch (error) {
+          console.error('Error setting up history listener:', error);
           Swal.close();
-        }).catch((error) => {
-          console.error('Error loading history:', error);
-          Swal.close();
-          showErrorAlert('Error loading history. Please try again.');
-        });
+          showErrorAlert('Error setting up history. Please try again.');
+        }
       }
 
       // Function to view audit log details

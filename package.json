@@ -1,16 +1,26 @@
 {
+  "name": "centralcomm-system",
+  "version": "2.0.0",
+  "description": "Enhanced Central Communication System with comprehensive error handling",
+  "main": "assets/js/firebase-config.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint js/ assets/js/",
+    "lint:fix": "eslint js/ assets/js/ --fix",
+    "start": "live-server --port=3000"
+  },
   "dependencies": {
     "firebase": "^11.6.0",
     "firebase-tools": "^14.1.0"
   },
-  "name": "not_capstone_project",
-  "version": "1.0.0",
-  "main": "CentralComm.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "eslint": "^8.56.0",
+    "live-server": "^1.2.2"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "keywords": ["firebase", "document-management", "government", "communication"],
+  "author": "Your Name",
+  "license": "MIT"
 }

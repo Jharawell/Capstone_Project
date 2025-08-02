@@ -332,6 +332,14 @@
               localStorage.removeItem("email");
             }
 
+                            // Store user email in session storage for immediate access on admin dashboard
+                sessionStorage.setItem('adminLoggedInUserEmail', email);
+                localStorage.setItem('adminLoggedInUserEmail', email);
+
+            // Set section-specific auth flag
+            sessionStorage.setItem('admin_section_auth', 'true');
+            localStorage.setItem('admin_section_auth', 'true');
+
             // Redirect to admin dashboard immediately after successful login
             window.location.href = "../admin/index.html";
           })

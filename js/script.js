@@ -1,357 +1,430 @@
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyCaSHRLbIRWW8COl5iwHb19dMDYYLJ2DIk",
-  authDomain: "centralcomm-248a9.firebaseapp.com",
-  databaseURL: "https://centralcomm-248a9-default-rtdb.firebaseio.com",
-  projectId: "centralcomm-248a9",
-  storageBucket: "centralcomm-248a9.firebasestorage.app",
-  messagingSenderId: "796912003621",
-  appId: "1:796912003621:web:0d6fd82e43399871a9edcc",
-  measurementId: "G-CN0S9L5YV4"
-};
+// Enhanced Main Script with Comprehensive Error Handling
 
-// Initialize Firebase if not already initialized
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+// Wait for Firebase to be initialized
+document.addEventListener('DOMContentLoaded', function() {
+  if (!firebaseManager.isInitialized) {
+    console.error('Firebase not initialized');
+    return;
+  }
+  
+  initializeApplication();
+});
 
-const database = firebase.database();
-const entriesRef = database.ref('entries');
-
-// Function to preview next control number without incrementing
-function previewNextControlNumber(date) {
-  return new Promise((resolve, reject) => {
-    const d = new Date(date);
-    const year = String(d.getFullYear()).slice(-2);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const dateKey = `${year}${day}${month}`;
+function initializeApplication() {
+  try {
+    // Initialize all event listeners with error handling
+    initializeEventListeners();
     
-    // Get the current count for this date from Firebase
-    database.ref('controlNumbers').child(dateKey).once('value')
-      .then((snapshot) => {
-        let count = snapshot.val() || 0;
-        resolve(`${dateKey}-${count + 1}/100`);
-      })
-      .catch((error) => {
-        console.error('Error previewing control number:', error);
-        reject(error);
-      });
-  });
-}
-
-// Function to generate and save control number
-function generateControlNumber(date) {
-  return new Promise((resolve, reject) => {
-    const d = new Date(date);
-    const year = String(d.getFullYear()).slice(-2);
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const dateKey = `${year}${day}${month}`;
+    // Load initial data
+    loadEntries();
     
-    // Get the current count for this date from Firebase
-    database.ref('controlNumbers').child(dateKey).once('value')
-      .then((snapshot) => {
-        let count = snapshot.val() || 0;
-        count++;
-        
-        // Update the count in Firebase
-        return database.ref('controlNumbers').child(dateKey).set(count)
-          .then(() => {
-            const controlNumber = `${dateKey}-${count}/100`;
-            // Store the generated control number
-            return database.ref('generatedControlNumbers').push({
-              controlNumber: controlNumber,
-              date: date,
-              timestamp: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => {
-              resolve(controlNumber);
-            });
-          });
-      })
-      .catch((error) => {
-        console.error('Error generating control number:', error);
-        reject(error);
-      });
-  });
-}
-
-// Function to check and archive old entries
-function checkAndArchiveEntries() {
-  // Show loading state
-  Swal.fire({
-    title: 'Checking Entries',
-    text: 'Please wait while we check for entries to archive...',
-    allowOutsideClick: false,
-    didOpen: () => {
-      Swal.showLoading();
-    }
-  });
-
-  const currentYear = new Date().getFullYear();
-  entriesRef.once('value', (snapshot) => {
-    const entries = snapshot.val();
-    if (entries) {
-      let archivedCount = 0;
-      let totalToArchive = 0;
-
-      // First count how many entries need to be archived
-      Object.entries(entries).forEach(([_, entry]) => {
-        const entryYear = new Date(entry.dateReceived).getFullYear();
-        if (currentYear === 2025 && entryYear < 2025 && entry.status !== 'Archived') {
-          totalToArchive++;
-        }
-      });
-
-      if (totalToArchive === 0) {
-        Swal.close();
-        return;
-      }
-
-      // Update loading message
-      Swal.update({
-        title: 'Archiving Entries',
-        html: `Archiving ${totalToArchive} entries...`
-      });
-
-      // Archive each entry
-      Object.entries(entries).forEach(([key, entry]) => {
-        const entryYear = new Date(entry.dateReceived).getFullYear();
-        if (currentYear === 2025 && entryYear < 2025 && entry.status !== 'Archived') {
-          entriesRef.child(key).update({
-            status: 'Archived',
-            archivedAt: firebase.database.ServerValue.TIMESTAMP
-          })
-          .then(() => {
-            archivedCount++;
-            logActivity('archive', `Archived entry from ${entryYear}: ${entry.subject}`, entry.controlNumber);
-            
-            // Update progress
-            if (archivedCount === totalToArchive) {
-              Swal.fire({
-                title: 'Success!',
-                text: `Successfully archived ${archivedCount} entries!`,
-                icon: 'success',
-                confirmButtonColor: '#2e7d32'
-              });
-            }
-          })
-          .catch((error) => {
-            console.error('Error archiving entry:', error);
-            Swal.fire({
-              title: 'Error!',
-              text: 'Error archiving entries. Please try again.',
-              icon: 'error',
-              confirmButtonColor: '#dc3545'
-            });
-          });
-        }
-      });
-    }
-    Swal.close();
-  }).catch((error) => {
-    console.error('Error checking entries:', error);
-    Swal.close();
-    showErrorAlert('Error checking entries. Please try again.');
-  });
-}
-
-// Function to load entries into the table
-function loadEntries() {
-  const currentYear = new Date().getFullYear();
-  entriesRef.on('value', (snapshot) => {
-    const entries = snapshot.val();
-    const accordionContainer = document.getElementById('monthlyStatsAccordion');
+    // Check for archiving
+    checkAndArchiveEntries();
     
-    // Create months array
-    const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-
-    // Clear existing content
-    accordionContainer.innerHTML = '';
-
-    // Create accordion structure for all months
-    months.forEach(month => {
-      const monthKey = `${month.toLowerCase()}${currentYear}`;
-      const monthEntries = entries ? Object.entries(entries)
-        .filter(([_, entry]) => {
-          try {
-            const date = new Date(entry.dateReceived);
-            if (isNaN(date.getTime())) return false;
-            const entryMonth = date.toLocaleString('default', { month: 'long' });
-            const entryYear = date.getFullYear();
-            // Only show non-archived entries
-            return entryMonth === month && entryYear === currentYear && entry.status !== 'Archived';
-          } catch (error) {
-            console.error('Error processing entry:', error);
-            return false;
-          }
-        })
-        .map(([key, entry]) => ({ key, ...entry })) : [];
-
-      // Sort entries by date
-      monthEntries.sort((a, b) => {
-        return new Date(b.dateReceived) - new Date(a.dateReceived);
-      });
-
-      // Calculate statistics (only for non-archived entries)
-      const stats = {
-        complaints: monthEntries.filter(e => e.type === 'Complaint').length,
-        proposals: monthEntries.filter(e => e.type === 'Proposal').length,
-        invitations: monthEntries.filter(e => e.type === 'Invitation').length,
-        requests: monthEntries.filter(e => e.type === 'Request').length
-      };
-
-      // Create accordion item
-      const accordionItem = document.createElement('div');
-      accordionItem.className = 'accordion-item border-0 mb-2';
-      accordionItem.innerHTML = `
-        <h2 class="accordion-header">
-          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${monthKey}">
-            <div class="d-flex justify-content-between align-items-center w-100">
-              <div>
-                <span class="fw-bold">${month} ${currentYear}</span>
-                <span class="badge bg-success ms-2">Active</span>
-              </div>
-              <div class="text-muted small">
-                <i class="bi bi-arrow-down-circle me-1"></i>
-                Click to view details
-              </div>
-            </div>
-          </button>
-        </h2>
-        <div id="${monthKey}" class="accordion-collapse collapse" data-bs-parent="#monthlyStatsAccordion">
-          <div class="accordion-body">
-            <!-- ${month} Statistics -->
-            <div class="row mb-4">
-              <div class="col-md-3">
-                <div class="card bg-primary bg-opacity-10">
-                  <div class="card-body">
-                    <h6 class="card-title text-primary">Complaints</h6>
-                    <h2 class="card-text">${stats.complaints}</h2>
-                    <div class="d-flex align-items-center">
-                      <span class="trend-indicator trend-up text-primary">
-                        <i class="bi bi-arrow-up me-1"></i>0%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="card bg-warning bg-opacity-10">
-                  <div class="card-body">
-                    <h6 class="card-title text-warning">Proposals</h6>
-                    <h2 class="card-text">${stats.proposals}</h2>
-                    <div class="d-flex align-items-center">
-                      <span class="trend-indicator trend-up text-warning">
-                        <i class="bi bi-arrow-up me-1"></i>0%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="card bg-info bg-opacity-10">
-                  <div class="card-body">
-                    <h6 class="card-title text-info">Invitations</h6>
-                    <h2 class="card-text">${stats.invitations}</h2>
-                    <div class="d-flex align-items-center">
-                      <span class="trend-indicator trend-up text-info">
-                        <i class="bi bi-arrow-up me-1"></i>0%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="card bg-success bg-opacity-10">
-                  <div class="card-body">
-                    <h6 class="card-title text-success">Requests</h6>
-                    <h2 class="card-text">${stats.requests}</h2>
-                    <div class="d-flex align-items-center">
-                      <span class="trend-indicator trend-up text-success">
-                        <i class="bi bi-arrow-up me-1"></i>0%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="table-responsive">
-              <table class="table table-hover monthly-stats-table">
-                <thead>
-                  <tr>
-                    <th>Control #</th>
-                    <th>Type</th>
-                    <th>Time Received</th>
-                    <th>Date Received</th>
-                    <th>From</th>
-                    <th>Office</th>
-                    <th>Subject</th>
-                    <th>Endorsed To</th>
-                    <th>Remarks</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${monthEntries.length > 0 ? monthEntries.map(entry => `
-                    <tr>
-                      <td>${entry.controlNumber}</td>
-                      <td>${entry.type}</td>
-                      <td>${entry.timeReceived}</td>
-                      <td>${formatDate(entry.dateReceived)}</td>
-                      <td>${entry.from}</td>
-                      <td>${entry.office}</td>
-                      <td>${entry.subject}</td>
-                      <td>${entry.endorsedTo}</td>
-                      <td>${entry.remarks || ''}</td>
-                      <td><span class="badge bg-${getStatusColor(entry.status)}">${entry.status}</span></td>
-                      <td>
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editEntryModal" onclick="editEntry('${entry.key}')">
-                          <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn btn-sm btn-danger" onclick="deleteEntry('${entry.key}')">
-                          <i class="bi bi-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                  `).join('') : `
-                    <tr>
-                      <td colspan="11" class="text-center text-muted">No entries for ${month}</td>
-                    </tr>
-                  `}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      `;
-      accordionContainer.appendChild(accordionItem);
+    console.log('Application initialized successfully');
+  } catch (error) {
+    console.error('Application initialization failed:', error);
+    ErrorHandler.safeDOMOperation(() => {
+      firebaseManager.showErrorAlert('Failed to initialize application');
     });
-  });
-}
-
-// Function to get status color
-function getStatusColor(status) {
-  switch(status) {
-    case 'Pending': return 'warning';
-    case 'Processing': return 'info';
-    case 'Completed': return 'success';
-    case 'Archived': return 'secondary';
-    default: return 'primary';
   }
 }
 
-// Function to format date
+// Enhanced control number generation with error handling
+function generateControlNumber(date) {
+  return ErrorHandler.safeFirebaseOperation(async () => {
+    if (!ErrorHandler.isValidDate(date)) {
+      throw new Error('Invalid date provided');
+    }
+
+    const d = new Date(date);
+    const year = String(d.getFullYear()).slice(-2);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const dateKey = `${year}${day}${month}`;
+    
+    const database = firebaseManager.getDatabase();
+    const snapshot = await database.ref('controlNumbers').child(dateKey).once('value');
+    let count = snapshot.val() || 0;
+    count++;
+    
+    await database.ref('controlNumbers').child(dateKey).set(count);
+    
+    const controlNumber = `${dateKey}-${count}/100`;
+    
+    await database.ref('generatedControlNumbers').push({
+      controlNumber: controlNumber,
+      date: date,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+    
+    return controlNumber;
+  }, 'Failed to generate control number');
+}
+
+// Enhanced preview control number function
+function previewNextControlNumber(date) {
+  return ErrorHandler.safeFirebaseOperation(async () => {
+    if (!ErrorHandler.isValidDate(date)) {
+      throw new Error('Invalid date provided');
+    }
+
+    const d = new Date(date);
+    const year = String(d.getFullYear()).slice(-2);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const dateKey = `${year}${day}${month}`;
+    
+    const database = firebaseManager.getDatabase();
+    const snapshot = await database.ref('controlNumbers').child(dateKey).once('value');
+    let count = snapshot.val() || 0;
+    
+    return `${dateKey}-${count + 1}/100`;
+  }, 'Failed to preview control number');
+}
+
+// Enhanced form submission with validation
+function handleFormSubmission(formData, formType = 'entry') {
+  return ErrorHandler.safeFirebaseOperation(async () => {
+    // Sanitize input data
+    const sanitizedData = {};
+    for (const [key, value] of Object.entries(formData)) {
+      sanitizedData[key] = ErrorHandler.sanitizeInput(value);
+    }
+    
+    // Validate form data
+    const rules = VALIDATION_RULES[formType];
+    if (rules) {
+      const errors = ErrorHandler.validateInput(sanitizedData, rules);
+      if (errors.length > 0) {
+        throw new Error('Validation failed: ' + errors.join(', '));
+      }
+    }
+    
+    // Generate control number if needed
+    if (formType === 'entry' && !sanitizedData.controlNumber) {
+      sanitizedData.controlNumber = await generateControlNumber(sanitizedData.dateReceived);
+    }
+    
+    // Add timestamps
+    sanitizedData.createdAt = firebase.database.ServerValue.TIMESTAMP;
+    
+    // Save to database
+    const entriesRef = firebaseManager.getEntriesRef();
+    const result = await entriesRef.push(sanitizedData);
+    
+    // Log activity
+    await logActivity('create', `Created new ${formType}: ${sanitizedData.subject || sanitizedData.firstName}`, sanitizedData.controlNumber);
+    
+    return result;
+  }, 'Failed to save data');
+}
+
+// Enhanced event listener initialization
+function initializeEventListeners() {
+  const eventConfigs = [
+    { id: 'saveEntry', event: 'click', handler: handleSaveEntry },
+    { id: 'updateEntry', event: 'click', handler: handleUpdateEntry },
+    { id: 'searchForm', event: 'submit', handler: handleSearch },
+    { id: 'profileForm', event: 'submit', handler: handleProfileUpdate },
+    { id: 'passwordForm', event: 'submit', handler: handlePasswordChange },
+    { id: 'archiveAllBtn', event: 'click', handler: archiveAllEntries }
+  ];
+  
+  eventConfigs.forEach(config => {
+    const element = getElementSafely(config.id);
+    if (element) {
+      element.addEventListener(config.event, config.handler);
+    }
+  });
+
+  // Navigation event listeners
+  const navigationConfigs = [
+    { id: 'dashboardLink', section: 'dashboardSection' },
+    { id: 'documentsLink', section: 'documentsSection' },
+    { id: 'usersLink', section: 'usersSection' },
+    { id: 'archivesLink', section: 'archivesSection' },
+    { id: 'historyLink', section: 'historySection' },
+    { id: 'profileLink', section: 'profileSection' }
+  ];
+
+  navigationConfigs.forEach(config => {
+    const element = getElementSafely(config.id);
+    if (element) {
+      element.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleNavigation(config.section);
+      });
+    }
+  });
+}
+
+// Enhanced save entry handler
+async function handleSaveEntry(event) {
+  event.preventDefault();
+  
+  try {
+    // Rate limiting
+    ErrorHandler.rateLimit('saveEntry', 5, 60000);
+    
+    const formData = {
+      type: getElementSafely('letterType').value,
+      dateReceived: getElementSafely('dateReceived').value,
+      timeReceived: getElementSafely('timeReceived').value,
+      from: getElementSafely('from').value,
+      office: getElementSafely('office').value,
+      subject: getElementSafely('subject').value,
+      endorsedTo: getElementSafely('endorsedTo').value,
+      remarks: getElementSafely('remarks').value,
+      status: getElementSafely('status').value
+    };
+    
+    await handleFormSubmission(formData, 'entry');
+    
+    // Reset form and show success
+    getElementSafely('createEntryForm').reset();
+    showSuccessAlert('Entry created successfully!');
+    
+    // Close modal
+    const modal = bootstrap.Modal.getInstance(getElementSafely('createEntryModal'));
+    if (modal) modal.hide();
+    
+    // Reload data
+    loadEntries();
+    
+  } catch (error) {
+    console.error('Save entry failed:', error);
+    firebaseManager.showErrorAlert('Failed to save entry: ' + error.message);
+  }
+}
+
+// Enhanced update entry handler
+async function handleUpdateEntry(event) {
+  event.preventDefault();
+  
+  try {
+    const key = getElementSafely('editEntryForm').dataset.key;
+    if (!key) {
+      throw new Error('No entry selected for update');
+    }
+    
+    const formData = {
+      type: getElementSafely('editType').value,
+      controlNumber: getElementSafely('editControlNumber').value,
+      dateReceived: getElementSafely('editDateReceived').value,
+      timeReceived: getElementSafely('editTimeReceived').value,
+      from: getElementSafely('editFrom').value,
+      office: getElementSafely('editOffice').value,
+      subject: getElementSafely('editSubject').value,
+      endorsedTo: getElementSafely('editEndorsedTo').value,
+      remarks: getElementSafely('editRemarks').value,
+      status: getElementSafely('editStatus').value,
+      updatedAt: firebase.database.ServerValue.TIMESTAMP
+    };
+    
+    // Validate control number
+    if (!ErrorHandler.validateControlNumber(formData.controlNumber)) {
+      throw new Error('Invalid control number format');
+    }
+    
+    await ErrorHandler.safeFirebaseOperation(async () => {
+      const entriesRef = firebaseManager.getEntriesRef();
+      await entriesRef.child(key).update(formData);
+      
+      await logActivity('update', `Updated entry: ${formData.subject}`, formData.controlNumber);
+    }, 'Failed to update entry');
+    
+    showSuccessAlert('Entry updated successfully!');
+    
+    // Close modal and reload
+    const modal = bootstrap.Modal.getInstance(getElementSafely('editEntryModal'));
+    if (modal) modal.hide();
+    
+    loadEntries();
+    
+  } catch (error) {
+    console.error('Update entry failed:', error);
+    firebaseManager.showErrorAlert('Failed to update entry: ' + error.message);
+  }
+}
+
+// Enhanced data loading with error handling
+function loadEntries() {
+  ErrorHandler.safeFirebaseOperation(async () => {
+    const entriesRef = firebaseManager.getEntriesRef();
+    const snapshot = await entriesRef.once('value');
+    const entries = snapshot.val();
+    
+    if (!entries) {
+      console.log('No entries found');
+      updateEntriesUI([]);
+      return;
+    }
+    
+    // Process entries with error handling
+    const processedEntries = Object.entries(entries).map(([key, entry]) => {
+      try {
+        return {
+          key,
+          ...entry,
+          formattedDate: formatDate(entry.dateReceived)
+        };
+      } catch (error) {
+        console.error('Error processing entry:', error);
+        return null;
+      }
+    }).filter(entry => entry !== null);
+    
+    // Update UI
+    updateEntriesUI(processedEntries);
+    
+  }, 'Failed to load entries');
+}
+
+// Enhanced UI update function
+function updateEntriesUI(entries) {
+  ErrorHandler.safeDOMOperation(() => {
+    const container = getElementSafely('monthlyStatsAccordion');
+    if (!container) return;
+    
+    // Clear existing content
+    container.innerHTML = '';
+    
+    if (entries.length === 0) {
+      container.innerHTML = '<div class="text-center text-muted p-4">No entries found</div>';
+      return;
+    }
+    
+    // Group entries by month
+    const entriesByMonth = groupEntriesByMonth(entries);
+    
+    // Create UI for each month
+    Object.entries(entriesByMonth).forEach(([month, monthEntries]) => {
+      const monthElement = createMonthElement(month, monthEntries);
+      container.appendChild(monthElement);
+    });
+    
+  }, 'monthlyStatsAccordion');
+}
+
+// Utility functions
+function groupEntriesByMonth(entries) {
+  const groups = {};
+  
+  entries.forEach(entry => {
+    try {
+      const date = new Date(entry.dateReceived);
+      const monthKey = date.toLocaleString('default', { month: 'long' }) + date.getFullYear();
+      
+      if (!groups[monthKey]) {
+        groups[monthKey] = [];
+      }
+      groups[monthKey].push(entry);
+    } catch (error) {
+      console.error('Error grouping entry:', error);
+    }
+  });
+  
+  return groups;
+}
+
+function createMonthElement(month, entries) {
+  const element = document.createElement('div');
+  element.className = 'accordion-item border-0 mb-2';
+  
+  // Calculate statistics
+  const stats = calculateStats(entries);
+  
+  element.innerHTML = `
+    <h2 class="accordion-header">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${month.toLowerCase()}">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <div>
+            <span class="fw-bold">${month}</span>
+            <span class="badge bg-success ms-2">${entries.length} entries</span>
+          </div>
+        </div>
+      </button>
+    </h2>
+    <div id="${month.toLowerCase()}" class="accordion-collapse collapse">
+      <div class="accordion-body">
+        ${createEntriesTable(entries)}
+      </div>
+    </div>
+  `;
+  
+  return element;
+}
+
+function calculateStats(entries) {
+  return {
+    complaints: entries.filter(e => e.type === 'Complaint').length,
+    proposals: entries.filter(e => e.type === 'Proposal').length,
+    invitations: entries.filter(e => e.type === 'Invitation').length,
+    requests: entries.filter(e => e.type === 'Request').length
+  };
+}
+
+function createEntriesTable(entries) {
+  if (entries.length === 0) {
+    return '<p class="text-muted text-center">No entries for this month</p>';
+  }
+  
+  const rows = entries.map(entry => `
+    <tr>
+      <td>${entry.controlNumber || 'N/A'}</td>
+      <td>${entry.type || 'N/A'}</td>
+      <td>${entry.timeReceived || 'N/A'}</td>
+      <td>${entry.formattedDate || 'N/A'}</td>
+      <td>${entry.from || 'N/A'}</td>
+      <td>${entry.office || 'N/A'}</td>
+      <td>${entry.subject || 'N/A'}</td>
+      <td>${entry.endorsedTo || 'N/A'}</td>
+      <td>${entry.remarks || ''}</td>
+      <td><span class="badge bg-${getStatusColor(entry.status)}">${entry.status || 'Pending'}</span></td>
+      <td>
+        <button class="btn btn-sm btn-primary" onclick="editEntry('${entry.key}')">
+          <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="deleteEntry('${entry.key}')">
+          <i class="bi bi-trash"></i>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+  
+  return `
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Control #</th>
+            <th>Type</th>
+            <th>Time Received</th>
+            <th>Date Received</th>
+            <th>From</th>
+            <th>Office</th>
+            <th>Subject</th>
+            <th>Endorsed To</th>
+            <th>Remarks</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+// Enhanced utility functions
 function formatDate(dateString) {
   try {
+    if (!dateString) return 'N/A';
     const date = new Date(dateString);
-    if (isNaN(date.getTime())) {
-      return dateString;
-    }
+    if (isNaN(date.getTime())) return 'Invalid Date';
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
@@ -359,25 +432,38 @@ function formatDate(dateString) {
     });
   } catch (error) {
     console.error('Error formatting date:', error);
-    return dateString;
+    return 'Invalid Date';
   }
 }
 
-// Function to log activity
-function logActivity(action, details, controlNumber) {
-  const logData = {
-    timestamp: firebase.database.ServerValue.TIMESTAMP,
-    user: 'Admin', // Replace with actual user when authentication is implemented
-    action: action,
-    details: details,
-    controlNumber: controlNumber,
-    ipAddress: '127.0.0.1' // Replace with actual IP when available
+function getStatusColor(status) {
+  const statusColors = {
+    'Pending': 'warning',
+    'Processing': 'info',
+    'Completed': 'success',
+    'Archived': 'secondary'
   };
+  return statusColors[status] || 'primary';
+}
 
-  database.ref('logs').push(logData)
-    .catch((error) => {
-      console.error('Error logging activity:', error);
-    });
+// Enhanced activity logging
+async function logActivity(action, details, controlNumber) {
+  try {
+    const logData = {
+      timestamp: firebase.database.ServerValue.TIMESTAMP,
+      user: 'Admin', // TODO: Replace with actual user when authentication is implemented
+      action: action,
+      details: details,
+      controlNumber: controlNumber,
+      ipAddress: '127.0.0.1', // TODO: Replace with actual IP when available
+      userAgent: navigator.userAgent
+    };
+
+    const database = firebaseManager.getDatabase();
+    await database.ref('logs').push(logData);
+  } catch (error) {
+    console.error('Error logging activity:', error);
+  }
 }
 
 // Function to show success alert

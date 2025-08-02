@@ -320,11 +320,47 @@
         auth
           .signInWithEmailAndPassword(email, password)
           .then((userCredential) => {
-            // Check if user is from Receiving Section and has @receiving.com email
+            const userEmail = userCredential.user.email;
+            
+            // First condition: Check if email has @receiving.com domain
+            if (!userEmail.endsWith('@receiving.com')) {
+              Swal.fire({
+                title: "Access Denied",
+                text: "Only @receiving.com email addresses are allowed to access the Receiving Section.",
+                icon: "error",
+                confirmButtonColor: "#dc3545",
+              });
+              return;
+            }
+            
+            // Second condition: Check if user exists in database and has correct department
             firebase.database().ref('users/' + userCredential.user.uid).once('value')
               .then((snapshot) => {
                 const userData = snapshot.val();
-                const userEmail = userCredential.user.email;
+                
+                if (!userData) {
+                  // User not found in database
+                  Swal.fire({
+                    title: "Access Denied",
+                    text: "User account not found in the database. Please contact administrator.",
+                    icon: "error",
+                    confirmButtonColor: "#dc3545",
+                  });
+                  return;
+                }
+                
+                if (userData.department !== 'Receiving Division') {
+                  // User exists but wrong department
+                  Swal.fire({
+                    title: "Access Denied",
+                    text: "Access restricted to Receiving Division users only.",
+                    icon: "error",
+                    confirmButtonColor: "#dc3545",
+                  });
+                  return;
+                }
+                
+                // Both conditions met - grant access
                 if (userData && userData.department === 'Receiving Division' && userEmail.endsWith('@receiving.com')) {
                   // Store remember me preference
                   if (rememberMe) {
@@ -334,6 +370,14 @@
                     localStorage.removeItem("rememberMe");
                     localStorage.removeItem("email");
                   }
+                  
+                                  // Store user email in session storage for immediate access on receiving dashboard
+                sessionStorage.setItem('receivingLoggedInUserEmail', email);
+                localStorage.setItem('receivingLoggedInUserEmail', email);
+                  
+                  // Set section-specific auth flag
+                  sessionStorage.setItem('receiving_section_auth', 'true');
+                  localStorage.setItem('receiving_section_auth', 'true');
 
                   // Show success message
                   Swal.fire({
@@ -349,8 +393,7 @@
                     window.location.href = "../receiving/index.html";
                   });
                 } else {
-                  // Sign out if not receiving section user or wrong email domain
-                  auth.signOut();
+                  // Deny access without signing out to preserve other section logins
                   Swal.fire({
                     title: "Access Denied",
                     text: "Access restricted to @receiving.com email accounts in the Receiving Division.",
