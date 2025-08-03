@@ -4421,21 +4421,30 @@
 
       // === EMAILJS INTEGRATION ===
       // Initialize EmailJS (replace 'YOUR_USER_ID' with your actual EmailJS user ID)
-      emailjs.init('Tp4tK-Kp7Vr1m3Kv6'); // <-- Replace with your EmailJS user ID
+      emailjs.init('mr3lRz__Eu1dWmX1Z');
 
-      // Function to send email notification on status update
       function sendStatusUpdateEmail(entry) {
-        // Use the client email from the entry
-        const clientEmail = entry.fromEmail || "ramosrommel2001@gmail.com";
-        emailjs.send('service_07b62xr', 'template_v65zya9', {
+        // Use the client email from the entry or fallback
+        const clientEmail = entry.fromEmail || "mysagesierra@gmail.com";
+
+        // Send the email using EmailJS
+          emailjs.send("service_zfmf4zb", "template_h3f31qv", {
           to_email: clientEmail,
+          reply_to: clientEmail, // reply-to for email responses
           title: "Document Status Update",
+
+          // 🧩 Template Data — must match your EmailJS placeholders
           controlNumber: entry.controlNumber,
           subject: entry.subject,
           status: entry.status,
           statusRemarks: entry.statusRemarks || "No additional remarks provided.",
           fileUrl: entry.fileUrl || "",
-          email: clientEmail // for Reply To
+
+          // 📨 Additional fields for custom message block
+          name: entry.name || "Unknown Sender",
+          time: entry.time || new Date().toLocaleString(), // fallback to current time
+          message: entry.message || "No message content provided.",
+          email: clientEmail
         })
         .then(function(response) {
           console.log('Email sent!', response.status, response.text);
@@ -4443,7 +4452,6 @@
           console.error('Failed to send email:', error);
         });
       }
-      // ... existing code ...
 
       // Show preview for fileUrl in create modal
       document.getElementById("fileUrl").addEventListener("input", function() {
