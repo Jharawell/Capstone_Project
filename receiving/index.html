@@ -1176,42 +1176,49 @@
                   </div>
                 </div>
               </div>
-              <div class="row mb-3">
-                <div class="col-md-4 mb-3">
-                  <label class="form-label fw-bold" for="filterDateReceived">Date Received</label>
-                  <input type="date" class="form-control" id="filterDateReceived" name="dateReceived">
+                              <div class="row mb-3">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold" for="filterDateFrom">Date Range - From</label>
+                    <input type="date" class="form-control" id="filterDateFrom" name="dateFrom">
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label fw-bold" for="filterDateTo">Date Range - To</label>
+                    <input type="date" class="form-control" id="filterDateTo" name="dateTo">
+                  </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                  <label class="form-label fw-bold" for="filterFrom">From</label>
-                  <select class="form-select" id="filterFrom" name="from">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                  </select>
+                <div class="row mb-3">
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold" for="filterFrom">From</label>
+                    <select class="form-select" id="filterFrom" name="from">
+                      <option value="">All</option>
+                      <!-- Options will be populated dynamically -->
+                    </select>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold" for="filterOffice">Office</label>
+                    <select class="form-select" id="filterOffice" name="office">
+                      <option value="">All</option>
+                      <!-- Options will be populated dynamically -->
+                    </select>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label fw-bold" for="filterEndorsedTo">Endorsed To</label>
+                    <select class="form-select" id="filterEndorsedTo" name="endorsedTo">
+                      <option value="">All</option>
+                      <!-- Options will be populated dynamically -->
+                    </select>
+                  </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                  <label class="form-label fw-bold" for="filterOffice">Office</label>
-                  <select class="form-select" id="filterOffice" name="office">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                  </select>
+                <div class="row mb-3">
+                  <div class="col-md-12 mb-3">
+                    <label class="form-label fw-bold" for="filterStatus">Status</label>
+                    <select class="form-select" id="filterStatus" name="status">
+                      <option value="">All</option>
+                      <!-- Options will be populated dynamically -->
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div class="row mb-3">
-                <div class="col-md-6 mb-3">
-                  <label class="form-label fw-bold" for="filterEndorsedTo">Endorsed To</label>
-                  <select class="form-select" id="filterEndorsedTo" name="endorsedTo">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                  </select>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label class="form-label fw-bold" for="filterStatus">Status</label>
-                  <select class="form-select" id="filterStatus" name="status">
-                    <option value="">All</option>
-                    <!-- Options will be populated dynamically -->
-                  </select>
-                </div>
-              </div>
+
             </form>
           </div>
           <div class="modal-footer">
@@ -1585,14 +1592,7 @@
                     </div>
                   </div>
                   <div class="table-responsive">
-                     <div class="d-flex justify-content-between align-items-center mb-3">
-                      <div class="input-group" style="width: 300px;">
-                        <span class="input-group-text">
-                          <i class="bi bi-search"></i>
-                        </span>
-                        <input type="text" class="form-control" id="search${monthKey}" placeholder="Search entries...">
-                      </div>
-                    </div>
+
 
                     <table class="table table-hover monthly-stats-table" id="monthly-stats-table-${monthKey}">
                       <thead>
@@ -3754,8 +3754,16 @@
                       })
                       .then(() => {
                         // Update UI with new user info
-                        document.getElementById("currentUserName").textContent = `${firstName} ${lastName}`;
-                        document.getElementById("currentUserRole").textContent = role;
+                        const currentUserNameElement = document.getElementById("currentUserName");
+                        const currentUserRoleElement = document.getElementById("currentUserRole");
+                        
+                        if (currentUserNameElement) {
+                          currentUserNameElement.textContent = `${firstName} ${lastName}`;
+                        }
+                        
+                        if (currentUserRoleElement) {
+                          currentUserRoleElement.textContent = role;
+                        }
                         
                         // Show success message
                         Swal.fire({
@@ -3774,20 +3782,39 @@
                 */
               } else {
                 // Profile is complete, update UI normally
-                document.getElementById("currentUserName").textContent = `${userData.firstName} ${userData.lastName}`;
-                document.getElementById("currentUserRole").textContent = userData.role;
+                const currentUserNameElement = document.getElementById("currentUserName");
+                const currentUserRoleElement = document.getElementById("currentUserRole");
+                
+                if (currentUserNameElement) {
+                  currentUserNameElement.textContent = `${userData.firstName} ${userData.lastName}`;
+                }
+                
+                if (currentUserRoleElement) {
+                  currentUserRoleElement.textContent = userData.role;
+                }
                 
                 // Update user avatar if available
                 if (user.photoURL) {
-                  document.getElementById("userAvatar").src = user.photoURL;
+                  const userAvatarElement = document.getElementById("userAvatar");
+                  if (userAvatarElement) {
+                    userAvatarElement.src = user.photoURL;
+                  }
                 }
               }
             }
           }).catch((error) => {
             console.error("Error fetching user data:", error);
             // Fallback to basic user info
-            document.getElementById("currentUserName").textContent = user.displayName || user.email;
-            document.getElementById("currentUserRole").textContent = "User";
+            const currentUserNameElement = document.getElementById("currentUserName");
+            const currentUserRoleElement = document.getElementById("currentUserRole");
+            
+            if (currentUserNameElement) {
+              currentUserNameElement.textContent = user.displayName || user.email;
+            }
+            
+            if (currentUserRoleElement) {
+              currentUserRoleElement.textContent = "User";
+            }
           });
         }
       });
@@ -4316,7 +4343,8 @@
         // Gather filter values
         const months = Array.from(document.querySelectorAll('input[name="months"]:checked')).map(cb => cb.value);
         const types = Array.from(document.querySelectorAll('input[name="letterTypes"]:checked')).map(cb => cb.value);
-        const dateReceived = document.getElementById('filterDateReceived').value;
+        const dateFrom = document.getElementById('filterDateFrom').value;
+        const dateTo = document.getElementById('filterDateTo').value;
         const from = document.getElementById('filterFrom').value;
         const office = document.getElementById('filterOffice').value;
         const endorsedTo = document.getElementById('filterEndorsedTo').value;
@@ -4325,13 +4353,14 @@
         $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
           // Only filter the correct table
           if (settings.nTable.id !== `archivedTable${year}`) return true;
-          // Data columns: 0=Control #, 1=Type, 2=Time, 3=Date, 4=From, 5=Office, 6=Subject, 7=Endorsed To, 8=Remarks, 9=Status
-          const rowType = data[1];
-          const rowDate = data[3];
-          const rowFrom = data[4];
-          const rowOffice = data[5];
-          const rowEndorsedTo = data[7];
-          const rowStatus = $(data[9]).text() || data[9];
+          // Data columns: 0=#, 1=Control #, 2=Type, 3=File, 4=Time, 5=Date, 6=From, 7=Office, 8=Subject, 9=Endorsed To, 10=Remarks, 11=Status, 12=Actions
+          const rowType = data[2];
+          const rowDate = data[5];
+          const rowFrom = data[6];
+          const rowOffice = data[7];
+          const rowEndorsedTo = data[9];
+          // Extract text content from status column (which may contain HTML)
+          const rowStatus = data[11].replace(/<[^>]*>/g, '').trim();
           // Months
           if (months.length > 0) {
             const monthName = rowDate.split(' ')[0];
@@ -4339,12 +4368,23 @@
           }
           // Letter Types
           if (types.length > 0 && !types.includes(rowType)) return false;
-          // Date Received
-          if (dateReceived) {
-            // Try to match YYYY-MM-DD or formatted date
+          // Date Range
+          if (dateFrom || dateTo) {
+            // Convert the formatted date (e.g., "August 1, 2024") back to a Date object
             const rowDateVal = new Date(rowDate);
-            const filterDateVal = new Date(dateReceived);
-            if (rowDateVal.toISOString().slice(0,10) !== dateReceived) return false;
+            
+            // Check if date is within the range
+            if (dateFrom) {
+              const filterDateFrom = new Date(dateFrom);
+              if (rowDateVal < filterDateFrom) return false;
+            }
+            
+            if (dateTo) {
+              const filterDateTo = new Date(dateTo);
+              // Set time to end of day for inclusive comparison
+              filterDateTo.setHours(23, 59, 59, 999);
+              if (rowDateVal > filterDateTo) return false;
+            }
           }
           // From
           if (from && rowFrom !== from) return false;
