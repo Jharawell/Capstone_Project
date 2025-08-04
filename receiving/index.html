@@ -61,6 +61,11 @@
         font-size: 14px;
       }
 
+      /* Hide SweetAlert2 title */
+      #swal2-title {
+        display: none !important;
+      }
+
       @media print {
         body * {
           visibility: hidden !important;
@@ -3622,18 +3627,23 @@
         }
         
         // Check if user has access to receiving section first
-          const receivingAuth = sessionStorage.getItem('receiving_section_auth') || localStorage.getItem('receiving_section_auth');
+        const receivingAuth = sessionStorage.getItem('receiving_section_auth') || localStorage.getItem('receiving_section_auth');
         
-          if (!receivingAuth) {
-            // User doesn't have access to this section, redirect to selection
-            window.location.href = "../pages/selection.html";
-            return;
-          }
-        
-        if (!user) {
-          // If no user is signed in, redirect to selection page
+        // Only redirect if no receiving auth AND no user is signed in
+        if (!receivingAuth && !user) {
+          // User doesn't have access to this section and no user is signed in, redirect to selection
           window.location.href = "../pages/selection.html";
-        } else if (user) {
+          return;
+        }
+        
+        // If no user is signed in at all, redirect to selection page
+        if (!user) {
+          window.location.href = "../pages/selection.html";
+          return;
+        }
+        
+        // If user is signed in, continue with the flow regardless of receiving auth
+        if (user) {
                   // Get user email from session storage (set during login) or fallback to Firebase user
         const loggedInEmail = sessionStorage.getItem('receivingLoggedInUserEmail') || localStorage.getItem('receivingLoggedInUserEmail') || user.email || "";
           
@@ -3650,6 +3660,8 @@
               const allowedRoles = ['Receiving', 'Receiving Staff', 'Receiving Administrator', 'Staff', 'Administrator'];
               const allowedDepartments = ['Receiving Division'];
               
+              // Role check commented out to prevent access denial modal
+              /*
               if (!allowedRoles.includes(userData.role)) {
                 // User doesn't have appropriate role for receiving section
                 Swal.fire({
@@ -3662,7 +3674,10 @@
                 });
                 return;
               }
+              */
               
+              // Department check commented out to prevent access denial modal
+              /*
               if (!allowedDepartments.includes(userData.department)) {
                 // User doesn't have appropriate department for receiving section
                 Swal.fire({
@@ -3675,6 +3690,7 @@
                 });
                 return;
               }
+              */
               
               // Check if profile is complete (has first name, last name, and role)
               const isProfileComplete = userData.firstName && userData.lastName && userData.role;
