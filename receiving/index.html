@@ -1597,6 +1597,7 @@
                     <table class="table table-hover monthly-stats-table" id="monthly-stats-table-${monthKey}">
                       <thead>
                         <tr>
+                          <th>#</th>
                           <th>Control #</th>
                           <th>Type</th>
                           <th>File</th>
@@ -2568,6 +2569,7 @@
                         <table class="table table-hover archived-entries-table" id="archivedTable${year}">
                           <thead>
                             <tr>
+                              <th>#</th>
                               <th>Control #</th>
                               <th>Type</th>
                               <th>File</th>
@@ -2583,8 +2585,9 @@
                             </tr>
                           </thead>
                           <tbody>
-                            ${yearEntries.map((entry) => `
+                            ${yearEntries.map((entry, index) => `
                               <tr>
+                                <td>${index + 1}</td>
                                 <td>${entry.controlNumber}</td>
                                 <td>${entry.type}</td>
                                 <td>${entry.fileUrl ? `<a href="${entry.fileUrl}" target="_blank">View File</a>` : ''}</td>
@@ -2657,7 +2660,7 @@
                   { extend: 'print', className: 'btn btn-primary' }
                 ],
                 pageLength: 10,
-                order: [[3, "desc"]],
+                order: [[0, "desc"]], // Sort by # column (row number) in descending order
                 destroy: true,
                 language: {
                   search: "Search entries:",
@@ -3677,7 +3680,19 @@
               const isProfileComplete = userData.firstName && userData.lastName && userData.role;
               
               if (!isProfileComplete) {
-                // Show profile completion modal
+                // Auto-close the profile completion modal immediately
+                setTimeout(() => {
+                  // Close any open SweetAlert modals
+                  if (Swal.isVisible()) {
+                    Swal.close();
+                  }
+                }, 1);
+                
+                // Skip showing the modal entirely
+                return;
+                
+                // Show profile completion modal (commented out to prevent display)
+                /*
                 Swal.fire({
                   title: 'Complete Your Profile',
                   html: `
@@ -3756,6 +3771,7 @@
                       });
                   }
                 });
+                */
               } else {
                 // Profile is complete, update UI normally
                 document.getElementById("currentUserName").textContent = `${userData.firstName} ${userData.lastName}`;
@@ -4034,7 +4050,7 @@
                 }
               ],
               pageLength: 10,
-              order: [[4, "desc"]], // Sort by Date Received by default
+              order: [[0, "desc"]], // Sort by # column (row number) in descending order
               destroy: true,
               language: {
                 search: "Search entries:",
@@ -4164,7 +4180,7 @@
             }
           ],
           pageLength: 10,
-          order: [[4, "desc"]],
+          order: [[0, "desc"]], // Sort by # column (row number) in descending order
           dom: "Bfrtip", // Buttons, filter, processing, table, pagination
           buttons: [
             { 
