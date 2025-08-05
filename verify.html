@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Access Verification - CentralComm</title>
+    <link rel="shortcut icon" href="assets/images/logo.png" type="image/x-icon" />
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    
+    <!-- EmailJS -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #253B81;
+            --secondary-color: #212932;
+            --text-color: #2F2F2F;
+            --light-bg: #E5F3FE;
+            --light-blue: #6aa1ff;
+            --dark-blue-color: #04111b;
+            --hover-shadow: #658be6;
+            --gradient-start: #253B81;
+            --gradient-end: #3f5cbc;
+            --sec-gradient-end: #213575;
+            --box-shadow: 0 5px 15px rgba(46, 53, 125, 0.3);
+            --card-shadow: 0 4px 6px rgba(63, 95, 199, 0.1);
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, var(--light-bg), white);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .verification-container {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: var(--box-shadow);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo-section {
+            margin-bottom: 2rem;
+        }
+
+        .logo-section img {
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .brand-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .verification-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .verification-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .verification-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .request-details {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(37, 59, 129, 0.1);
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .detail-value {
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .btn-approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
+
+        .btn-deny {
+            background: linear-gradient(135deg, #dc3545, #e74c3c);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+
+        .btn-deny:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+        .status-message {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .expired-message {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .verification-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn-approve, .btn-deny {
+                width: 100%;
+            }
+
+            .detail-item {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="verification-container">
+        <div class="logo-section">
+            <img src="assets/images/logo.png" alt="CentralComm Logo" />
+            <div class="brand-text">CentralComm</div>
+        </div>
+
+        <div id="loading-section">
+            <div class="verification-icon">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <h2 class="verification-title">Verifying Request</h2>
+            <p class="verification-subtitle">Please wait while we verify your access request...</p>
+        </div>
+
+        <div id="verification-section" style="display: none;">
+            <div class="verification-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h2 class="verification-title">Document Access Request</h2>
+            <p class="verification-subtitle">
+                Someone is requesting access to view your document. Please review the details below and choose whether to approve or deny this request.
+            </p>
+
+            <div class="request-details">
+                <div class="detail-item">
+                    <span class="detail-label">Control Number:</span>
+                    <span class="detail-value" id="control-number"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Document Subject:</span>
+                    <span class="detail-value" id="document-subject"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Request Time:</span>
+                    <span class="detail-value" id="request-time"></span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Requester Info:</span>
+                    <span class="detail-value" id="requester-info"></span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-approve" onclick="approveRequest()" id="approve-btn">
+                    <i class="fas fa-check"></i> Approve Access
+                </button>
+                <button class="btn-deny" onclick="denyRequest()" id="deny-btn">
+                    <i class="fas fa-times"></i> Deny Access
+                </button>
+            </div>
+        </div>
+
+        <div id="result-section" style="display: none;">
+            <div class="verification-icon" id="result-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="verification-title" id="result-title">Request Processed</h2>
+            <p class="verification-subtitle" id="result-message">
+                The access request has been processed successfully.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize EmailJS
+        emailjs.init('mr3lRz__Eu1dWmX1Z');
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCaSHRLbIRWW8COl5iwHb19dMDYYLJ2DIk",
+            authDomain: "centralcomm-248a9.firebaseapp.com",
+            databaseURL: "https://centralcomm-248a9-default-rtdb.firebaseio.com",
+            projectId: "centralcomm-248a9",
+            storageBucket: "centralcomm-248a9.firebasestorage.app",
+            messagingSenderId: "796912003621",
+            appId: "1:796912003621:web:0d6fd82e43399871a9edcc",
+            measurementId: "G-CN0S9L5YV4",
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const database = firebase.database();
+
+        let currentVerification = null;
+
+        // Get URL parameters
+        function getUrlParameter(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+
+        // Load verification request
+        function loadVerificationRequest() {
+            const token = getUrlParameter('token');
+            const action = getUrlParameter('action');
+
+            if (!token) {
+                showError('Invalid verification link. Token is missing.');
+                return;
+            }
+
+            // Find verification request by token
+            database.ref('verificationRequests')
+                .orderByChild('token')
+                .equalTo(token)
+                .once('value')
+                .then(snapshot => {
+                    if (snapshot.exists()) {
+                        snapshot.forEach(childSnapshot => {
+                            const verification = childSnapshot.val();
+                            const key = childSnapshot.key;
+                            
+                            // Check if verification is expired (24 hours)
+                            const now = Date.now();
+                            const requestTime = verification.timestamp;
+                            const hoursDiff = (now - requestTime) / (1000 * 60 * 60);
+                            
+                            if (hoursDiff > 24) {
+                                showExpired();
+                                return;
+                            }
+
+                            currentVerification = { ...verification, key: key };
+
+                            if (action === 'approve' || action === 'deny') {
+                                // Auto-process the action
+                                if (action === 'approve') {
+                                    approveRequest();
+                                } else {
+                                    denyRequest();
+                                }
+                            } else {
+                                // Show verification form
+                                showVerificationForm(verification);
+                            }
+                        });
+                    } else {
+                        showError('Verification request not found or already processed.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading verification request:', error);
+                    showError('An error occurred while loading the verification request.');
+                });
+        }
+
+        // Show verification form
+        function showVerificationForm(verification) {
+            document.getElementById('loading-section').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'block';
+
+            // Populate form fields
+            document.getElementById('control-number').textContent = verification.controlNumber;
+            document.getElementById('document-subject').textContent = verification.documentData.subject || 'N/A';
+            document.getElementById('request-time').textContent = new Date(verification.timestamp).toLocaleString();
+            document.getElementById('requester-info').textContent = 'Web Request';
+        }
+
+        // Show expired message
+        function showExpired() {
+            document.getElementById('loading-section').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+
+            document.getElementById('result-icon').innerHTML = '<i class="fas fa-clock text-warning"></i>';
+            document.getElementById('result-title').textContent = 'Verification Expired';
+            document.getElementById('result-message').textContent = 'This verification link has expired. The request was made more than 24 hours ago.';
+        }
+
+        // Show error message
+        function showError(message) {
+            document.getElementById('loading-section').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+
+            document.getElementById('result-icon').innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i>';
+            document.getElementById('result-title').textContent = 'Error';
+            document.getElementById('result-message').textContent = message;
+        }
+
+        // Approve request
+        function approveRequest() {
+            if (!currentVerification) return;
+
+            // Disable buttons and show loading
+            document.getElementById('approve-btn').disabled = true;
+            document.getElementById('deny-btn').disabled = true;
+            document.getElementById('approve-btn').innerHTML = '<span class="loading-spinner"></span>Processing...';
+
+            // Update verification status
+            database.ref(`verificationRequests/${currentVerification.key}`)
+                .update({ status: 'approved' })
+                .then(() => {
+                    // Send notification email to requester (if we had their email)
+                    sendApprovalNotification();
+                    
+                    // Show success message
+                    showResult('approved');
+                })
+                .catch(error => {
+                    console.error('Error approving request:', error);
+                    showError('An error occurred while processing your request.');
+                });
+        }
+
+        // Deny request
+        function denyRequest() {
+            if (!currentVerification) return;
+
+            // Disable buttons and show loading
+            document.getElementById('approve-btn').disabled = true;
+            document.getElementById('deny-btn').disabled = true;
+            document.getElementById('deny-btn').innerHTML = '<span class="loading-spinner"></span>Processing...';
+
+            // Update verification status
+            database.ref(`verificationRequests/${currentVerification.key}`)
+                .update({ status: 'denied' })
+                .then(() => {
+                    // Send notification email to requester (if we had their email)
+                    sendDenialNotification();
+                    
+                    // Show success message
+                    showResult('denied');
+                })
+                .catch(error => {
+                    console.error('Error denying request:', error);
+                    showError('An error occurred while processing your request.');
+                });
+        }
+
+        // Send approval notification
+        function sendApprovalNotification() {
+            // In a real implementation, you would send an email to the requester
+            // For now, we'll just log it
+            console.log('Access approved for control number:', currentVerification.controlNumber);
+        }
+
+        // Send denial notification
+        function sendDenialNotification() {
+            // In a real implementation, you would send an email to the requester
+            // For now, we'll just log it
+            console.log('Access denied for control number:', currentVerification.controlNumber);
+        }
+
+        // Show result
+        function showResult(action) {
+            document.getElementById('loading-section').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('result-section').style.display = 'block';
+
+            if (action === 'approved') {
+                document.getElementById('result-icon').innerHTML = '<i class="fas fa-check-circle text-success"></i>';
+                document.getElementById('result-title').textContent = 'Access Approved';
+                document.getElementById('result-message').textContent = 'You have approved access to this document. The requester will now be able to view the document status.';
+            } else {
+                document.getElementById('result-icon').innerHTML = '<i class="fas fa-times-circle text-danger"></i>';
+                document.getElementById('result-title').textContent = 'Access Denied';
+                document.getElementById('result-message').textContent = 'You have denied access to this document. The requester will be notified that access was denied.';
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            loadVerificationRequest();
+        });
+    </script>
+</body>
+</html> 

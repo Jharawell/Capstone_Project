@@ -821,6 +821,110 @@
       .custom-thead th {
         background-color: var(--primary-color);
         color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: 0.9rem;
+        padding: 1rem 0.75rem;
+        border: none;
+        position: relative;
+      }
+
+      .custom-thead th:first-child {
+        border-top-left-radius: 8px;
+      }
+
+      .custom-thead th:last-child {
+        border-top-right-radius: 8px;
+      }
+
+      /* Enhanced table styling */
+      .table-enhanced {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-bottom: 2rem;
+      }
+
+      .table-enhanced tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid #f0f0f0;
+      }
+
+      .table-enhanced tbody tr:hover {
+        background-color: rgba(46, 125, 50, 0.05);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .table-enhanced tbody tr:last-child {
+        border-bottom: none;
+      }
+
+      .table-enhanced td {
+        padding: 1.25rem 0.75rem;
+        vertical-align: middle;
+        border: none;
+        font-size: 0.95rem;
+        color: var(--text-color);
+      }
+
+      .table-enhanced .badge {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+        border-radius: 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+      }
+
+      /* Responsive table */
+      @media (max-width: 768px) {
+        .table-responsive {
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        
+        .table-enhanced td,
+        .table-enhanced th {
+          padding: 0.75rem 0.5rem;
+          font-size: 0.85rem;
+        }
+        
+        .table-enhanced .badge {
+          font-size: 0.7rem;
+          padding: 0.4rem 0.6rem;
+        }
+      }
+
+      /* Enhanced button styling */
+      .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-lg:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Enhanced result card */
+      .result-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(46, 125, 50, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .result-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
       }
 
       .result-header {
@@ -1476,7 +1580,7 @@
       agent-id="5df5da0d-87aa-4c45-bf26-0eace8fc66b9"
       language-code="en"
       expand="true"
-      chat-icon="https://www.pngall.com/wp-content/uploads/15/ChatBot-PNG-Clipart.png"
+      chat-icon="https://www.pngall.com/wp-content/uploads/15/ChatBot-PNG-Clipart.png" 
     ></df-messenger>
 
     <!-- Firebase App (the core Firebase SDK) -->
@@ -1485,8 +1589,14 @@
     <!-- Firebase Realtime Database -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
+    <!-- EmailJS for email notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
     
     <script>
+
+      // Initialize EmailJS
+      emailjs.init('mr3lRz__Eu1dWmX1Z'); // Replace with your EmailJS user ID
 
       // Search Input
       function focusSearchInput() {
@@ -1516,7 +1626,74 @@
       }
       const database = firebase.database();
 
-      // Document search functionality
+      // Generate unique verification token
+      function generateVerificationToken() {
+        return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      }
+
+      // Send verification email to document owner
+      function sendVerificationEmail(controlNumber, clientEmail, documentData) {
+        const verificationToken = generateVerificationToken();
+        const timestamp = Date.now();
+        
+        // Store verification request in Firebase
+        const verificationRef = database.ref('verificationRequests');
+        verificationRef.push({
+          controlNumber: controlNumber,
+          clientEmail: clientEmail,
+          token: verificationToken,
+          timestamp: timestamp,
+          status: 'pending', // pending, approved, denied
+          documentData: documentData,
+          requesterIP: 'web-request', // In a real app, you'd get the actual IP
+          requesterUserAgent: navigator.userAgent
+        });
+
+        // Send email using EmailJS
+        emailjs.send('service_ipk7qkc', 'template_49pyxjf', {
+          to_email: clientEmail,
+          control_number: controlNumber,
+          verification_token: verificationToken,
+          document_subject: documentData.subject || 'Document',
+          approve_url: `${window.location.origin}/verify.html?token=${verificationToken}&action=approve`,
+          deny_url: `${window.location.origin}/verify.html?token=${verificationToken}&action=deny`,
+          timestamp: new Date(timestamp).toLocaleString()
+        })
+        .then(function(response) {
+          console.log('Verification email sent!', response.status, response.text);
+        }, function(error) {
+          console.error('Failed to send verification email:', error);
+        });
+      }
+
+      // Log activity function for tracking document edits
+      function logActivity(action, details, controlNumber) {
+        try {
+          const logData = {
+            action: action,
+            details: details,
+            controlNumber: controlNumber,
+            timestamp: Date.now(),
+            userEmail: 'public_user', // Since this is the public search page
+            userType: 'public'
+          };
+          
+          // Save to Firebase logs
+          database.ref("logs").push(logData)
+            .then(() => {
+              console.log("Activity logged successfully:", logData);
+            })
+            .catch(error => {
+              console.error("Error logging activity:", error);
+            });
+        } catch (error) {
+          console.error("Error in logActivity function:", error);
+        }
+      }
+
+
+
+      // Document search functionality with verification
       function searchDocument() {
         const controlNumber = document.getElementById('controlNumberInput').value.trim();
         const searchResults = document.getElementById('search-results');
@@ -1527,7 +1704,7 @@
         
         if (!controlNumber) {
           showError('Please enter a control number to search.');
-          return; // Stop here if input is empty
+          return;
         }
 
         // Show loading state
@@ -1543,7 +1720,7 @@
           </div>
         `;
 
-        // Proceed with Firebase search
+        // Search for document in Firebase
         database.ref('entries')
           .orderByChild('controlNumber')
           .equalTo(controlNumber)
@@ -1552,7 +1729,21 @@
             if (snapshot.exists()) {
               snapshot.forEach(childSnapshot => {
                 const data = childSnapshot.val();
-                displaySearchResults(data);
+                
+                // Check if document has an associated email
+                if (data.fromEmail) {
+                  // Send verification email to document owner
+                  sendVerificationEmail(controlNumber, data.fromEmail, data);
+                  
+                  // Show verification pending message
+                  showVerificationPending(data);
+                } else {
+                  // No email associated, show document directly
+                  displaySearchResults(data);
+                  
+                  // Log the document view
+                  logActivity("document_view", `Document viewed by public user`, controlNumber);
+                }
               });
             } else {
               showError(`No document found with control number "${controlNumber}"`);
@@ -1564,6 +1755,72 @@
           });
       }
 
+      // Show verification pending message
+      function showVerificationPending(documentData) {
+        const searchResults = document.getElementById("search-results");
+        searchResults.innerHTML = `
+          <div class="result-card">
+            <div class="text-center">
+              <i class="fas fa-envelope-open-text text-primary" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+              <h3 class="result-title mb-3">Verification Required</h3>
+              <p class="mb-3">
+                A verification email has been sent to the document owner's email address. 
+                The document will be displayed once the owner approves your request.
+              </p>
+              <div class="alert alert-info">
+                <strong>Document Details:</strong><br>
+                Control Number: ${documentData.controlNumber}<br>
+                Subject: "Content Hidden"<br>
+                Status: "Content Hidden"
+              </div>
+              <p class="text-muted">
+                <small>
+                  <i class="fas fa-info-circle"></i>
+                  You will receive an email notification once the verification is complete.
+                </small>
+              </p>
+            </div>
+          </div>
+        `;
+        searchResults.style.display = 'block';
+      }
+
+      // Check verification status (called periodically or when user returns)
+      function checkVerificationStatus(controlNumber) {
+        const searchResults = document.getElementById("search-results");
+        
+        database.ref('verificationRequests')
+          .orderByChild('controlNumber')
+          .equalTo(controlNumber)
+          .once('value')
+          .then(snapshot => {
+            if (snapshot.exists()) {
+              snapshot.forEach(childSnapshot => {
+                const verification = childSnapshot.val();
+                
+                if (verification.status === 'approved') {
+                  // Show the document
+                  displaySearchResults(verification.documentData);
+                  
+                  // Log the document view
+                  logActivity("document_view", `Document viewed by public user after verification`, verification.documentData.controlNumber);
+                  
+                  // Clean up verification request
+                  childSnapshot.ref.remove();
+                } else if (verification.status === 'denied') {
+                  showError('Access to this document has been denied by the document owner.');
+                  
+                  // Clean up verification request
+                  childSnapshot.ref.remove();
+                }
+                // If still pending, do nothing (keep showing verification pending message)
+              });
+            }
+          })
+          .catch(error => {
+            console.error('Error checking verification status:', error);
+          });
+      }
 
       function showError(message) {
         const searchResults = document.getElementById('search-results');
@@ -1579,30 +1836,49 @@
 
       function displaySearchResults(data) {
         const searchResults = document.getElementById("search-results");
+        
+        // First show the table with loading state for last edited
         searchResults.innerHTML = `
           <div class="result-card">
-            <h3 class="result-title mb-3">Document Status</h3>
-            <table class="table table-bordered table-striped">
-              <thead>
-                <tr class="custom-thead">
-                  <th>Control Number</th>
-                  <th>Date Received</th>
-                  <th>Status (Last Event)</th>
-                  <th>Remarks</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>${data.controlNumber}</td>
-                  <td>${formatDate(data.dateReceived)}</td>
-                  <td><span class="badge ${getStatusClass(data.status)}">${data.status}</span></td>
-                  <td>${data.statusRemarks || ''}</td>
-                </tr>
-              </tbody>
-            </table>
+            <h3 class="result-title mb-4">
+              <i class="fas fa-file-alt me-2"></i>Document Status
+            </h3>
+            <div class="table-responsive">
+              <table class="table table-enhanced">
+                <thead>
+                  <tr class="custom-thead">
+                    <th><i class="fas fa-hashtag me-1"></i>Control Number</th>
+                    <th><i class="fas fa-calendar-alt me-1"></i>Date Received</th>
+                    <th><i class="fas fa-info-circle me-1"></i>Status (Last Event)</th>
+                    <th><i class="fas fa-comment me-1"></i>Remarks</th>
+                    <th><i class="fas fa-edit me-1"></i>Last Edited</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>${data.controlNumber}</strong></td>
+                    <td>${formatDate(data.dateReceived)}</td>
+                    <td><span class="badge ${getStatusClass(data.status)}">${data.status}</span></td>
+                    <td>${data.statusRemarks || '<span class="text-muted">No remarks</span>'}</td>
+                    <td id="last-edited-cell">
+                      <div class="d-flex align-items-center">
+                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <span class="text-muted">Loading...</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
           </div>
         `;
         searchResults.style.display = 'block';
+        
+        // Now fetch the last edit information from logs
+        getLastEditInfo(data.controlNumber);
       }
 
       function formatDate(dateString) {
@@ -1649,6 +1925,82 @@
         return statusClasses[status] || "bg-warning";
       }
 
+      // Function to get last edit information from logs
+      function getLastEditInfo(controlNumber) {
+        try {
+          // Query logs for this document, looking for edit actions
+          database.ref("logs")
+            .orderByChild("controlNumber")
+            .equalTo(controlNumber)
+            .once('value')
+            .then(snapshot => {
+              const logs = snapshot.val();
+              
+              if (logs && Object.keys(logs).length > 0) {
+                // Convert logs object to array and filter for edit actions
+                const logsArray = Object.entries(logs).map(([key, log]) => ({
+                  ...log,
+                  key: key
+                }));
+                
+                // Filter for edit-related actions and sort by timestamp (newest first)
+                const editActions = logsArray
+                  .filter(log => ['update', 'field_update', 'edit', 'modify'].includes(log.action))
+                  .sort((a, b) => b.timestamp - a.timestamp);
+                
+                if (editActions.length > 0) {
+                  const lastEdit = editActions[0];
+                  const date = new Date(lastEdit.timestamp);
+                  const formattedDate = date.toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  });
+                  
+                  const lastEditedCell = document.getElementById('last-edited-cell');
+                  if (lastEditedCell) {
+                    lastEditedCell.innerHTML = `
+                      <div>
+                        <div class="fw-bold">${lastEdit.user || lastEdit.userEmail || 'Unknown User'}</div>
+                        <div class="text-muted small">${formattedDate}</div>
+                      </div>
+                    `;
+                  }
+                } else {
+                  // No edit actions found, show "Not available"
+                  const lastEditedCell = document.getElementById('last-edited-cell');
+                  if (lastEditedCell) {
+                    lastEditedCell.innerHTML = '<span class="text-muted">Not available</span>';
+                  }
+                }
+              } else {
+                // No logs found, show "Not available"
+                const lastEditedCell = document.getElementById('last-edited-cell');
+                if (lastEditedCell) {
+                  lastEditedCell.innerHTML = '<span class="text-muted">Not available</span>';
+                }
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching last edit info:', error);
+              const lastEditedCell = document.getElementById('last-edited-cell');
+              if (lastEditedCell) {
+                lastEditedCell.innerHTML = '<span class="text-danger">Error loading</span>';
+              }
+            });
+        } catch (error) {
+          console.error('Error in getLastEditInfo function:', error);
+          const lastEditedCell = document.getElementById('last-edited-cell');
+          if (lastEditedCell) {
+            lastEditedCell.innerHTML = '<span class="text-danger">Error loading</span>';
+          }
+        }
+      }
+
+
+
       // Initialize event listeners when DOM is loaded
       document.addEventListener("DOMContentLoaded", () => {
         // Focus the control number input field
@@ -1660,6 +2012,14 @@
             searchDocument();
           }
         });
+
+        // Check for verification status every 30 seconds if there's a pending verification
+        setInterval(() => {
+          const controlNumber = document.getElementById('controlNumberInput').value.trim();
+          if (controlNumber) {
+            checkVerificationStatus(controlNumber);
+          }
+        }, 30000); // Check every 30 seconds
       });
     </script>
   </body>

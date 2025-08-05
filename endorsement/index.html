@@ -29,6 +29,10 @@
       href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css"
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
     
       /* Add custom styling for DataTables buttons */
@@ -207,7 +211,21 @@
             <!-- Monthly Statistics -->
             <div class="card mb-4">
               <div class="card-header bg-white">
-                <h5 class="card-title mb-0">Yearly Statistics</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <h5 class="card-title mb-0 me-3">Monthly Statistics</h5>
+                    <button class="btn btn-primary btn-sm" id="toggleFinishedBtn" title="Toggle between Show All, Show Unfinished Only, and Show All Finished">
+                      <i class="bi bi-eye-slash me-1"></i>
+                      <span id="toggleFinishedText">Show Unfinished Only</span>
+                    </button>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <label for="yearSelector" class="form-label me-2 mb-0">Select Year:</label>
+                    <select class="form-select w-auto" id="yearSelector" style="width: 120px;">
+                      <!-- Year options will be populated dynamically -->
+                    </select>
+                  </div>
+                </div>
               </div>
               <div class="card-body p-0">
                 <div class="accordion" id="monthlyStatsAccordion">
@@ -249,7 +267,25 @@
                     View document statistics and analytics
                   </p>
                 </div>
-                <div>
+                <div class="d-flex align-items-center gap-2">
+                  <label for="reportsYearSelector" class="form-label mb-0">Select Year:</label>
+                  <select class="form-select w-auto" id="reportsYearSelector" style="width: 120px;">
+                    <!-- Year options will be populated dynamically -->
+                  </select>
+                  <div class="btn-group" role="group">
+                    <button id="copyReportsBtn" class="btn btn-secondary btn-sm" title="Copy to Clipboard">
+                      <i class="bi bi-clipboard"></i> Copy
+                    </button>
+                    <button id="csvReportsBtn" class="btn btn-success btn-sm" title="Export as CSV">
+                      <i class="bi bi-file-earmark-text"></i> CSV
+                    </button>
+                    <button id="excelReportsBtn" class="btn btn-success btn-sm" title="Export as Excel">
+                      <i class="bi bi-file-earmark-excel"></i> Excel
+                    </button>
+                    <button id="pdfReportsBtn" class="btn btn-danger btn-sm" title="Export as PDF">
+                      <i class="bi bi-file-earmark-pdf"></i> PDF
+                    </button>
+                  </div>
                   <button id="printReportsBtn" class="btn btn-outline-light" title="Download/Print Reports">
                     <i class="bi bi-printer"></i> Download/Print
                   </button>
@@ -288,6 +324,14 @@
                             <td>Invitations</td>
                             <td class="text-end" id="yearlyInvitations">0</td>
                           </tr>
+                          <tr>
+                            <td>Finished Letters</td>
+                            <td class="text-end" id="yearlyFinished">0</td>
+                          </tr>
+                          <tr>
+                            <td>Unfinished Letters</td>
+                            <td class="text-end" id="yearlyUnfinished">0</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -320,6 +364,14 @@
                           <tr>
                             <td>Lowest Volume Month</td>
                             <td class="text-end" id="lowestVolumeMonth">-</td>
+                          </tr>
+                          <tr>
+                            <td>Finished Letters</td>
+                            <td class="text-end" id="monthlyFinished">0</td>
+                          </tr>
+                          <tr>
+                            <td>Unfinished Letters</td>
+                            <td class="text-end" id="monthlyUnfinished">0</td>
                           </tr>
                         </tbody>
                       </table>
@@ -1522,10 +1574,39 @@
           });
       }
 
-      // Function to load entries into the table
-      function loadEntries() {
-        const currentUser = getCurrentUser();
+      // Global variable to track filter state
+      let filterState = "all"; // "all", "unfinished", "finished"
+
+      // Function to populate year selector
+      function populateYearSelector() {
+        const yearSelector = document.getElementById("yearSelector");
+        if (!yearSelector) return;
+
         const currentYear = getCurrentYear();
+        yearSelector.innerHTML = "";
+
+        // Add years from current year back to 5 years ago
+        for (let year = currentYear; year >= currentYear - 5; year--) {
+          const option = document.createElement("option");
+          option.value = year;
+          option.textContent = year;
+          if (year === currentYear) {
+            option.selected = true;
+          }
+          yearSelector.appendChild(option);
+        }
+
+        // Add event listener for year change
+        yearSelector.addEventListener("change", function() {
+          const selectedYear = parseInt(this.value);
+          loadEntries(selectedYear);
+        });
+      }
+
+      // Function to load entries into the table
+      function loadEntries(selectedYear = null) {
+        const currentUser = getCurrentUser();
+        const currentYear = selectedYear || getCurrentYear();
         if (!departmentAccessControl.validateSectionAccess(currentUser.email)) {
           showErrorAlert("You don't have access to this section.");
           window.location.href = "../pages/selection.html";
@@ -1541,7 +1622,16 @@
           ];
           const now = new Date();
           const currentMonthIdx = now.getMonth();
-          const visibleMonths = months.slice(0, currentMonthIdx + 1).reverse();
+          
+          // Get months based on selected year
+          let visibleMonths = [];
+          if (currentYear === getCurrentYear()) {
+            // For current year, show from current month back to January
+            visibleMonths = months.slice(0, currentMonthIdx + 1).reverse();
+          } else {
+            // For other years, show all months
+            visibleMonths = [...months];
+          }
           accordionContainer.innerHTML = "";
           visibleMonths.forEach((month) => {
             const monthKey = `${month.toLowerCase()}${currentYear}`;
@@ -1597,6 +1687,16 @@
                   .filter((entry) => {
                     if (!entry || entry.status === "Archived") return false;
                     return departmentAccessControl.hasAccessToEntry(currentUser.email, entry);
+                  })
+                  .filter((entry) => {
+                    if (filterState === "unfinished") {
+                      // Show only unfinished entries (not "Completed" or "Inspection")
+                      return entry.status !== "Completed" && entry.status !== "Inspection";
+                    } else if (filterState === "finished") {
+                      // Show only finished entries ("Completed" or "Inspection")
+                      return entry.status === "Completed" || entry.status === "Inspection";
+                    }
+                    return true; // Show all entries
                   });
                 const stats = {
                   complaints: 0,
@@ -1606,12 +1706,24 @@
                   total: 0
                 };
                 monthEntries.forEach(entry => {
-                  stats.total++;
-                  const type = entry.type.toLowerCase();
-                  if (type === 'complaint') stats.complaints++;
-                  else if (type === 'proposal') stats.proposals++;
-                  else if (type === 'invitation') stats.invitations++;
-                  else if (type === 'request') stats.requests++;
+                  let shouldCount = false;
+                  
+                  if (filterState === "unfinished") {
+                    shouldCount = entry.status !== "Completed" && entry.status !== "Inspection";
+                  } else if (filterState === "finished") {
+                    shouldCount = entry.status === "Completed" || entry.status === "Inspection";
+                  } else {
+                    shouldCount = true; // Count all entries
+                  }
+                  
+                  if (shouldCount) {
+                    stats.total++;
+                    const type = entry.type.toLowerCase();
+                    if (type === 'complaint') stats.complaints++;
+                    else if (type === 'proposal') stats.proposals++;
+                    else if (type === 'invitation') stats.invitations++;
+                    else if (type === 'request') stats.requests++;
+                  }
                 });
                 function getTypePercent(count, total) {
                   if (total === 0) return 0;
@@ -2487,6 +2599,200 @@
         }
       }
 
+      // Export functions
+      function getReportData() {
+        const selectedYear = document.getElementById("reportsYearSelector")?.value || getCurrentYear();
+        const yearlyData = {
+          total: document.getElementById("yearlyTotal")?.textContent || "0",
+          complaints: document.getElementById("yearlyComplaints")?.textContent || "0",
+          requests: document.getElementById("yearlyRequests")?.textContent || "0",
+          proposals: document.getElementById("yearlyProposals")?.textContent || "0",
+          invitations: document.getElementById("yearlyInvitations")?.textContent || "0",
+          finished: document.getElementById("yearlyFinished")?.textContent || "0",
+          unfinished: document.getElementById("yearlyUnfinished")?.textContent || "0"
+        };
+        
+        const monthlyData = {
+          total: document.getElementById("monthlyTotal")?.textContent || "0",
+          avgDaily: document.getElementById("avgDailyLetters")?.textContent || "0",
+          highestVolume: document.getElementById("highestVolumeMonth")?.textContent || "-",
+          lowestVolume: document.getElementById("lowestVolumeMonth")?.textContent || "-",
+          finished: document.getElementById("monthlyFinished")?.textContent || "0",
+          unfinished: document.getElementById("monthlyUnfinished")?.textContent || "0"
+        };
+
+        return { selectedYear, yearlyData, monthlyData };
+      }
+
+      function exportToClipboard() {
+        const { selectedYear, yearlyData, monthlyData } = getReportData();
+        
+        const reportText = `Documents Report - ${selectedYear}
+
+Yearly Statistics:
+- Total Letters Received: ${yearlyData.total}
+- Complaints: ${yearlyData.complaints}
+- Requests: ${yearlyData.requests}
+- Proposals: ${yearlyData.proposals}
+- Invitations: ${yearlyData.invitations}
+- Finished Letters: ${yearlyData.finished}
+- Unfinished Letters: ${yearlyData.unfinished}
+
+Monthly Statistics:
+- Current Month Letters: ${monthlyData.total}
+- Average Daily Letters: ${monthlyData.avgDaily}
+- Highest Volume Month: ${monthlyData.highestVolume}
+- Lowest Volume Month: ${monthlyData.lowestVolume}
+- Finished Letters: ${monthlyData.finished}
+- Unfinished Letters: ${monthlyData.unfinished}`;
+
+        navigator.clipboard.writeText(reportText).then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Copied to Clipboard!',
+            text: 'Report data has been copied to your clipboard.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }).catch(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Copy Failed',
+            text: 'Failed to copy to clipboard. Please try again.',
+          });
+        });
+      }
+
+      function exportToCSV() {
+        const { selectedYear, yearlyData, monthlyData } = getReportData();
+        
+        const csvContent = `Category,Value
+Year,${selectedYear}
+Yearly Statistics,,,
+Total Letters Received,${yearlyData.total}
+Complaints,${yearlyData.complaints}
+Requests,${yearlyData.requests}
+Proposals,${yearlyData.proposals}
+Invitations,${yearlyData.invitations}
+Finished Letters,${yearlyData.finished}
+Unfinished Letters,${yearlyData.unfinished}
+Monthly Statistics,,,
+Current Month Letters,${monthlyData.total}
+Average Daily Letters,${monthlyData.avgDaily}
+Highest Volume Month,${monthlyData.highestVolume}
+Lowest Volume Month,${monthlyData.lowestVolume}
+Finished Letters,${monthlyData.finished}
+Unfinished Letters,${monthlyData.unfinished}`;
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `documents_report_${selectedYear}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function exportToExcel() {
+        const { selectedYear, yearlyData, monthlyData } = getReportData();
+        
+        const workbook = XLSX.utils.book_new();
+        
+        // Yearly Statistics Sheet
+        const yearlySheet = XLSX.utils.aoa_to_sheet([
+          ['Documents Report - Yearly Statistics', selectedYear],
+          [''],
+          ['Category', 'Value'],
+          ['Total Letters Received', parseInt(yearlyData.total)],
+          ['Complaints', parseInt(yearlyData.complaints)],
+          ['Requests', parseInt(yearlyData.requests)],
+          ['Proposals', parseInt(yearlyData.proposals)],
+          ['Invitations', parseInt(yearlyData.invitations)],
+          ['Finished Letters', parseInt(yearlyData.finished)],
+          ['Unfinished Letters', parseInt(yearlyData.unfinished)]
+        ]);
+        
+        // Monthly Statistics Sheet
+        const monthlySheet = XLSX.utils.aoa_to_sheet([
+          ['Documents Report - Monthly Statistics', selectedYear],
+          [''],
+          ['Category', 'Value'],
+          ['Current Month Letters', parseInt(monthlyData.total)],
+          ['Average Daily Letters', parseFloat(monthlyData.avgDaily)],
+          ['Highest Volume Month', monthlyData.highestVolume],
+          ['Lowest Volume Month', monthlyData.lowestVolume],
+          ['Finished Letters', parseInt(monthlyData.finished)],
+          ['Unfinished Letters', parseInt(monthlyData.unfinished)]
+        ]);
+        
+        XLSX.utils.book_append_sheet(workbook, yearlySheet, 'Yearly Statistics');
+        XLSX.utils.book_append_sheet(workbook, monthlySheet, 'Monthly Statistics');
+        
+        XLSX.writeFile(workbook, `documents_report_${selectedYear}.xlsx`);
+      }
+
+      function exportToPDF() {
+        const { selectedYear, yearlyData, monthlyData } = getReportData();
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Title
+        doc.setFontSize(20);
+        doc.text('Documents Report', 105, 20, { align: 'center' });
+        doc.setFontSize(14);
+        doc.text(`Year: ${selectedYear}`, 105, 30, { align: 'center' });
+        
+        // Yearly Statistics
+        doc.setFontSize(16);
+        doc.text('Yearly Statistics', 20, 50);
+        doc.setFontSize(12);
+        
+        const yearlyStats = [
+          ['Total Letters Received', yearlyData.total],
+          ['Complaints', yearlyData.complaints],
+          ['Requests', yearlyData.requests],
+          ['Proposals', yearlyData.proposals],
+          ['Invitations', yearlyData.invitations],
+          ['Finished Letters', yearlyData.finished],
+          ['Unfinished Letters', yearlyData.unfinished]
+        ];
+        
+        doc.autoTable({
+          startY: 60,
+          head: [['Category', 'Value']],
+          body: yearlyStats,
+          theme: 'grid',
+          headStyles: { fillColor: [41, 128, 185] }
+        });
+        
+        // Monthly Statistics
+        doc.setFontSize(16);
+        doc.text('Monthly Statistics', 20, 140);
+        doc.setFontSize(12);
+        
+        const monthlyStats = [
+          ['Current Month Letters', monthlyData.total],
+          ['Average Daily Letters', monthlyData.avgDaily],
+          ['Highest Volume Month', monthlyData.highestVolume],
+          ['Lowest Volume Month', monthlyData.lowestVolume],
+          ['Finished Letters', monthlyData.finished],
+          ['Unfinished Letters', monthlyData.unfinished]
+        ];
+        
+        doc.autoTable({
+          startY: 150,
+          head: [['Category', 'Value']],
+          body: monthlyStats,
+          theme: 'grid',
+          headStyles: { fillColor: [41, 128, 185] }
+        });
+        
+        doc.save(`documents_report_${selectedYear}.pdf`);
+      }
+
       // Load entries and check for archiving when page loads
       document.addEventListener("DOMContentLoaded", function () {
         // Initialize section-specific user management
@@ -2514,6 +2820,49 @@
 
         checkAndArchiveEntries();
         loadEntries();
+        
+        // Populate year selector for reports
+        populateReportsYearSelector();
+        
+        // Populate year selector
+        populateYearSelector();
+        
+        // Add event listener for toggle finished/unfinished button
+        document.getElementById("toggleFinishedBtn").addEventListener("click", function() {
+          // Cycle through three states: all -> unfinished -> finished -> all
+          if (filterState === "all") {
+            filterState = "unfinished";
+          } else if (filterState === "unfinished") {
+            filterState = "finished";
+          } else {
+            filterState = "all";
+          }
+          
+          // Update button appearance
+          const icon = this.querySelector("i");
+          const text = this.querySelector("#toggleFinishedText");
+          
+          if (filterState === "unfinished") {
+            icon.className = "bi bi-eye me-1";
+            text.textContent = "Show All Finished";
+            this.classList.remove("btn-outline-primary");
+            this.classList.add("btn-primary");
+          } else if (filterState === "finished") {
+            icon.className = "bi bi-check-circle me-1";
+            text.textContent = "Show All";
+            this.classList.remove("btn-outline-primary");
+            this.classList.add("btn-primary");
+          } else {
+            icon.className = "bi bi-eye-slash me-1";
+            text.textContent = "Show Unfinished Only";
+            this.classList.remove("btn-outline-primary");
+            this.classList.add("btn-primary");
+          }
+          
+          // Reload entries with current year
+          const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
+          loadEntries(parseInt(selectedYear));
+        });
       });
 
       // Function to load archived entries
@@ -2839,9 +3188,17 @@
 
       // Function to load documents
       function loadDocuments() {
+        const selectedYear = document.getElementById("reportsYearSelector")?.value || new Date().getFullYear();
+        
+        // Ensure Chart.js is available
+        if (typeof Chart === 'undefined') {
+          console.error("Chart.js is not loaded");
+          return;
+        }
+        
         entriesRef.once("value", (snapshot) => {
           const entries = snapshot.val();
-          const currentYear = new Date().getFullYear();
+          const currentYear = parseInt(selectedYear);
           const currentMonth = new Date().getMonth();
 
           // Initialize statistics
@@ -2909,6 +3266,14 @@
                 };
               }
             });
+
+            // Handle case when no data exists (like for 2026)
+            if (monthlyStats.highestVolume.count === 0) {
+              monthlyStats.highestVolume = { month: "No Data", count: 0 };
+            }
+            if (monthlyStats.lowestVolume.count === Infinity) {
+              monthlyStats.lowestVolume = { month: "No Data", count: 0 };
+            }
           }
 
           // Update yearly statistics
@@ -2935,6 +3300,48 @@
             "lowestVolumeMonth"
           ).textContent = `${monthlyStats.lowestVolume.month} (${monthlyStats.lowestVolume.count})`;
 
+          // Calculate finished and unfinished letter counts
+          let yearlyFinished = 0;
+          let yearlyUnfinished = 0;
+          let monthlyFinished = 0;
+          let monthlyUnfinished = 0;
+
+          if (entries) {
+            Object.entries(entries).forEach(([_, entry]) => {
+              const entryDate = new Date(entry.dateReceived);
+              const entryYear = entryDate.getFullYear();
+              const entryMonth = entryDate.getMonth();
+              
+              // Only process entries for the selected year and user's department
+              if (entryYear === currentYear && departmentAccessControl.hasAccessToEntry(getCurrentUser().email, entry)) {
+                // Determine if entry is finished
+                const isFinished = entry.status === "Completed" || entry.status === "Inspection";
+                
+                // Update yearly stats
+                if (isFinished) {
+                  yearlyFinished++;
+                } else {
+                  yearlyUnfinished++;
+                }
+                
+                // Update monthly stats (current month only)
+                if (entryMonth === currentMonth) {
+                  if (isFinished) {
+                    monthlyFinished++;
+                  } else {
+                    monthlyUnfinished++;
+                  }
+                }
+              }
+            });
+          }
+
+          // Update finished/unfinished counts in tables
+          document.getElementById("yearlyFinished").textContent = yearlyFinished;
+          document.getElementById("yearlyUnfinished").textContent = yearlyUnfinished;
+          document.getElementById("monthlyFinished").textContent = monthlyFinished;
+          document.getElementById("monthlyUnfinished").textContent = monthlyUnfinished;
+
           // Destroy existing charts before creating new ones
           const existingMonthlyChart = Chart.getChart("monthlyLettersChart");
           if (existingMonthlyChart) {
@@ -2947,10 +3354,66 @@
           }
 
           // Create monthly letters chart
-          const monthlyCtx = document
-            .getElementById("monthlyLettersChart")
-            .getContext("2d");
-          new Chart(monthlyCtx, {
+          const monthlyCanvas = document.getElementById("monthlyLettersChart");
+          if (!monthlyCanvas) {
+            console.error("Monthly letters chart canvas not found");
+            return;
+          }
+          
+          const monthlyCtx = monthlyCanvas.getContext("2d");
+          if (!monthlyCtx) {
+            console.error("Could not get 2D context for monthly letters chart");
+            return;
+          }
+          
+          // Check if we should show empty charts for future years
+          const shouldShowEmptyCharts = currentYear > new Date().getFullYear();
+          
+          if (shouldShowEmptyCharts) {
+            // Show empty chart with message
+            new Chart(monthlyCtx, {
+              type: "bar",
+              data: {
+                labels: [
+                  "January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"
+                ],
+                datasets: [{
+                  label: "Letters Received",
+                  data: Array(12).fill(0),
+                  borderColor: "#e9ecef",
+                  backgroundColor: "#f8f9fa",
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                  title: {
+                    display: true,
+                    text: `No data available for ${currentYear}`,
+                    color: "#6c757d",
+                    font: {
+                      size: 14
+                    }
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      stepSize: 1,
+                    },
+                  },
+                },
+              },
+            });
+          } else {
+            // Show normal chart with data
+            new Chart(monthlyCtx, {
             type: "bar",
             data: {
               labels: [
@@ -2997,8 +3460,60 @@
           });
 
           // Create letter type distribution chart (pie chart)
-          const letterTypeCtx = document.getElementById("letterTypeChart").getContext("2d");
-          new Chart(letterTypeCtx, {
+          const letterTypeCanvas = document.getElementById("letterTypeChart");
+          if (!letterTypeCanvas) {
+            console.error("Letter type chart canvas not found");
+            return;
+          }
+          
+          const letterTypeCtx = letterTypeCanvas.getContext("2d");
+          if (!letterTypeCtx) {
+            console.error("Could not get 2D context for letter type chart");
+            return;
+          }
+          
+          if (shouldShowEmptyCharts) {
+            // Show empty pie chart with message
+            new Chart(letterTypeCtx, {
+              type: "pie",
+              data: {
+                labels: ["No Data"],
+                datasets: [{
+                  data: [1],
+                  backgroundColor: ["#f8f9fa"],
+                  borderColor: ["#e9ecef"],
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    display: false
+                  },
+                  title: {
+                    display: true,
+                    text: `No data available for ${currentYear}`,
+                    color: "#6c757d",
+                    font: {
+                      size: 14
+                    }
+                  }
+                },
+                layout: {
+                  padding: {
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 20
+                  }
+                }
+              }
+            });
+          } else {
+            // Show normal pie chart with data
+            new Chart(letterTypeCtx, {
             type: "pie",
             data: {
               labels: ["Complaints", "Requests", "Proposals", "Invitations"],
@@ -3096,6 +3611,54 @@
                 }
               }
             }
+          });
+          }
+          }
+        });
+      }
+
+      // Function to populate reports year selector
+      function populateReportsYearSelector() {
+        const reportsYearSelector = document.getElementById("reportsYearSelector");
+        if (!reportsYearSelector) return;
+
+        // Get all available years from the database
+        entriesRef.once("value", (snapshot) => {
+          const entries = snapshot.val();
+          const years = new Set();
+          
+          if (entries) {
+            Object.values(entries).forEach(entry => {
+              const year = new Date(entry.dateReceived).getFullYear();
+              years.add(year);
+            });
+          }
+          
+          // Add current year if no entries exist
+          const currentYear = new Date().getFullYear();
+          years.add(currentYear);
+          
+          // Add 2026 specifically
+          years.add(2026);
+          
+          // Only add next year if we're in the last quarter of the current year (October onwards)
+          const currentMonth = new Date().getMonth();
+          if (currentMonth >= 9) { // October, November, December
+            years.add(currentYear + 1);
+          }
+          
+          // Sort years in descending order
+          const sortedYears = Array.from(years).sort((a, b) => b - a);
+          
+          // Populate the selector
+          reportsYearSelector.innerHTML = sortedYears.map(year => 
+            `<option value="${year}" ${year === currentYear ? 'selected' : ''}>${year}</option>`
+          ).join('');
+          
+          // Add event listener for year changes
+          reportsYearSelector.addEventListener("change", function() {
+            const selectedYear = parseInt(this.value);
+            loadDocuments();
           });
         });
       }
@@ -4500,6 +5063,36 @@
               Object.values(Chart.instances || {}).forEach(chart => chart.resize());
             }
             window.print();
+          });
+        }
+
+        // Export functionality
+        const copyBtn = document.getElementById("copyReportsBtn");
+        const csvBtn = document.getElementById("csvReportsBtn");
+        const excelBtn = document.getElementById("excelReportsBtn");
+        const pdfBtn = document.getElementById("pdfReportsBtn");
+
+        if (copyBtn) {
+          copyBtn.addEventListener("click", function() {
+            exportToClipboard();
+          });
+        }
+
+        if (csvBtn) {
+          csvBtn.addEventListener("click", function() {
+            exportToCSV();
+          });
+        }
+
+        if (excelBtn) {
+          excelBtn.addEventListener("click", function() {
+            exportToExcel();
+          });
+        }
+
+        if (pdfBtn) {
+          pdfBtn.addEventListener("click", function() {
+            exportToPDF();
           });
         }
       });

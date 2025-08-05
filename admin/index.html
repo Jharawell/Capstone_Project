@@ -29,6 +29,10 @@
       href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css"
     />
     <link rel="stylesheet" href="../assets/css/style.css" />
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style>
       
       .dt-buttons .btn {
@@ -70,6 +74,8 @@
       th:nth-child(15), td:nth-child(15) {
         min-width: 135px;
       }
+      
+
       @media print {
         body * {
           visibility: hidden !important;
@@ -203,9 +209,17 @@
                   </button>
 
                   <!-- Archive All Button -->
+                   <button
+                    type="button"
+                    class="btn btn-sm btn-warning"
+                    id="archiveAllBtncplt"
+                    title="Archive all current entries"
+                  >
+                    <i class="bi bi-archive me-2"></i>Archive All Finished
+                  </button>
                   <button
                     type="button"
-                    class="btn btn-sm btn-outline-light"
+                    class="btn btn-sm btn-light"
                     id="archiveAllBtn"
                     title="Archive all current entries"
                   >
@@ -218,7 +232,21 @@
             <!-- Monthly Statistics -->
             <div class="card mb-4">
               <div class="card-header bg-white">
-                <h5 class="card-title mb-0">Monthly Statistics</h5>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div class="d-flex align-items-center">
+                    <h5 class="card-title mb-0 me-3">Monthly Statistics</h5>
+                    <button class="btn btn-primary btn-sm" id="toggleFinishedBtn" title="Toggle between Show All, Show Unfinished Only, and Show All Finished">
+                      <i class="bi bi-eye-slash me-1"></i>
+                      <span id="toggleFinishedText">Show Unfinished Only</span>
+                    </button>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <label for="yearSelector" class="form-label me-2 mb-0">Select Year:</label>
+                    <select class="form-select w-auto" id="yearSelector" style="width: 120px;">
+                      <!-- Year options will be populated dynamically -->
+                    </select>
+                  </div>
+                </div>
               </div>
               <div class="card-body p-0">
                 <div class="accordion" id="monthlyStatsAccordion">
@@ -260,7 +288,25 @@
                     View document statistics and analytics
                   </p>
                 </div>
-                <div>
+                <div class="d-flex align-items-center gap-2">
+                  <label for="reportsYearSelector" class="form-label mb-0">Select Year:</label>
+                  <select class="form-select w-auto" id="reportsYearSelector" style="width: 120px;">
+                    <!-- Year options will be populated dynamically -->
+                  </select>
+                  <div class="btn-group" role="group">
+                    <button id="copyReportsBtn" class="btn btn-secondary btn-sm" title="Copy to Clipboard">
+                      <i class="bi bi-clipboard"></i> Copy
+                    </button>
+                    <button id="csvReportsBtn" class="btn btn-success btn-sm" title="Export as CSV">
+                      <i class="bi bi-file-earmark-text"></i> CSV
+                    </button>
+                    <button id="excelReportsBtn" class="btn btn-success btn-sm" title="Export as Excel">
+                      <i class="bi bi-file-earmark-excel"></i> Excel
+                    </button>
+                    <button id="pdfReportsBtn" class="btn btn-danger btn-sm" title="Export as PDF">
+                      <i class="bi bi-file-earmark-pdf"></i> PDF
+                    </button>
+                  </div>
                   <button id="printReportsBtn" class="btn btn-outline-light" title="Download/Print Reports">
                     <i class="bi bi-printer"></i> Download/Print
                   </button>
@@ -299,6 +345,14 @@
                             <td>Invitations</td>
                             <td class="text-end" id="yearlyInvitations">0</td>
                           </tr>
+                          <tr>
+                            <td>Finished Letters</td>
+                            <td class="text-end" id="yearlyFinished">0</td>
+                          </tr>
+                          <tr>
+                            <td>Unfinished Letters</td>
+                            <td class="text-end" id="yearlyUnfinished">0</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -332,6 +386,14 @@
                             <td>Lowest Volume Month</td>
                             <td class="text-end" id="lowestVolumeMonth">-</td>
                           </tr>
+                          <tr>
+                            <td>Finished Letters</td>
+                            <td class="text-end" id="monthlyFinished">0</td>
+                          </tr>
+                          <tr>
+                            <td>Unfinished Letters</td>
+                            <td class="text-end" id="monthlyUnfinished">0</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -361,6 +423,8 @@
                   </div>
                 </div>
               </div>
+
+
             </div>
           </div>
         </div>
@@ -1544,6 +1608,9 @@
 
       const database = firebase.database();
       const entriesRef = database.ref("entries");
+      
+      // Global variable to track finished/unfinished toggle state
+      let filterState = "all"; // "all", "unfinished", "finished"
 
       // Function to generate control number
       function generateControlNumber() {
@@ -1597,6 +1664,8 @@
 
               if (totalToArchive === 0) {
                 Swal.close();
+                // Initialize monthly data for new year if needed
+                initializeMonthlyDataForNewYear();
                 return;
               }
 
@@ -1634,6 +1703,9 @@
                           text: `Successfully archived ${archivedCount} entries!`,
                           icon: "success",
                           confirmButtonColor: "#002C75",
+                        }).then(() => {
+                          // Initialize monthly data for new year after archiving
+                          initializeMonthlyDataForNewYear();
                         });
                       }
                     })
@@ -1648,8 +1720,11 @@
                     });
                 }
               });
+            } else {
+              Swal.close();
+              // Initialize monthly data for new year if no entries exist
+              initializeMonthlyDataForNewYear();
             }
-            Swal.close();
           })
           .catch((error) => {
             console.error("Error checking entries:", error);
@@ -1658,19 +1733,113 @@
           });
       }
 
-      // Function to load entries into the table
-      function loadEntries() {
+      // Function to check if new month has arrived and refresh display
+      function checkForNewMonth() {
+        const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
         const currentYear = getCurrentYear();
+        const currentMonth = new Date().getMonth();
+        const currentMonthName = new Date().toLocaleString("default", { month: "long" });
+        
+        // If we're viewing the current year and a new month has started
+        if (parseInt(selectedYear) === currentYear) {
+          const monthKey = `${currentMonthName.toLowerCase()}${currentYear}`;
+          const monthElement = document.getElementById(monthKey);
+          
+          // If the current month element doesn't exist, refresh the display
+          if (!monthElement) {
+            console.log(`New month detected: ${currentMonthName} ${currentYear}`);
+            loadEntries(parseInt(selectedYear));
+          }
+        }
+      }
+
+      // Function to initialize monthly data for new year
+      function initializeMonthlyDataForNewYear() {
+        const currentYear = getCurrentYear();
+        const months = [
+          "January", "February", "March", "April", "May", "June",
+          "July", "August", "September", "October", "November", "December"
+        ];
+
+        // Check if monthly data exists for current year
+        database.ref(`monthlyData`).once("value", (snapshot) => {
+          const monthlyData = snapshot.val() || {};
+          let needsInitialization = false;
+
+          // Check if we need to initialize data for current year only
+          months.forEach(month => {
+            const monthKey = `${month.toLowerCase()}${currentYear}`;
+            if (!monthlyData[monthKey]) {
+              needsInitialization = true;
+            }
+          });
+
+          if (needsInitialization) {
+            console.log(`Initializing monthly data for year ${currentYear}`);
+            
+            // Initialize empty monthly data for current year only
+            months.forEach(month => {
+              const monthKey = `${month.toLowerCase()}${currentYear}`;
+              if (!monthlyData[monthKey]) {
+                database.ref(`monthlyData/${monthKey}`).set({
+                  total: 0,
+                  complaints: 0,
+                  proposals: 0,
+                  invitations: 0,
+                  requests: 0,
+                  entries: []
+                });
+              }
+            });
+
+            logActivity(
+              "system",
+              `Initialized monthly data structure for year ${currentYear}`,
+              "SYSTEM"
+            );
+          }
+        });
+      }
+
+      // Function to load entries into the table
+      function loadEntries(selectedYear = null) {
+        const currentYear = getCurrentYear();
+        const yearToLoad = selectedYear || currentYear;
         const now = new Date();
         const months = [
           "January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December"
         ];
-        const currentMonthIndex = now.getMonth();
-        const reorderedMonths = [
-          ...months.slice(currentMonthIndex),
-          ...months.slice(0, currentMonthIndex)
-        ];
+        
+        // Determine which months to show based on the year
+        let monthsToShow = [];
+        if (yearToLoad < currentYear) {
+          // For past years, show all months in descending order
+          for (let i = 11; i >= 0; i--) {
+            monthsToShow.push(months[i]);
+          }
+        } else if (yearToLoad === currentYear) {
+          // For current year, show months up to current month in descending order
+          const currentMonthIndex = now.getMonth();
+          for (let i = currentMonthIndex; i >= 0; i--) {
+            monthsToShow.push(months[i]);
+          }
+        } else {
+          // For future years (2026+), show only months that have already arrived
+          const currentMonthIndex = now.getMonth();
+          const currentYearMonth = now.getFullYear();
+          
+          if (yearToLoad === currentYearMonth) {
+            // If it's the current year, show months up to current month
+            for (let i = currentMonthIndex; i >= 0; i--) {
+              monthsToShow.push(months[i]);
+            }
+          } else {
+            // For future years, don't show any months yet
+            monthsToShow = [];
+          }
+        }
+        
         entriesRef.on("value", (snapshot) => {
           const entries = snapshot.val();
           const accordionContainer = document.getElementById(
@@ -1680,17 +1849,29 @@
           // Clear existing content
           accordionContainer.innerHTML = "";
 
-          // Create empty accordion items for all months first
-         // Only show months up to and including the current month, in descending order
-          const now = new Date();
-          const currentMonthIndex = now.getMonth();
-          // Build an array of months from current down to January
-          const descendingMonths = [];
-          for (let i = currentMonthIndex; i >= 0; i--) {
-            descendingMonths.push(months[i]);
+          // Check if there are months to show
+          if (monthsToShow.length === 0) {
+            // Show message for future years with no available months
+            accordionContainer.innerHTML = `
+              <div class="text-center py-5">
+                <div class="alert alert-info" role="alert">
+                  <h5 class="alert-heading">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    No Months Available Yet
+                  </h5>
+                  <p class="mb-0">
+                    The months for ${yearToLoad} will appear as they arrive. 
+                    Currently, no months have been reached for this year.
+                  </p>
+                </div>
+              </div>
+            `;
+            return;
           }
-          descendingMonths.forEach((month) => {
-            const monthKey = `${month.toLowerCase()}${currentYear}`;
+
+          // Create empty accordion items for the selected months
+          monthsToShow.forEach((month) => {
+            const monthKey = `${month.toLowerCase()}${yearToLoad}`;
             const accordionItem = document.createElement("div");
             accordionItem.className = "accordion-item border-0 mb-2";
             accordionItem.id = `accordion-${monthKey}`;
@@ -1699,7 +1880,7 @@
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#${monthKey}" title="Expand/collapse month details">
                   <div class="d-flex justify-content-between align-items-center w-100">
                     <div>
-                      <span class="fw-bold">${month} ${currentYear}</span>
+                      <span class="fw-bold">${month} ${yearToLoad}</span>
                     </div>
                     <div class="text-muted small">
                       <i class="bi bi-arrow-down-circle me-1"></i>
@@ -1714,7 +1895,7 @@
                     <div class="spinner-border text-primary" role="status">
                       <span class="visually-hidden">Loading...</span>
                     </div>
-                    <p class="mt-2">Loading data for ${month} ${currentYear}...</p>
+                    <p class="mt-2">Loading data for ${month} ${yearToLoad}...</p>
                   </div>
                 </div>
               </div>
@@ -1723,8 +1904,8 @@
           });
 
           // Then populate each month's data as it arrives
-          reorderedMonths.forEach((month) => {
-            const monthKey = `${month.toLowerCase()}${currentYear}`;
+          monthsToShow.forEach((month) => {
+            const monthKey = `${month.toLowerCase()}${yearToLoad}`;
             const tableId = `monthly-stats-table-${monthKey}`;
 
             // Get monthly data
@@ -1741,12 +1922,23 @@
                 };
 
                 // Get entries for this month
-                const monthEntries = monthlyData.entries
+                const monthEntries = (monthlyData.entries || [])
                   .map((key) => {
                     const entry = entries[key];
                     return entry ? { key, ...entry } : null;
                   })
-                  .filter((entry) => entry && entry.status !== "Archived");
+                  .filter((entry) => {
+                    if (!entry || entry.status === "Archived") return false;
+                    
+                    // Apply filtering based on filter state
+                    if (filterState === "unfinished") {
+                      return entry.status !== "Completed" && entry.status !== "Inspection";
+                    } else if (filterState === "finished") {
+                      return entry.status === "Completed" || entry.status === "Inspection";
+                    }
+                    
+                    return true; // Show all entries
+                  });
 
                 // Calculate statistics including archived entries
                 const stats = {
@@ -1757,16 +1949,28 @@
                   total: 0
                 };
 
-                // Count only non-archived entries
-                monthlyData.entries.forEach(key => {
+                // Count entries based on filter state
+                (monthlyData.entries || []).forEach(key => {
                   const entry = entries[key];
                   if (entry && entry.status !== "Archived") {
-                    stats.total++;
-                    const type = entry.type.toLowerCase();
-                    if (type === 'complaint') stats.complaints++;
-                    else if (type === 'proposal') stats.proposals++;
-                    else if (type === 'invitation') stats.invitations++;
-                    else if (type === 'request') stats.requests++;
+                    let shouldCount = false;
+                    
+                    if (filterState === "unfinished") {
+                      shouldCount = entry.status !== "Completed" && entry.status !== "Inspection";
+                    } else if (filterState === "finished") {
+                      shouldCount = entry.status === "Completed" || entry.status === "Inspection";
+                    } else {
+                      shouldCount = true; // Count all entries
+                    }
+                    
+                    if (shouldCount) {
+                      stats.total++;
+                      const type = entry.type.toLowerCase();
+                      if (type === 'complaint') stats.complaints++;
+                      else if (type === 'proposal') stats.proposals++;
+                      else if (type === 'invitation') stats.invitations++;
+                      else if (type === 'request') stats.requests++;
+                    }
                   }
                 });
 
@@ -2029,7 +2233,8 @@
                       .then(() => {
                         showSuccessAlert("Entry archived successfully!");
                         // Reload entries to update the table
-                        loadEntries();
+                        const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
+                        loadEntries(parseInt(selectedYear));
                       })
                       .catch((error) => {
                         console.error("Error logging archiving:", error);
@@ -2140,7 +2345,8 @@
                               icon: "success",
                               confirmButtonColor: "#002C75",
                             }).then(() => {
-                              loadEntries();
+                              const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
+                              loadEntries(parseInt(selectedYear));
                             });
                           }
                         })
@@ -2300,7 +2506,8 @@
                       modal.hide();
 
                       // Reload entries
-                      loadEntries();
+                      const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
+                      loadEntries(parseInt(selectedYear));
 
                       // Open the relevant month's accordion
                       setTimeout(() => {
@@ -2419,7 +2626,8 @@
                 entryDate
                   .toLocaleString("default", { month: "long" })
                   .toLowerCase() + entryDate.getFullYear();
-              loadEntries();
+              const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
+              loadEntries(parseInt(selectedYear));
               setTimeout(() => {
                 const accordionButton = document.querySelector(
                   `button[data-bs-target=\"#${monthKey}\"]`
@@ -2713,6 +2921,260 @@
         }
       }
 
+      // Function to populate year selector
+      function populateYearSelector() {
+        const yearSelector = document.getElementById("yearSelector");
+        if (!yearSelector) return;
+
+        // Get all available years from the database
+        entriesRef.once("value", (snapshot) => {
+          const entries = snapshot.val();
+          const years = new Set();
+          
+          if (entries) {
+            Object.values(entries).forEach(entry => {
+              const year = new Date(entry.dateReceived).getFullYear();
+              years.add(year);
+            });
+          }
+          
+          // Add current year if no entries exist
+          const currentYear = getCurrentYear();
+          years.add(currentYear);
+          
+          // Add 2026 specifically
+          years.add(2026);
+          
+          // Only add next year if we're in the last quarter of the current year (October onwards)
+          const currentMonth = new Date().getMonth();
+          if (currentMonth >= 9) { // October, November, December
+            years.add(currentYear + 1);
+          }
+          
+          // Sort years in descending order
+          const sortedYears = Array.from(years).sort((a, b) => b - a);
+          
+          // Populate the selector
+          yearSelector.innerHTML = sortedYears.map(year => 
+            `<option value="${year}" ${year === currentYear ? 'selected' : ''}>${year}</option>`
+          ).join('');
+          
+          // Add event listener for year changes
+          yearSelector.addEventListener("change", function() {
+            const selectedYear = parseInt(this.value);
+            loadEntries(selectedYear);
+          });
+
+          // Also populate the reports year selector
+          const reportsYearSelector = document.getElementById("reportsYearSelector");
+          if (reportsYearSelector) {
+            reportsYearSelector.innerHTML = sortedYears.map(year => 
+              `<option value="${year}" ${year === currentYear ? 'selected' : ''}>${year}</option>`
+            ).join('');
+            
+            // Add event listener for reports year changes
+            reportsYearSelector.addEventListener("change", function() {
+              const selectedYear = parseInt(this.value);
+              loadDocuments();
+            });
+          }
+        });
+      }
+
+      // Export functions
+      function getReportData() {
+        const selectedYear = document.getElementById("reportsYearSelector")?.value || getCurrentYear();
+        const yearlyData = {
+          total: document.getElementById("yearlyTotal")?.textContent || "0",
+          complaints: document.getElementById("yearlyComplaints")?.textContent || "0",
+          requests: document.getElementById("yearlyRequests")?.textContent || "0",
+          proposals: document.getElementById("yearlyProposals")?.textContent || "0",
+          invitations: document.getElementById("yearlyInvitations")?.textContent || "0",
+          finished: document.getElementById("yearlyFinished")?.textContent || "0",
+          unfinished: document.getElementById("yearlyUnfinished")?.textContent || "0"
+        };
+        
+        const monthlyData = {
+          total: document.getElementById("monthlyTotal")?.textContent || "0",
+          avgDaily: document.getElementById("avgDailyLetters")?.textContent || "0",
+          highestVolume: document.getElementById("highestVolumeMonth")?.textContent || "-",
+          lowestVolume: document.getElementById("lowestVolumeMonth")?.textContent || "-",
+          finished: document.getElementById("monthlyFinished")?.textContent || "0",
+          unfinished: document.getElementById("monthlyUnfinished")?.textContent || "0"
+        };
+
+        return { selectedYear, yearlyData, monthlyData };
+      }
+
+      function exportToClipboard() {
+        const { selectedYear, yearlyData, monthlyData } = getReportData();
+        
+        const reportText = `Documents Report - ${selectedYear}
+
+Yearly Statistics:
+- Total Letters Received: ${yearlyData.total}
+- Complaints: ${yearlyData.complaints}
+- Requests: ${yearlyData.requests}
+- Proposals: ${yearlyData.proposals}
+- Invitations: ${yearlyData.invitations}
+- Finished Letters: ${yearlyData.finished}
+- Unfinished Letters: ${yearlyData.unfinished}
+
+Monthly Statistics:
+- Current Month Letters: ${monthlyData.total}
+- Average Daily Letters: ${monthlyData.avgDaily}
+- Highest Volume Month: ${monthlyData.highestVolume}
+- Lowest Volume Month: ${monthlyData.lowestVolume}
+- Finished Letters: ${monthlyData.finished}
+- Unfinished Letters: ${monthlyData.unfinished}`;
+
+        navigator.clipboard.writeText(reportText).then(() => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Copied to Clipboard!',
+            text: 'Report data has been copied to your clipboard.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        }).catch(() => {
+          Swal.fire({
+            icon: 'error',
+            title: 'Copy Failed',
+            text: 'Failed to copy to clipboard. Please try again.',
+          });
+        });
+      }
+
+      function exportToCSV() {
+        const { selectedYear, yearlyData, monthlyData } = getReportData();
+        
+        const csvContent = `Category,Value
+Year,${selectedYear}
+Yearly Statistics,,,
+Total Letters Received,${yearlyData.total}
+Complaints,${yearlyData.complaints}
+Requests,${yearlyData.requests}
+Proposals,${yearlyData.proposals}
+Invitations,${yearlyData.invitations}
+Finished Letters,${yearlyData.finished}
+Unfinished Letters,${yearlyData.unfinished}
+Monthly Statistics,,,
+Current Month Letters,${monthlyData.total}
+Average Daily Letters,${monthlyData.avgDaily}
+Highest Volume Month,${monthlyData.highestVolume}
+Lowest Volume Month,${monthlyData.lowestVolume}
+Finished Letters,${monthlyData.finished}
+Unfinished Letters,${monthlyData.unfinished}`;
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `documents_report_${selectedYear}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function exportToExcel() {
+        const { selectedYear, yearlyData, monthlyData } = getReportData();
+        
+        const workbook = XLSX.utils.book_new();
+        
+        // Yearly Statistics Sheet
+        const yearlySheet = XLSX.utils.aoa_to_sheet([
+          ['Documents Report - Yearly Statistics', selectedYear],
+          [''],
+          ['Category', 'Value'],
+          ['Total Letters Received', parseInt(yearlyData.total)],
+          ['Complaints', parseInt(yearlyData.complaints)],
+          ['Requests', parseInt(yearlyData.requests)],
+          ['Proposals', parseInt(yearlyData.proposals)],
+          ['Invitations', parseInt(yearlyData.invitations)],
+          ['Finished Letters', parseInt(yearlyData.finished)],
+          ['Unfinished Letters', parseInt(yearlyData.unfinished)]
+        ]);
+        
+        // Monthly Statistics Sheet
+        const monthlySheet = XLSX.utils.aoa_to_sheet([
+          ['Documents Report - Monthly Statistics', selectedYear],
+          [''],
+          ['Category', 'Value'],
+          ['Current Month Letters', parseInt(monthlyData.total)],
+          ['Average Daily Letters', parseFloat(monthlyData.avgDaily)],
+          ['Highest Volume Month', monthlyData.highestVolume],
+          ['Lowest Volume Month', monthlyData.lowestVolume],
+          ['Finished Letters', parseInt(monthlyData.finished)],
+          ['Unfinished Letters', parseInt(monthlyData.unfinished)]
+        ]);
+        
+        XLSX.utils.book_append_sheet(workbook, yearlySheet, 'Yearly Statistics');
+        XLSX.utils.book_append_sheet(workbook, monthlySheet, 'Monthly Statistics');
+        
+        XLSX.writeFile(workbook, `documents_report_${selectedYear}.xlsx`);
+      }
+
+      function exportToPDF() {
+        const { selectedYear, yearlyData, monthlyData } = getReportData();
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Title
+        doc.setFontSize(20);
+        doc.text('Documents Report', 105, 20, { align: 'center' });
+        doc.setFontSize(14);
+        doc.text(`Year: ${selectedYear}`, 105, 30, { align: 'center' });
+        
+        // Yearly Statistics
+        doc.setFontSize(16);
+        doc.text('Yearly Statistics', 20, 50);
+        doc.setFontSize(12);
+        
+        const yearlyStats = [
+          ['Total Letters Received', yearlyData.total],
+          ['Complaints', yearlyData.complaints],
+          ['Requests', yearlyData.requests],
+          ['Proposals', yearlyData.proposals],
+          ['Invitations', yearlyData.invitations],
+          ['Finished Letters', yearlyData.finished],
+          ['Unfinished Letters', yearlyData.unfinished]
+        ];
+        
+        doc.autoTable({
+          startY: 60,
+          head: [['Category', 'Value']],
+          body: yearlyStats,
+          theme: 'grid',
+          headStyles: { fillColor: [41, 128, 185] }
+        });
+        
+        // Monthly Statistics
+        doc.setFontSize(16);
+        doc.text('Monthly Statistics', 20, 140);
+        doc.setFontSize(12);
+        
+        const monthlyStats = [
+          ['Current Month Letters', monthlyData.total],
+          ['Average Daily Letters', monthlyData.avgDaily],
+          ['Highest Volume Month', monthlyData.highestVolume],
+          ['Lowest Volume Month', monthlyData.lowestVolume],
+          ['Finished Letters', monthlyData.finished],
+          ['Unfinished Letters', monthlyData.unfinished]
+        ];
+        
+        doc.autoTable({
+          startY: 150,
+          head: [['Category', 'Value']],
+          body: monthlyStats,
+          theme: 'grid',
+          headStyles: { fillColor: [41, 128, 185] }
+        });
+        
+        doc.save(`documents_report_${selectedYear}.pdf`);
+      }
+
       // Load entries and check for archiving when page loads
       document.addEventListener("DOMContentLoaded", function () {
         // Initialize section-specific user management
@@ -2743,7 +3205,50 @@
         });
 
         checkAndArchiveEntries();
+        populateYearSelector();
         loadEntries();
+        
+        // Add event listener for toggle finished/unfinished button
+        document.getElementById("toggleFinishedBtn").addEventListener("click", function() {
+          // Cycle through three states: all -> unfinished -> finished -> all
+          if (filterState === "all") {
+            filterState = "unfinished";
+          } else if (filterState === "unfinished") {
+            filterState = "finished";
+          } else {
+            filterState = "all";
+          }
+          
+          // Update button appearance
+          const icon = this.querySelector("i");
+          const text = this.querySelector("#toggleFinishedText");
+          
+          if (filterState === "unfinished") {
+            icon.className = "bi bi-eye me-1";
+            text.textContent = "Show All Finished";
+            this.classList.remove("btn-outline-primary");
+            this.classList.add("btn-primary");
+          } else if (filterState === "finished") {
+            icon.className = "bi bi-check-circle me-1";
+            text.textContent = "Show All";
+            this.classList.remove("btn-outline-primary");
+            this.classList.add("btn-primary");
+          } else {
+            icon.className = "bi bi-eye-slash me-1";
+            text.textContent = "Show Unfinished Only";
+            this.classList.remove("btn-outline-primary");
+            this.classList.add("btn-primary");
+          }
+          
+          // Reload entries with current year
+          const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
+          loadEntries(parseInt(selectedYear));
+        });
+        
+        // Set up automatic month checking every hour
+        setInterval(() => {
+          checkForNewMonth();
+        }, 3600000); // Check every hour (3600000 ms)
       });
 
       // Function to load archived entries
@@ -3008,7 +3513,8 @@
             loadAccounts(); // Only load accounts table in profile section
             break;
           default:
-            loadEntries();
+            const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
+            loadEntries(parseInt(selectedYear));
         }
       }
 
@@ -3050,9 +3556,11 @@
 
       // Function to load documents
       function loadDocuments() {
+        const selectedYear = document.getElementById("reportsYearSelector")?.value || new Date().getFullYear();
+        
         entriesRef.once("value", (snapshot) => {
           const entries = snapshot.val();
-          const currentYear = new Date().getFullYear();
+          const currentYear = parseInt(selectedYear);
           const currentMonth = new Date().getMonth();
 
           // Initialize statistics
@@ -3120,6 +3628,14 @@
                 };
               }
             });
+
+            // Handle case when no data exists (like for 2026)
+            if (monthlyStats.highestVolume.count === 0) {
+              monthlyStats.highestVolume = { month: "No Data", count: 0 };
+            }
+            if (monthlyStats.lowestVolume.count === Infinity) {
+              monthlyStats.lowestVolume = { month: "No Data", count: 0 };
+            }
           }
 
           // Update yearly statistics
@@ -3134,6 +3650,12 @@
           document.getElementById("yearlyInvitations").textContent =
             yearlyStats.invitations;
 
+          // Update card titles to reflect selected year
+          const yearlyCardTitle = document.querySelector('.card-title.text-primary');
+          if (yearlyCardTitle && yearlyCardTitle.textContent.includes('Yearly Statistics')) {
+            yearlyCardTitle.textContent = `Yearly Statistics (${currentYear})`;
+          }
+
           // Update monthly statistics
           document.getElementById("monthlyTotal").textContent =
             monthlyStats.total;
@@ -3146,159 +3668,306 @@
             "lowestVolumeMonth"
           ).textContent = `${monthlyStats.lowestVolume.month} (${monthlyStats.lowestVolume.count})`;
 
-          // Create monthly letters chart
-           const monthlyCtx = document
+          // Calculate finished and unfinished letter counts
+          let yearlyFinished = 0;
+          let yearlyUnfinished = 0;
+          let monthlyFinished = 0;
+          let monthlyUnfinished = 0;
+
+          if (entries) {
+            Object.entries(entries).forEach(([_, entry]) => {
+              const entryDate = new Date(entry.dateReceived);
+              const entryYear = entryDate.getFullYear();
+              const entryMonth = entryDate.getMonth();
+              
+              // Only process entries for the selected year
+              if (entryYear === currentYear) {
+                // Determine if entry is finished
+                const isFinished = entry.status === "Completed" || entry.status === "Inspection";
+                
+                // Update yearly stats
+                if (isFinished) {
+                  yearlyFinished++;
+                } else {
+                  yearlyUnfinished++;
+                }
+                
+                // Update monthly stats (current month only)
+                if (entryMonth === currentMonth) {
+                  if (isFinished) {
+                    monthlyFinished++;
+                  } else {
+                    monthlyUnfinished++;
+                  }
+                }
+              }
+            });
+          }
+
+          // Update finished/unfinished counts in tables
+          document.getElementById("yearlyFinished").textContent = yearlyFinished;
+          document.getElementById("yearlyUnfinished").textContent = yearlyUnfinished;
+          document.getElementById("monthlyFinished").textContent = monthlyFinished;
+          document.getElementById("monthlyUnfinished").textContent = monthlyUnfinished;
+
+                    // Create monthly letters chart
+            const monthlyCtx = document
             .getElementById("monthlyLettersChart")
             .getContext("2d");
-          new Chart(monthlyCtx, {
-            type: "bar",
-            data: {
-              labels: [
-                "January",
-                "February",
-                "March",
-                "April",
-                "May",
-                "June",
-                "July",
-                "August",
-                "September",
-                "October",
-                "November",
-                "December",
-              ],
-              datasets: [
-                {
+          
+          // Destroy existing chart if it exists
+          const existingMonthlyChart = Chart.getChart(monthlyCtx);
+          if (existingMonthlyChart) {
+            existingMonthlyChart.destroy();
+          }
+          
+          // Check if we should show empty charts for future years
+          const shouldShowEmptyCharts = currentYear > new Date().getFullYear();
+          
+          if (shouldShowEmptyCharts) {
+            // Show empty chart with message
+            window.monthlyLettersChart = new Chart(monthlyCtx, {
+              type: "bar",
+              data: {
+                labels: [
+                  "January", "February", "March", "April", "May", "June",
+                  "July", "August", "September", "October", "November", "December"
+                ],
+                datasets: [{
                   label: "Letters Received",
-                  data: monthlyData,
-                  borderColor: "#002C75",
-                  backgroundColor: "#6aa1ff",
-                  tension: 0.4,
-                  fill: true,
-                },
-              ],
-            },
-            options: {
-              responsive: true,
-              plugins: {
-                legend: {
-                  display: false,
-                },
+                  data: Array(12).fill(0),
+                  borderColor: "#e9ecef",
+                  backgroundColor: "#f8f9fa",
+                  borderWidth: 1
+                }]
               },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    stepSize: 1,
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                  title: {
+                    display: true,
+                    text: `No data available for ${currentYear}`,
+                    color: "#6c757d",
+                    font: {
+                      size: 14
+                    }
+                  }
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      stepSize: 1,
+                    },
                   },
                 },
               },
-            },
-          });
+            });
+          } else {
+            // Show normal chart with data
+            window.monthlyLettersChart = new Chart(monthlyCtx, {
+              type: "bar",
+              data: {
+                labels: [
+                  "January",
+                  "February",
+                  "March",
+                  "April",
+                  "May",
+                  "June",
+                  "July",
+                  "August",
+                  "September",
+                  "October",
+                  "November",
+                  "December",
+                ],
+                datasets: [
+                  {
+                    label: "Letters Received",
+                    data: monthlyData,
+                    borderColor: "#002C75",
+                    backgroundColor: "#6aa1ff",
+                    tension: 0.4,
+                    fill: true,
+                  },
+                ],
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: {
+                    display: false,
+                  },
+                },
+                scales: {
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      stepSize: 1,
+                    },
+                  },
+                },
+              },
+            });
+          }
 
 
           // Create letter type distribution chart (pie chart)
           const letterTypeCtx = document.getElementById("letterTypeChart").getContext("2d");
-          new Chart(letterTypeCtx, {
-            type: "pie",
-            data: {
-              labels: ["Complaints", "Requests", "Proposals", "Invitations"],
-              datasets: [{
-                data: [
-                  yearlyStats.complaints,
-                  yearlyStats.requests,
-                  yearlyStats.proposals,
-                  yearlyStats.invitations
-                ],
-                backgroundColor: [
-                  "rgba(255, 99, 132, 0.7)",    // Red for Complaints
-                  "rgba(75, 192, 192, 0.7)",    // Green for Requests
-                  "rgba(255, 206, 86, 0.7)",    // Yellow for Proposals
-                  "rgba(54, 162, 235, 0.7)",    // Blue for Invitations
-                ],
-                borderColor: [
-                  "rgba(255, 99, 132, 1)",      // Red border
-                  "rgba(75, 192, 192, 1)",      // Green border
-                  "rgba(255, 206, 86, 1)",      // Yellow border
-                  "rgba(54, 162, 235, 1)",      // Blue border
-                ],
-                borderWidth: 2,                 // Increased border width
-                borderAlign: 'inner',           // Inner border alignment
-                hoverBorderWidth: 3,            // Larger border on hover
-                hoverBorderColor: [             // Darker border colors on hover
-                  "rgba(205, 49, 82, 1)",
-                  "rgba(25, 142, 142, 1)",
-                  "rgba(205, 156, 36, 1)",
-                  "rgba(4, 112, 185, 1)",
-                ],
-                hoverOffset: 10                 // Segments spread out on hover
-              }]
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: true,
-              aspectRatio: 2,
-              plugins: {
-                legend: {
-                  position: "right",
-                  labels: {
-                    generateLabels: function(chart) {
-                      const data = chart.data;
-                      if (data.labels.length && data.datasets.length) {
-                        return data.labels.map((label, i) => {
-                          const value = data.datasets[0].data[i];
-                          const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-                          const percentage = ((value / total) * 100).toFixed(1);
-                          return {
-                            text: `${label}: ${value} (${percentage}%)`,
-                            fillStyle: data.datasets[0].backgroundColor[i],
-                            strokeStyle: data.datasets[0].borderColor[i],
-                            lineWidth: 2,
-                            index: i
-                          };
-                        });
-                      }
-                      return [];
-                    },
+          
+          // Destroy existing chart if it exists
+          const existingLetterTypeChart = Chart.getChart(letterTypeCtx);
+          if (existingLetterTypeChart) {
+            existingLetterTypeChart.destroy();
+          }
+          
+          if (shouldShowEmptyCharts) {
+            // Show empty pie chart with message
+            window.letterTypeChart = new Chart(letterTypeCtx, {
+              type: "pie",
+              data: {
+                labels: ["No Data"],
+                datasets: [{
+                  data: [1],
+                  backgroundColor: ["#f8f9fa"],
+                  borderColor: ["#e9ecef"],
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                plugins: {
+                  legend: {
+                    display: false
+                  },
+                  title: {
+                    display: true,
+                    text: `No data available for ${currentYear}`,
+                    color: "#6c757d",
                     font: {
-                      size: 12,
-                      weight: 'bold'
-                    },
-                    padding: 20,
-                    usePointStyle: true,
-                    pointStyle: 'circle'
+                      size: 14
+                    }
                   }
                 },
-                title: {
-                  display: true,
-                  text: `Total Letters by Type (${currentYear})`,
-                  color: "#333",
-                  font: {
-                    size: 16,
-                    weight: 'bold'
-                  },
+                layout: {
                   padding: {
-                    top: 10,
-                    bottom: 30
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 20
                   }
                 }
+              }
+            });
+          } else {
+            // Show normal pie chart with data
+            window.letterTypeChart = new Chart(letterTypeCtx, {
+              type: "pie",
+              data: {
+                labels: ["Complaints", "Requests", "Proposals", "Invitations"],
+                datasets: [{
+                  data: [
+                    yearlyStats.complaints,
+                    yearlyStats.requests,
+                    yearlyStats.proposals,
+                    yearlyStats.invitations
+                  ],
+                  backgroundColor: [
+                    "rgba(255, 99, 132, 0.7)",    // Red for Complaints
+                    "rgba(75, 192, 192, 0.7)",    // Green for Requests
+                    "rgba(255, 206, 86, 0.7)",    // Yellow for Proposals
+                    "rgba(54, 162, 235, 0.7)",    // Blue for Invitations
+                  ],
+                  borderColor: [
+                    "rgba(255, 99, 132, 1)",      // Red border
+                    "rgba(75, 192, 192, 1)",      // Green border
+                    "rgba(255, 206, 86, 1)",      // Yellow border
+                    "rgba(54, 162, 235, 1)",      // Blue border
+                  ],
+                  borderWidth: 2,                 // Increased border width
+                  borderAlign: 'inner',           // Inner border alignment
+                  hoverBorderWidth: 3,            // Larger border on hover
+                  hoverBorderColor: [             // Darker border colors on hover
+                    "rgba(205, 49, 82, 1)",
+                    "rgba(25, 142, 142, 1)",
+                    "rgba(205, 156, 36, 1)",
+                    "rgba(4, 112, 185, 1)",
+                  ],
+                  hoverOffset: 10                 // Segments spread out on hover
+                }]
               },
-              layout: {
-                padding: {
-                  left: 20,
-                  right: 20,
-                  top: 20,
-                  bottom: 20
-                }
-              },
-              elements: {
-                arc: {
-                  borderWidth: 2,
-                  borderRadius: 5
+              options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,
+                plugins: {
+                  legend: {
+                    position: "right",
+                    labels: {
+                      generateLabels: function(chart) {
+                        const data = chart.data;
+                        if (data.labels.length && data.datasets.length) {
+                          return data.labels.map((label, i) => {
+                            const value = data.datasets[0].data[i];
+                            const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return {
+                              text: `${label}: ${value} (${percentage}%)`,
+                              fillStyle: data.datasets[0].backgroundColor[i],
+                              strokeStyle: data.datasets[0].borderColor[i],
+                              lineWidth: 2,
+                              index: i
+                            };
+                          });
+                        }
+                        return [];
+                      },
+                      font: {
+                        size: 12,
+                        weight: 'bold'
+                      },
+                      padding: 20,
+                      usePointStyle: true,
+                      pointStyle: 'circle'
+                    }
+                  },
+                  title: {
+                    display: true,
+                    text: `Total Letters by Type (${currentYear})`,
+                    color: "#333",
+                    font: {
+                      size: 16,
+                      weight: 'bold'
+                    },
+                    padding: {
+                      top: 10,
+                      bottom: 30
+                    }
+                  }
+                },
+                layout: {
+                  padding: {
+                    left: 20,
+                    right: 20,
+                    top: 20,
+                    bottom: 20
+                  }
+                },
+                elements: {
+                  arc: {
+                    borderWidth: 2,
+                    borderRadius: 5
+                  }
                 }
               }
-            }
-          });
+            });
+          }
         });
       }
 
@@ -3667,6 +4336,123 @@
         if (archiveAllBtn) {
           archiveAllBtn.addEventListener("click", archiveAllEntries);
         }
+      });
+
+      document.addEventListener("DOMContentLoaded", function() {
+        // Add event listener for archiving completed documents
+        document.getElementById("archiveAllBtncplt").addEventListener("click", function() {
+          showConfirmDialog(
+            "Archive Completed Documents",
+            "Are you sure you want to archive all completed documents?",
+            "Yes, archive completed"
+          ).then((result) => {
+            if (result.isConfirmed) {
+              // Show loading state
+              Swal.fire({
+                title: "Archiving Completed Documents",
+                text: "Please wait...",
+                allowOutsideClick: false,
+                didOpen: () => {
+                  Swal.showLoading();
+                },
+              });
+
+              entriesRef.once("value", (snapshot) => {
+                const entries = snapshot.val();
+                let archivedCount = 0;
+                let totalToArchive = 0;
+
+                if (entries) {
+                  // First count completed documents
+                  Object.entries(entries).forEach(([_, entry]) => {
+                    if (
+                      entry.status === "Completed" || 
+                      entry.status === "Inspection" ||
+                      entry.status === "Request Granted" ||
+                      entry.status === "Mayor Decision" ||
+                      entry.status === "Decision Made"
+                    ) {
+                      totalToArchive++;
+                    }
+                  });
+
+                  if (totalToArchive === 0) {
+                    Swal.fire({
+                      title: "No Documents to Archive",
+                      text: "There are no completed documents to archive.",
+                      icon: "info",
+                      confirmButtonColor: "#002C75",
+                    });
+                    return;
+                  }
+
+                  // Update progress bar
+                  Swal.update({
+                    html: `Archiving ${totalToArchive} completed documents...<br><br>
+                          <div class="progress" style="height: 20px;">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" 
+                                 style="width: 0%" 
+                                 id="archiveProgress">
+                              0%
+                            </div>
+                          </div>`,
+                  });
+
+                  // Archive completed documents
+                  Object.entries(entries).forEach(([key, entry]) => {
+                    if (
+                      entry.status === "Completed" || 
+                      entry.status === "Inspection" ||
+                      entry.status === "Request Granted" ||
+                      entry.status === "Mayor Decision" ||
+                      entry.status === "Decision Made"
+                    ) {
+                      entriesRef.child(key).update({
+                        status: "Archived",
+                        archivedAt: firebase.database.ServerValue.TIMESTAMP,
+                      })
+                      .then(() => {
+                        archivedCount++;
+                        logActivity(
+                          "archive",
+                          `Archived completed document: ${entry.subject}`,
+                          entry.controlNumber
+                        );
+
+                        // Update progress bar
+                        const progress = Math.round((archivedCount / totalToArchive) * 100);
+                        document.getElementById("archiveProgress").style.width = `${progress}%`;
+                        document.getElementById("archiveProgress").textContent = `${progress}%`;
+
+                        if (archivedCount === totalToArchive) {
+                          Swal.fire({
+                            title: "Success!",
+                            text: `Successfully archived ${archivedCount} completed documents!`,
+                            icon: "success",
+                            confirmButtonColor: "#002C75",
+                          }).then(() => {
+                            const selectedYear = document.getElementById("yearSelector")?.value || getCurrentYear();
+                            loadEntries(parseInt(selectedYear));
+                          });
+                        }
+                      })
+                      .catch((error) => {
+                        console.error("Error archiving document:", error);
+                        Swal.fire({
+                          title: "Error!",
+                          text: "Error archiving documents. Please try again.",
+                          icon: "error",
+                          confirmButtonColor: "#dc3545",
+                        });
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        });
       });
 
       // Function to handle sign out
@@ -4152,27 +4938,52 @@
       }
 
       // Function to handle search in accordion tables
-      function initializeSearch() {
+      function initializeSearch(selectedYear = null) {
         const currentYear = getCurrentYear();
+        const yearToUse = selectedYear || currentYear;
         const now = new Date();
         const months = [
           "January", "February", "March", "April", "May", "June",
           "July", "August", "September", "October", "November", "December"
         ];
-        const currentMonthIndex = now.getMonth();
-        const reorderedMonths = [
-          ...months.slice(currentMonthIndex),
-          ...months.slice(0, currentMonthIndex)
-        ];
+        
+        // Determine which months to show based on the year
+        let monthsToShow = [];
+        if (yearToUse < currentYear) {
+          // For past years, show all months in descending order
+          for (let i = 11; i >= 0; i--) {
+            monthsToShow.push(months[i]);
+          }
+        } else if (yearToUse === currentYear) {
+          // For current year, show months up to current month in descending order
+          const currentMonthIndex = now.getMonth();
+          for (let i = currentMonthIndex; i >= 0; i--) {
+            monthsToShow.push(months[i]);
+          }
+        } else {
+          // For future years (2026+), show only months that have already arrived
+          const currentMonthIndex = now.getMonth();
+          const currentYearMonth = now.getFullYear();
+          
+          if (yearToUse === currentYearMonth) {
+            // If it's the current year, show months up to current month
+            for (let i = currentMonthIndex; i >= 0; i--) {
+              monthsToShow.push(months[i]);
+            }
+          } else {
+            // For future years, don't show any months yet
+            monthsToShow = [];
+          }
+        }
 
-        reorderedMonths.forEach(month => {
-          const monthKey = `${month.toLowerCase()}${currentYear}`;
+        monthsToShow.forEach(month => {
+          const monthKey = `${month.toLowerCase()}${yearToUse}`;
           const searchInput = document.getElementById(`search${monthKey}`);
           const tableId = `monthly-stats-table-${monthKey}`;
           
           if (searchInput) {
             // Create title for this month
-            const title = `${month} ${currentYear} - Administrative Division Dashboard`;
+            const title = `${month} ${yearToUse} - Administrative Division Dashboard`;
             
             // Initialize DataTable for this month
             $(`#${tableId}`).DataTable({
@@ -4260,10 +5071,10 @@
           $(`#${tableId}`).DataTable().destroy();
         }
 
-        // Extract month name from monthKey (e.g., "may2024" -> "May")
+        // Extract month name and year from monthKey (e.g., "may2024" -> "May" and "2024")
         const monthName = monthKey.replace(/\d+/g, '').charAt(0).toUpperCase() + monthKey.replace(/\d+/g, '').slice(1);
-        const currentYear = new Date().getFullYear();
-        const title = `${monthName} ${currentYear} - Administrative Division Dashboard`;
+        const year = monthKey.replace(/\D/g, '');
+        const title = `${monthName} ${year} - Administrative Division Dashboard`;
 
         // Initialize new DataTable with basic configuration
         const table = $(`#${tableId}`).DataTable({
@@ -5146,6 +5957,36 @@
               Object.values(Chart.instances || {}).forEach(chart => chart.resize());
             }
             window.print();
+          });
+        }
+
+        // Export functionality
+        const copyBtn = document.getElementById("copyReportsBtn");
+        const csvBtn = document.getElementById("csvReportsBtn");
+        const excelBtn = document.getElementById("excelReportsBtn");
+        const pdfBtn = document.getElementById("pdfReportsBtn");
+
+        if (copyBtn) {
+          copyBtn.addEventListener("click", function() {
+            exportToClipboard();
+          });
+        }
+
+        if (csvBtn) {
+          csvBtn.addEventListener("click", function() {
+            exportToCSV();
+          });
+        }
+
+        if (excelBtn) {
+          excelBtn.addEventListener("click", function() {
+            exportToExcel();
+          });
+        }
+
+        if (pdfBtn) {
+          pdfBtn.addEventListener("click", function() {
+            exportToPDF();
           });
         }
 
